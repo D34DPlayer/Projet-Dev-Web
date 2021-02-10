@@ -11,14 +11,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
   web:
     build: ./src
-    environment:
-      - FLASK_ENV=${FLASK_ENV}
     command: flask run
     volumes:
       - ./src:/app
     ports:
       - "${WEB_PORT}:8000"
     environment:
+      - FLASK_ENV=${FLASK_ENV}
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
