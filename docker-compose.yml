@@ -1,5 +1,5 @@
 version: "3"
-   
+
 services:
   db:
     image: postgres:13-alpine
@@ -11,12 +11,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
   web:
     build: ./src
-    command: echo server running
+    command: flask run -h 0.0.0.0
     volumes:
       - ./src:/app
     ports:
-      - "${WEB_PORT}:8000"
+      - "${WEB_PORT}:5000"
     environment:
+      - FLASK_ENV=${FLASK_ENV}
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
