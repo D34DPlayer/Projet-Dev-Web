@@ -1,5 +1,5 @@
 version: "3"
-   
+
 services:
   db:
     image: postgres:13-alpine
@@ -11,7 +11,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
   web:
     build: ./src
-    command: echo server running
+    environment:
+      - FLASK_ENV=${FLASK_ENV}
+    command: flask run
     volumes:
       - ./src:/app
     ports:
