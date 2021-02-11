@@ -28,9 +28,8 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASS}@db:5432
       - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
     depends_on:
       - db
 volumes:
