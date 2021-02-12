@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apk update && \
  apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev && \
  apk add postgresql-dev
-RUN pip install psycopg2
+RUN pip install psycopg2 asyncpg
 RUN apk del .build-deps
 
 # INSTALL THE OTHER REQUIREMENTS
