@@ -1,0 +1,9 @@
+fastapi
+fastapi-sqlalchemy
+pydantic
+alembic
+psycopg2
+uvicorn
+databases
+databases[postgresql]
+asyncpg
