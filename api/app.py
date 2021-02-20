@@ -2,7 +2,7 @@ from db import db
 from fastapi import FastAPI
 
 
-app = FastAPI(title="Boucherie")
+app = FastAPI(title="Boucherie", root_path="/api")
 
 
 @app.on_event("startup")
