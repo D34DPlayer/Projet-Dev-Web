@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  web:
+    build: ./web
+    command: flask run -h 0.0.0.0
+    environment:
+      - FLASK_ENV=production
+    depends_on:
+      - api
+  api:
+    build: ./api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --root-path /api
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
+    depends_on:
+      - db
+  caddy:
+    build: ./caddy
+    command: caddy run
+    volumes:
+      - caddy_data:/data
+    environment:
+      - WEB_PORT=${WEB_PORT}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    depends_on:
+      - api
+      - web
+
+volumes:
+  postgres_data: {}
+  caddy_data: {}
