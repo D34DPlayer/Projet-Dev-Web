@@ -25,7 +25,7 @@ class DBUser(User):
         query = users.select().where(users.c.username == username)
         user = await db.fetch_one(query)
         if user:
-            return User(**user)
+            return DBUser(**user)
 
     @classmethod
     async def create(cls, user):

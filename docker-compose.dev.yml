@@ -20,7 +20,7 @@ services:
       - api
   api:
     build: ./api
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --root-path /api --reload
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --root-path /api --reload
     volumes:
       - ./api:/api
     environment:

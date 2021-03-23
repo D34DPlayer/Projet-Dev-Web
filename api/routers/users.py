@@ -17,28 +17,32 @@ async def get_current_user(user: User = Depends(is_connected)):
     return user
 
 
-@router.get("/users/{username}", response_model=User)
+@router.get("/{username}", response_model=User)
 async def get_some_user(username: str):
-    user = DBUser.get(username)
+    user = await DBUser.get(username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
 
     return user
 
 
-@router.put("/users/{username}", response_model=User)
-async def update_some_user(username: str, user: User = Depends(is_connected)):
+@router.put("/{username}", response_model=User)
+async def update_some_user(username: str, user: CreateUser):
     if user.username != username:
         raise HTTPException(status_code=400, detail="You can't change the user's username.")
 
-    user = await DBUser.update(user)
-    if not user:
+    hashed_pwd = get_password_hash(user.password)
+
+    updated_user = DBUser(**user.dict(), hashed_password=hashed_pwd)
+
+    updated_user = await DBUser.update(updated_user)
+    if not updated_user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    return user
+    return updated_user
 
 
-@router.delete("/users/{username}", response_model=User)
+@router.delete("/{username}", response_model=User)
 async def delete_some_user(username: str, user: User = Depends(is_connected)):
     if user.username == username:
         raise HTTPException(status_code=400, detail="You can't delete your own user.")
@@ -50,7 +54,7 @@ async def delete_some_user(username: str, user: User = Depends(is_connected)):
     return user
 
 
-@router.post("/users", response_model=User)
+@router.post("/", response_model=User)
 async def create_a_new_user(user: CreateUser):
     old_user = await DBUser.get(user.username)
     if old_user:
@@ -58,9 +62,11 @@ async def create_a_new_user(user: CreateUser):
 
     hashed_pwd = get_password_hash(user.password)
 
-    new_user = DBUser({**user.dict(), "hashed_password": hashed_pwd})
+    new_user = DBUser(**user.dict(), hashed_password=hashed_pwd)
 
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found.")
+    new_user = await DBUser.create(new_user)
 
-    return user
+    if not new_user:
+        raise HTTPException(status_code=501, detail="The user couldn't be created.")
+
+    return new_user
