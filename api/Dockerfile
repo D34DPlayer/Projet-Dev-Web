@@ -1,6 +1,6 @@
 FROM python:3-alpine
 ENV PYTHONUNBUFFERED=1
-WORKDIR /app
+WORKDIR /api
 
 # INSTALL THE POSTGRES PYTHON PACKAGE
 RUN apk update && \
@@ -14,3 +14,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+WORKDIR /

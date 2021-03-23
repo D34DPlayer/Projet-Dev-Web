@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 
-from db import db
-from models import users
+from .db import db
+from .models import users
 
 
 class User(BaseModel):

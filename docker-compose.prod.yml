@@ -18,7 +18,7 @@ services:
       - api
   api:
     build: ./api
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --root-path /api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --root-path /api
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
       - SECRET_KEY=${SECRET_KEY}

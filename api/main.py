@@ -1,5 +1,9 @@
-from app import app
-from db import db
+from .app import app
+
+from .routers import users
+
+
+app.include_router(users.router)
 
 
 @app.get("/")

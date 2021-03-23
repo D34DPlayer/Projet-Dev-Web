@@ -1,5 +1,5 @@
-from db import metadata
-from db import sqlalchemy
+from api.db import metadata
+from api.db import sqlalchemy
 
 
 users = sqlalchemy.Table(
