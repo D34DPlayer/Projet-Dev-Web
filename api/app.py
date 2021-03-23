@@ -1,7 +1,7 @@
 import os
 
 from .db import db
-from .schemas import DBUser, User
+from .schemas import DBUser, TokenModel
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -16,16 +16,6 @@ from passlib.context import CryptContext
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-
-fake_users_db = {
-    "carlos": {
-        "username": "carlos",
-        "email": "carlos@example.com",
-        "hashed_password": "$2b$12$wKllEuIztKY4LNAyv0InDO/qS72Ag3qtE3WHmaY2ABHbFvRSHBVh6",
-    },
-}
-
 
 app = FastAPI(title="Boucherie", root_path="/api")
 
@@ -84,8 +74,9 @@ async def is_connected(token: str = Depends(oauth2_scheme)):
     return user
 
 
-@app.post("/token", tags=["security"])
+@app.post("/token", tags=["security"], response_model=TokenModel)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    """Provides an OAuth2 token if the credentials are right."""
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -98,4 +89,3 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-

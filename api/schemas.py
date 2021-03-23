@@ -5,6 +5,11 @@ from .db import db
 from .models import users
 
 
+class TokenModel(BaseModel):
+    access_token: str
+    token_type = "bearer"
+
+
 class User(BaseModel):
     username: str
     email: Optional[str]
