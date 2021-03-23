@@ -5,8 +5,8 @@ WORKDIR /app
 # INSTALL THE POSTGRES PYTHON PACKAGE
 RUN apk update && \
  apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev && \
- apk add postgresql-dev
-RUN pip install psycopg2 asyncpg
+ apk add postgresql-dev libffi-dev openssl-dev cargo
+RUN pip install psycopg2==2.8.6 asyncpg==0.22.0 cryptography==3.4.6
 RUN apk del .build-deps
 
 # INSTALL THE OTHER REQUIREMENTS
