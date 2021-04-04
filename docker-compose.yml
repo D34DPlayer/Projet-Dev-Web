@@ -10,12 +10,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   web:
-    build: ./web
-    command: flask run -h 0.0.0.0
+    build: 
+      context: ./web
+      dockerfile: Dockerfile.dev
+    command: npm run serve
     volumes:
       - ./web:/app
-    environment:
-      - FLASK_ENV=${FLASK_ENV}
     depends_on:
       - api
   api:
