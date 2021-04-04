@@ -9,13 +9,12 @@ services:
       - POSTGRES_PASSWORD=${DB_PASS}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
   web:
     build: ./web
-    command: flask run -h 0.0.0.0
-    environment:
-      - FLASK_ENV=production
     depends_on:
       - api
+    restart: unless-stopped
   api:
     build: ./api
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --root-path /api
@@ -24,6 +23,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - db
+    restart: unless-stopped
   caddy:
     build: ./caddy
     command: caddy run
@@ -37,6 +37,7 @@ services:
     depends_on:
       - api
       - web
+    restart: unless-stopped
 
 volumes:
   postgres_data: {}
