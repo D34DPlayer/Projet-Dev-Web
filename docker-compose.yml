@@ -38,6 +38,7 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     ports:
       - "${WEB_PORT}:${WEB_PORT}"
+      - "${WEB_PORT_HTTP}:80"
     depends_on:
       - api
       - web
