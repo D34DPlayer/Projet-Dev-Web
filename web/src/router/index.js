@@ -19,6 +19,36 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  {
+    path: "/login",
+    name: "Se connecter",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/Login.vue"),
+  },
+  {
+    path: "/products",
+    name: "Produits",
+    component: () =>
+      import(/* webpackChunkName: "products" */ "../views/Products.vue"),
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () =>
+      import(/* webpackChunkName: "contact" */ "../views/Contact.vue"),
+  },
+  {
+    path: "/admin",
+    name: "Administration",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/Admin.vue"),
+  },
+  {
+    path: "/logout",
+    name: "Se deconnecter",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/Logout.vue"),
+  },
 ];
 
 const router = new VueRouter({
