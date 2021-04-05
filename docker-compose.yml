@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile.dev
     command: npm run serve
     volumes:
-      - ./web:/app
+      - ./web/src:/app/src
     depends_on:
       - api
   api:
