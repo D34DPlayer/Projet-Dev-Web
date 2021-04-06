@@ -2,7 +2,7 @@ FROM python:3-alpine
 ENV PYTHONUNBUFFERED=1
 WORKDIR /api
 
-# INSTALL THE POSTGRES PYTHON PACKAGE
+# INSTALL THE PYTHON PACKAGES THAT HAVE BUILD DEP.
 RUN apk update && \
  apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev cargo && \
  apk add postgresql-dev libffi-dev openssl-dev

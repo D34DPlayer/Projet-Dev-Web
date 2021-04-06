@@ -22,9 +22,6 @@ class CreateUser(User):
 class DBUser(User):
     hashed_password: str
 
-    class Config:
-        orm_mode = True
-        
     @classmethod
     async def get(cls, username: str):
         query = users.select().where(users.c.username == username)
@@ -39,10 +36,10 @@ class DBUser(User):
         return user
 
     @classmethod
-    async def update(cls, user):
-        old_user = await cls.get(user.username)
+    async def update(cls, username: str, user):
+        old_user = await cls.get(username)
         if old_user:
-            query = users.update().where(users.c.username == user.username).values(**user.dict())
+            query = users.update().where(users.c.username == username).values(**user.dict())
             await db.execute(query)
             return user
 

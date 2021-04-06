@@ -31,14 +31,11 @@ async def get_some_user(username: str):
 @router.put("/{username}", response_model=User)
 async def update_some_user(username: str, user: CreateUser):
     """Updates the information stored about an user. Password included."""
-    if user.username != username:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You can't change the user's username.")
-
     hashed_pwd = get_password_hash(user.password)
 
     updated_user = DBUser(**user.dict(), hashed_password=hashed_pwd)
 
-    updated_user = await DBUser.update(updated_user)
+    updated_user = await DBUser.update(username, updated_user)
     if not updated_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
 
