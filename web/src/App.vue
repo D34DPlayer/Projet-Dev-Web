@@ -15,7 +15,7 @@
 
           <b-nav-item-dropdown v-if="isConnected" right>
             <!-- Using 'button-content' slot -->
-            <template #button-content> User </template>
+            <template #button-content> {{ user }} </template>
             <b-dropdown-item to="/admin">
               Panneau d'administration
             </b-dropdown-item>
@@ -37,7 +37,10 @@ export default {
   methods: {},
   computed: {
     isConnected() {
-      return false;
+      return !!this.$store.state.user.token;
+    },
+    user() {
+      return this.$store.state.user.username;
     },
   },
 };
@@ -48,6 +51,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  min-height: 100vh;
 }
 </style>
