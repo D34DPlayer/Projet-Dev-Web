@@ -1,12 +1,12 @@
 <template>
   <b-container>
     <b-row>
-      <b-col sm="9" md="7" lg="5" class="mx-auto my-5">
+      <b-col sm="9" md="7" lg="5" class="mx-auto mb-5">
         <b-alert v-model="loginAlert" variant="danger" dismissible>
           Mauvaise combinaison de nom d'utilisateur/mot de passe.
         </b-alert>
         <b-card class="login-card">
-          <b-form @submit="onSubmit" v-if="!isConnected && show">
+          <b-form @submit="onSubmit" v-if="!isConnected">
             <b-form-group
               class="w-100"
               label="Nom d'utilisateur :"
@@ -36,7 +36,7 @@
               >Se connecter</b-button
             >
           </b-form>
-          <p v-else-if="show">Redirecting...</p>
+          <p v-else>Redirecting...</p>
         </b-card>
       </b-col>
     </b-row>
@@ -78,7 +78,6 @@ export default {
         username: "",
         password: "",
       },
-      show: true,
       loginAlert: false,
     };
   },
