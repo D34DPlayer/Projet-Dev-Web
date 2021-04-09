@@ -75,6 +75,11 @@
           </b-container>
         </b-col>
       </b-row>
+      <b-row cols="12" class="social-media">
+        <b-link href="https://www.facebook.com/boucherievangeebergen/" class="facebook" target="_blank">
+          <b-icon-facebook/>
+        </b-link>
+      </b-row>
     </b-container>
   </footer>
 </template>
@@ -136,4 +141,25 @@ svg.openingDay {
   margin-right: auto;
   width: auto;
 }
+
+.social-media {
+  border-top: 0.1rem solid rgba(255, 255, 255, .13);
+  padding: .5rem;
+}
+
+.facebook {
+  font-size: 1.5em;
+  margin-left: 1.1rem;
+  &:active {
+    color: #fff;
+  }
+  &:visited {
+    color: #fff;
+  }
+  &:hover {
+    color: var(--primary);
+  }
+
+}
+
 </style>
