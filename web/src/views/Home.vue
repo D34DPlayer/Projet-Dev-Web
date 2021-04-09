@@ -57,7 +57,7 @@ export default {
 h1 {
   color: var(--primary);
   text-align: center;
-  font-weight: 250;
+  font-weight: 200;
 }
 
 p.sous-titre {
@@ -74,7 +74,7 @@ h2 {
 
 em {
   font-style: normal;
-  font-weight: 375;
+  font-weight: 400;
 }
 
 p {
