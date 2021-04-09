@@ -7,6 +7,8 @@ $theme-colors: (
   "navbar": rgba(0,0,0,.75),
 );
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+
 // Import all the bootstrap stuff
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import 'node_modules/bootstrap-vue/src/index.scss';
