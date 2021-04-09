@@ -1,14 +1,16 @@
 <template>
   <b-col lg="3" md="4" sm="6" cols="12" class="my-3">
     <b-card
-        :img-src="product.src[0]"
-        :img-alt="product.name"
-        img-bottom
         tag="article"
+        no-body
     >
-      <b-card-title>{{ product.name }}</b-card-title>
-      <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
-      <b-card-text>{{ product.prix }}</b-card-text>
+      <b-card-body>
+        <b-card-title>{{ product.name }}</b-card-title>
+        <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
+        <b-card-text>{{ product.price }}</b-card-text>
+      </b-card-body>
+      <b-aspect class="card-image" :style="{ backgroundImage: 'url(' + product.src[0] + ')' }">
+      </b-aspect>
     </b-card>
   </b-col>
 </template>
@@ -35,5 +37,8 @@ export default {
   border-radius: 0.25rem 0 0 0;
 }
 
-
+.card-image {
+  background-position: center;
+  background-size: cover;
+}
 </style>
