@@ -96,7 +96,7 @@ footer {
   color: #fff;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   footer {
     overflow: hidden;
     padding-top: 3.75rem;
