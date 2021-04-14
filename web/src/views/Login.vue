@@ -32,7 +32,7 @@
               class="mt-4 text-uppercase"
               block
               type="submit"
-              variant="info"
+              variant="primary"
               >Se connecter</b-button
             >
           </b-form>
