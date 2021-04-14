@@ -2,7 +2,7 @@
   <b-modal
     hide-footer
     size="lg"
-    :id="`modal-user-${edit ? 'edit-' + user.username : 'add'}`"
+    :id="modal"
     :title="`${
       edit
         ? 'Modifier l\'utilisateur ' + user.username
@@ -10,7 +10,10 @@
     }`"
   >
     <!-- Formulaire pour les utilisateurs -->
-    <b-form @submit="onSubmit">
+    <b-form @submit.prevent="onSubmit">
+      <b-alert v-model="showError" variant="danger" dismissible>
+        {{ error }}
+      </b-alert>
       <!-- Username -->
       <b-form-group
         label="Nom d'utilisateur* :"
@@ -58,29 +61,76 @@
 <script>
 export default {
   name: "UserForm",
-  props: ["user"],
+  props: ["user", "username"],
   data() {
     return {
       edit: false,
       form: {
         username: "",
-        email: "",
+        email: null,
         password: "",
       },
+      error: "",
+      showError: false,
     };
   },
-  methods: {
-    onSubmit(ev) {
-      ev.preventDefault();
-      return false;
+  computed: {
+    modal() {
+      return `modal-user-${this.edit ? "edit-" + this.user.username : "add"}`;
     },
   },
-  mounted() {
-    if (this.user) {
-      this.edit = true;
-      this.$set(this.form, "username", this.user.username);
-      this.$set(this.form, "email", this.user.email);
-    }
+  methods: {
+    async onSubmit() {
+      let response;
+      if (this.edit) {
+        response = await this.$store.dispatch("users/editUser", [
+          this.user.username,
+          this.form,
+        ]);
+      } else {
+        response = await this.$store.dispatch("users/createUser", this.form);
+      }
+
+      switch (response.status) {
+        case 200: // It went OK
+          this.form = {
+            username: "",
+            email: null,
+            password: "",
+          };
+          this.error = "";
+          this.showError = false;
+          this.$bvModal.hide(this.modal);
+          break;
+        case 400: // Name already used
+          this.error = "Un utilisateur avec ce nom existe déjà.";
+          this.showError = true;
+          break;
+        case 404: // User not found
+          await this.$store.dispatch("users/getUsers");
+          this.$bvModal.hide(this.modal);
+          break;
+        default:
+          // Unknown error
+          this.error = response.data.detail;
+          this.showError = true;
+      }
+    },
+  },
+  watch: {
+    user(val) {
+      if (val) {
+        this.edit = true;
+        this.$set(this.form, "username", val.username);
+        this.$set(this.form, "email", val.email);
+
+        if (val.username === this.username) {
+          this.showError = true;
+          this.error =
+            "Après avoir modifié l'utilisateur en cours, vous devrez vous reconnecter.";
+        }
+      }
+    },
   },
 };
 </script>
