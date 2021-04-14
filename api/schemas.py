@@ -50,3 +50,9 @@ class DBUser(User):
             query = users.delete().where(users.c.username == username)
             await db.execute(query)
         return user
+
+    @classmethod
+    async def get_all(cls):
+        query = users.select()
+
+        return await db.fetch_all(query)
