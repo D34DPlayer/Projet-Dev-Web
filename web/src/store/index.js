@@ -68,7 +68,6 @@ export default new Vuex.Store({
           },
           credentials: "include",
         });
-        console.log(response);
         commit("updateUser", response.data);
         return true;
       } catch (e) {

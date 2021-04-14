@@ -1,16 +1,16 @@
 <template>
   <b-carousel id="carousel-1" :interval="5000" controls class="carousel">
     <b-carousel-slide
-        img-src="https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/11.jpg"
+      img-src="https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/11.jpg"
     ></b-carousel-slide>
     <b-carousel-slide
-        img-src="https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/12.jpg"
+      img-src="https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/12.jpg"
     ></b-carousel-slide>
   </b-carousel>
 </template>
 
 <style scoped lang="scss">
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   .carousel {
     overflow: hidden;
 

@@ -1,14 +1,14 @@
 <template>
   <footer>
-    <b-container class="p-4">
-      <b-row>
+    <b-container class="p-4 mt-3">
+      <b-row align-v="center">
         <b-col sm="12" md="4" class="p-2">
           <h1>Contactez-nous</h1>
           <p class="sous-titre">Boucherie Vangeebergen</p>
           <b-container>
             <b-row align-v="center">
               <b-col cols="2">
-                <b-icon-geo-alt-fill class="openingDay"/>
+                <b-icon-geo-alt-fill class="openingDay" />
               </b-col>
               <b-col>
                 <div>Chaussée de Namur 301</div>
@@ -18,7 +18,7 @@
             </b-row>
             <b-row align-v="center">
               <b-col cols="2">
-                <b-icon-telephone-fill class="openingDay"/>
+                <b-icon-telephone-fill class="openingDay" />
               </b-col>
               <b-col>
                 <div>Tél : 081 40 06 16</div>
@@ -27,7 +27,7 @@
             </b-row>
             <b-row align-v="center">
               <b-col cols="2">
-                <b-icon-envelope-fill class="openingDay"/>
+                <b-icon-envelope-fill class="openingDay" />
               </b-col>
               <b-col>
                 <div>info@boucherie-vangeebergen.be</div>
@@ -37,11 +37,7 @@
           </b-container>
         </b-col>
         <b-col sm="12" md="4" class="text-center p-2">
-          <img
-              class="image-logo"
-              src="@/assets/logo.png"
-              alt="Boucherie"
-          />
+          <img class="image-logo" src="@/assets/logo.png" alt="Boucherie" />
         </b-col>
         <b-col sm="12" md="4" class="p-2">
           <h1>Heures d'ouverture</h1>
@@ -76,8 +72,12 @@
         </b-col>
       </b-row>
       <b-row cols="12" class="social-media">
-        <b-link href="https://www.facebook.com/boucherievangeebergen/" class="facebook" target="_blank">
-          <b-icon-facebook/>
+        <b-link
+          href="https://www.facebook.com/boucherievangeebergen/"
+          class="facebook"
+          target="_blank"
+        >
+          <b-icon-facebook />
         </b-link>
       </b-row>
     </b-container>
@@ -86,8 +86,8 @@
 
 <script>
 export default {
-  name: "Footer"
-}
+  name: "Footer",
+};
 </script>
 
 <style scoped lang="scss">
@@ -96,10 +96,10 @@ footer {
   color: #fff;
 }
 
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   footer {
     overflow: hidden;
-    padding-top: 3.5rem;
+    padding-top: 3.75rem;
     position: relative;
 
     &::before {
@@ -115,6 +115,9 @@ footer {
       clip-path: inset(0% -35% round 0% 0% 80% 80%);
     }
   }
+  .facebook {
+    margin: 0 0 0 1.1rem !important;
+  }
 }
 
 .image-logo {
@@ -124,7 +127,7 @@ footer {
 .openingDay {
   display: inline-block;
   text-align: center;
-  border: 0.1rem solid rgba(255, 255, 255, .13);
+  border: 0.1rem solid rgba(255, 255, 255, 0.13);
   border-radius: 0.25rem;
   margin: 0 0.5rem 0.5rem 0;
   padding: 0.17rem 0 0 0;
@@ -133,7 +136,7 @@ footer {
 }
 
 svg.openingDay {
-  padding: .3rem;
+  padding: 0.3rem;
 }
 
 .ligne-horaire {
@@ -143,13 +146,15 @@ svg.openingDay {
 }
 
 .social-media {
-  border-top: 0.1rem solid rgba(255, 255, 255, .13);
-  padding: .5rem;
+  border-top: 0.1rem solid rgba(255, 255, 255, 0.13);
+  padding: 0.5rem;
 }
 
 .facebook {
   font-size: 1.5em;
-  margin-left: 1.1rem;
+  color: #fff;
+  margin: auto;
+  transition: color 0.4s;
   &:active {
     color: #fff;
   }
@@ -159,7 +164,5 @@ svg.openingDay {
   &:hover {
     color: var(--primary);
   }
-
 }
-
 </style>
