@@ -23,7 +23,7 @@
           <b-form-checkbox
             v-b-tooltip.hover
             switch
-            :title="value.isOpen ? 'Ouvert': 'Fermé'"
+            :title="value.isOpen ? 'Ouvert' : 'Fermé'"
             :id="`checkbox-${day}`"
             :checked="value.isOpen"
             :disabled="!valCheck"
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     onInput(prop, val) {
-      let newValue = {...this.value};
+      let newValue = { ...this.value };
 
       newValue[prop] = val;
 
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     validation() {
-      return this.value.close > this.value.open;
+      return this.value.isOpen ? this.value.close > this.value.open : null;
     },
   },
 };

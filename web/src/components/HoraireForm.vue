@@ -44,38 +44,38 @@ export default {
       valCheck: false,
       hours: {
         lu: {
-          open: "10:00:00",
-          close: "12:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
         ma: {
-          open: "10:00:00",
-          close: "12:00:00",
-          isOpen: true,
+          open: null,
+          close: null,
+          isOpen: false,
         },
         me: {
-          open: "10:00:00",
-          close: "12:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
         je: {
-          open: "10:00:00",
-          close: "12:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
         ve: {
-          open: "10:00:00",
-          close: "12:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
         sa: {
-          open: "10:00:00",
-          close: "12:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
         di: {
-          open: "10:00:00",
-          close: "13:00:00",
+          open: "08:30:00",
+          close: "18:30:00",
           isOpen: true,
         },
       },
@@ -100,7 +100,7 @@ export default {
   computed: {
     invalidForm() {
       for (let val of Object.values(this.form)) {
-        if (val.close <= val.open) {
+        if (val.isOpen && val.close <= val.open) {
           return true;
         }
       }
