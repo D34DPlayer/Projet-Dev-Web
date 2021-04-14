@@ -56,10 +56,10 @@ export default {
   },
   computed: {
     isConnected() {
-      return !!this.$store.state.user.token;
+      return !!this.$store.state.users.user.token;
     },
     user() {
-      return this.$store.state.user.username;
+      return this.$store.state.users.user.username;
     },
   },
   methods: {

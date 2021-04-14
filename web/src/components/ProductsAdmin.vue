@@ -1,11 +1,5 @@
 <template>
-  <b-table
-    striped
-    bordered
-    responsive="true"
-    :items="products"
-    :fields="fields"
-  >
+  <b-table striped bordered responsive :items="products" :fields="fields">
     <!-- Bouton détail -->
     <template #cell(detail)="row">
       <b-button block variant="info" size="sm" @click="row.toggleDetails">

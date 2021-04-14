@@ -27,12 +27,20 @@ export default {
   components: { ProductsAdmin, ProductForm, UsersAdmin, UserForm, HoraireForm },
   computed: {
     isConnected() {
-      return !!this.$store.state.user.token;
+      return !!this.$store.state.users.user.token;
+    },
+    users() {
+      return this.$store.state.users.users;
+    },
+  },
+  watch: {
+    isConnected(val) {
+      if (!val) this.$router.push("/");
     },
   },
   mounted() {
-    if (!this.isConnected) {
-      this.$router.push("/");
+    if (this.isConnected) {
+      this.$store.dispatch("users/getUsers");
     }
   },
   data() {
@@ -106,24 +114,6 @@ export default {
           visibility: false,
           description:
             "Petite description pour faire jolie pour le site, c'est pas très le français",
-        },
-      ],
-      users: [
-        {
-          username: "carlos",
-          email: "email",
-        },
-        {
-          username: "cyril",
-          email: "email3",
-        },
-        {
-          username: "test",
-          email: "email2",
-        },
-        {
-          username: "bamboula",
-          email: null,
         },
       ],
     };
