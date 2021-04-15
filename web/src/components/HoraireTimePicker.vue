@@ -5,7 +5,8 @@
         <b-form-timepicker
           :state="validation"
           :value="value.open"
-          :disabled="!valCheck || !value.isOpen"
+          :disabled="!valCheck || !value.is_open"
+          label-no-time-selected="Ouverture"
           @input="onInput('open', $event)"
         >
         </b-form-timepicker>
@@ -15,7 +16,8 @@
         <b-form-timepicker
           :state="validation"
           :value="value.close"
-          :disabled="!valCheck || !value.isOpen"
+          label-no-time-selected="Fermeture"
+          :disabled="!valCheck || !value.is_open"
           @input="onInput('close', $event)"
         >
         </b-form-timepicker>
@@ -23,11 +25,11 @@
           <b-form-checkbox
             v-b-tooltip.hover
             switch
-            :title="value.isOpen ? 'Ouvert' : 'Fermé'"
+            :title="value.is_open ? 'Ouvert' : 'Fermé'"
             :id="`checkbox-${day}`"
-            :checked="value.isOpen"
+            :checked="value.is_open"
             :disabled="!valCheck"
-            @input="onInput('isOpen', $event)"
+            @input="onInput('is_open', $event)"
           >
           </b-form-checkbox>
           <b-tooltip :target="`checkbox-${day}`" triggers="hover"> </b-tooltip>
@@ -68,7 +70,7 @@ export default {
   },
   computed: {
     validation() {
-      return this.value.isOpen ? this.value.close > this.value.open : null;
+      return this.value.is_open ? this.value.close > this.value.open : null;
     },
   },
 };
