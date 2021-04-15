@@ -13,3 +13,13 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("email", sqlalchemy.String),
     sqlalchemy.Column("hashed_password", sqlalchemy.String, nullable=False),
 )
+
+horaire = sqlalchemy.Table(
+    "horaire",
+    metadata,
+    sqlalchemy.Column("day", sqlalchemy.String, primary_key=True),
+    sqlalchemy.Column("is_open", sqlalchemy.Boolean, nullable=False),
+    sqlalchemy.Column("open", sqlalchemy.String),
+    sqlalchemy.Column("close", sqlalchemy.String),
+)
+

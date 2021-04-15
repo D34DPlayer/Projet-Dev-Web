@@ -1,8 +1,9 @@
 from pydantic import BaseModel
+from sqlalchemy.dialects.postgresql import insert
 from typing import Optional
 
 from .db import db
-from .models import users
+from .models import users, horaire
 
 
 class TokenModel(BaseModel):
@@ -56,3 +57,36 @@ class DBUser(User):
         query = users.select()
 
         return await db.fetch_all(query)
+
+
+class DayHoraire(BaseModel):
+    is_open: bool = False
+    open: Optional[str] = None
+    close: Optional[str] = None
+
+
+class Horaire(BaseModel):
+    lu: DayHoraire = DayHoraire()
+    ma: DayHoraire = DayHoraire()
+    me: DayHoraire = DayHoraire()
+    je: DayHoraire = DayHoraire()
+    ve: DayHoraire = DayHoraire()
+    sa: DayHoraire = DayHoraire()
+    di: DayHoraire = DayHoraire()
+
+    @classmethod
+    async def get(cls):
+        query = horaire.select()
+        reply = {}
+
+        async for row in db.iterate(query=query):
+            reply[row["day"]] = {**row}
+
+        return Horaire(**reply)
+
+    @classmethod
+    async def edit(cls, data):
+        for [key, val] in data.dict().items():
+            query = insert(horaire).values(day=key, **val).on_conflict_do_update(index_elements=["day"], set_=val)
+            await db.execute(query)
+        return data
