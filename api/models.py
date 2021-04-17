@@ -1,8 +1,13 @@
 from api.db import metadata
 from api.db import sqlalchemy
 
-import enum
+from enum import Enum
 from sqlalchemy.dialects import postgresql
+
+
+class PriceType(str, Enum):
+    kilo = "/kilo"
+    unite = "/unité"
 
 
 users = sqlalchemy.Table(
@@ -23,3 +28,15 @@ horaire = sqlalchemy.Table(
     sqlalchemy.Column("close", sqlalchemy.String),
 )
 
+products = sqlalchemy.Table(
+    "products",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("name", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("description", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("photos", postgresql.ARRAY(sqlalchemy.String), nullable=False),
+    sqlalchemy.Column("price", sqlalchemy.Numeric, nullable=False),
+    sqlalchemy.Column("promo_price", sqlalchemy.Numeric),
+    sqlalchemy.Column("price_type", sqlalchemy.Enum(PriceType), nullable=False),
+    sqlalchemy.Column("visibility", sqlalchemy.Boolean, nullable=False),
+)

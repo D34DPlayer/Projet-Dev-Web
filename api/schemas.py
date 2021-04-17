@@ -1,9 +1,10 @@
-from pydantic import BaseModel
-from sqlalchemy.dialects.postgresql import insert
 from typing import Optional
 
+from pydantic import BaseModel
+from sqlalchemy.dialects.postgresql import insert
+
 from .db import db
-from .models import users, horaire
+from .models import PriceType, horaire, products, users
 
 
 class TokenModel(BaseModel):
@@ -90,3 +91,46 @@ class Horaire(BaseModel):
             query = insert(horaire).values(day=key, **val).on_conflict_do_update(index_elements=["day"], set_=val)
             await db.execute(query)
         return data
+
+
+class Product(BaseModel):
+    id: Optional[int]
+    name: str
+    description: str
+    photos: list[str]
+    price: float
+    promo_price: float = None
+    price_type: PriceType
+    visibility: bool = False
+
+    @classmethod
+    async def add(cls, product: 'Product') -> 'Product':
+        pass
+
+    # @classmethod
+    # async def find(cls, id: Filter['Product']) -> list['Product']:
+    #     pass
+
+    @classmethod
+    async def get(cls, id: int) -> Optional['Product']:
+        pass
+
+    @classmethod
+    async def get_all(cls) -> list['Product']:
+        pass
+
+    @classmethod
+    async def delete(cls, id: int) -> Optional['Product']:
+        pass
+
+    @classmethod
+    async def edit(cls, id: int, product: 'Product') -> 'Product':
+        pass
+
+    @classmethod
+    async def show(cls, id: int) -> Optional['Product']:
+        pass
+
+    @classmethod
+    async def hide(cls, id: int) -> Optional['Product']:
+        pass
