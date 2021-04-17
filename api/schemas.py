@@ -106,6 +106,14 @@ class Product(BaseModel):
     @classmethod
     async def add(cls, product: 'Product') -> 'Product':
         pass
+        values = product.dict()
+        if product.id is None:
+            values.pop('id')
+
+        query = products.insert().values(**values)
+        product.id = await db.execute(query)
+
+        return product
 
     # @classmethod
     # async def find(cls, id: Filter['Product']) -> list['Product']:
