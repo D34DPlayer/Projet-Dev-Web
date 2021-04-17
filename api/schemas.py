@@ -105,7 +105,6 @@ class Product(BaseModel):
 
     @classmethod
     async def add(cls, product: 'Product') -> 'Product':
-        pass
         values = product.dict()
         if product.id is None:
             values.pop('id')
@@ -121,15 +120,24 @@ class Product(BaseModel):
 
     @classmethod
     async def get(cls, id: int) -> Optional['Product']:
-        pass
+        query = products.select().where(products.c.id == id)
+        product = await db.fetch_one(query)
+        if product:
+            return Product(**product)
 
     @classmethod
     async def get_all(cls) -> list['Product']:
-        pass
+        query = products.select()
+        return await db.fetch_all(query)
 
     @classmethod
     async def delete(cls, id: int) -> Optional['Product']:
-        pass
+        product = await cls.get(id)
+        if product:
+            query = products.delete().where(products.c.id == id)
+            await db.execute(query)
+
+        return product
 
     @classmethod
     async def edit(cls, id: int, product: 'Product') -> 'Product':
@@ -137,8 +145,12 @@ class Product(BaseModel):
 
     @classmethod
     async def show(cls, id: int) -> Optional['Product']:
-        pass
+        query = products.update().where(products.c.id == id).values(visibility=True)
+        await db.execute(query)
+        return cls.get(id)
 
     @classmethod
     async def hide(cls, id: int) -> Optional['Product']:
-        pass
+        query = products.update().where(products.c.id == id).values(visibility=False)
+        await db.execute(query)
+        return cls.get(id)
