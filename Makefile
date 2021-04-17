@@ -6,6 +6,26 @@ hashed_password ?= ` \
 	$(DC) exec api   \
 		python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'))"`
 
+define HELP
+Utilitaire docker-compose
+
+Commandes:
+----------
+    start    - Démarre les containers. Alias: up
+    stop     - Arrête les containers. Alias: down
+    restart  - Redémarre les containers.
+    upgrade  - Met à jour la base de données.
+    revision - Crée une révision de la base de donnée. Alias: rev
+    setup_db - Setup la base de donnée.
+               Pour changer le mot de passe par défaut du compte admin:
+                  `make setup_db password=motdepasse`
+    help     - Affiche l'aide.
+endef
+export HELP
+
+help:
+	@echo "$$HELP"
+
 start up:
 	$(DC) up -d
 
