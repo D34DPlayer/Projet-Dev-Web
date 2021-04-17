@@ -5,8 +5,16 @@
     :id="`modal-${edit ? 'edit-' + product.id : 'add'}`"
     :title="`${edit ? 'Modifier le' : 'Ajouter un'} produit`"
   >
+    <b-alert
+      :show="alert != ''"
+      variant="danger"
+      dissmissable
+      @dissmissed="alert = ''"
+    >
+      {{ alert }}
+    </b-alert>
     <!-- Formulaire pour les produits -->
-    <b-form @submit="onSubmit">
+    <b-form @submit.prevent="onSubmit">
       <!-- Input nom de produit -->
       <b-form-group
         label="Nom du produit* :"
@@ -111,6 +119,17 @@
         </b-form-checkbox>
       </b-form-group>
       <!-- Input Images -->
+      <b-form-group label="Images :" label-for="input-images">
+        <b-form-file
+          id="input-images"
+          v-model="form.photos"
+          browse-text="Parcourir"
+          placeholder="Aucune image sélectionnée"
+          drop-placeholder="Déposez les images ici"
+          accept="image/*"
+          multiple
+        ></b-form-file>
+      </b-form-group>
       <!-- Bouton submit -->
       <b-button type="submit" variant="primary" block>{{
         edit ? "Modifier" : "Ajouter"
@@ -132,9 +151,11 @@ export default {
         price: null,
         price_type: "/kilo",
         promo_price: null,
-        visibility: false,
+        visibility: true,
+        photos: [],
       },
       edit: false,
+      alert: "",
     };
   },
   mounted() {
@@ -150,12 +171,29 @@ export default {
     }
   },
   methods: {
-    onSubmit(ev) {
-      ev.preventDefault();
+    async onSubmit() {
       console.log(this.form);
-      this.$bvModal.hide(
-        `modal-${this.edit ? "edit-" + this.product.id : "add"}`
-      );
+      if (!this.edit) {
+        let response = await this.$store.dispatch(
+          "products/addProduct",
+          this.form
+        );
+
+        switch (response.status) {
+          case 200: // It went OK
+          case 401: // Invalid token, Vuex will logout
+            this.$bvModal.hide("modal-add");
+            break;
+          default:
+            // Unknown error
+            this.alert = response.data.detail;
+            this.showAlert = true;
+        }
+      } else {
+        this.$bvModal.hide(`modal-edit-${this.product.id}`);
+      }
+    },
+  },
     },
   },
 };
