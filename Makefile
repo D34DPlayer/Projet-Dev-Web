@@ -1,5 +1,9 @@
 include .env
-DC = docker-compose -p devweb
+
+compose_file ?= "docker-compose.yml"
+project ?= "devweb"
+
+DC = docker-compose -p $(project) -f $(compose_file)
 
 password ?= superpassword
 hashed_password ?= ` \
