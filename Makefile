@@ -48,7 +48,7 @@ upgrade: start
 
 revision rev: start
 	@read -p "Revision name: " rev; \
-	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$(rev)"
+	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
 
 setup_db: upgrade
 	@$(DC) exec db psql $(DB_NAME) $(DB_USER) -c "  \
