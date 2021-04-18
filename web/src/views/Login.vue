@@ -2,8 +2,8 @@
   <b-container>
     <b-row>
       <b-col sm="9" md="7" lg="5" class="mx-auto mb-5">
-        <b-alert v-model="loginAlert" variant="danger" dismissible>
-          Mauvaise combinaison de nom d'utilisateur/mot de passe.
+        <b-alert v-model="showAlert" variant="danger" dismissible>
+          {{ alert }}
         </b-alert>
         <b-card class="login-card">
           <b-form @submit="onSubmit" v-if="!isConnected">
@@ -32,7 +32,7 @@
               class="mt-4 text-uppercase"
               block
               type="submit"
-              variant="info"
+              variant="primary"
               >Se connecter</b-button
             >
           </b-form>
@@ -78,23 +78,37 @@ export default {
         username: "",
         password: "",
       },
-      loginAlert: false,
+      showAlert: false,
+      alert: "",
     };
   },
   computed: {
     isConnected() {
-      return !!this.$store.state.user.token;
+      return !!this.$store.state.users.user.token;
     },
   },
   methods: {
     async onSubmit(ev) {
       ev.preventDefault();
       this.loginAlert = false;
-      let response = await this.$store.dispatch("login", this.form);
-      if (response) {
-        this.$router.push("/");
-      } else {
-        this.loginAlert = true;
+      let response = await this.$store.dispatch("users/login", this.form);
+
+      switch (response.status) {
+        case 200:
+          await this.$router.push("/");
+          break;
+        case 422:
+          this.alert = "Un des champs n'a pas été rempli correctement.";
+          this.showAlert = true;
+          break;
+        case 401:
+          this.alert =
+            "Mauvaise combinaison de nom d'utilisateur/mot de passe.";
+          this.showAlert = true;
+          break;
+        default:
+          this.alert = response.data.detail;
+          this.showAlert = true;
       }
     },
   },

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from typing import List
+
 from ..app import is_connected, get_password_hash
 
 from ..schemas import User, DBUser, CreateUser
@@ -55,7 +57,7 @@ async def delete_some_user(username: str, user: User = Depends(is_connected)):
     return user
 
 
-@router.post("/", response_model=User)
+@router.post("", response_model=User)
 async def create_a_new_user(user: CreateUser):
     """Creates a new user."""
     old_user = await DBUser.get(user.username)
@@ -72,3 +74,11 @@ async def create_a_new_user(user: CreateUser):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="The user couldn't be created.")
 
     return new_user
+
+
+@router.get("", response_model=List[User])
+async def get_all_the_users():
+    """Provides information about all the users stored."""
+    users = await DBUser.get_all()
+
+    return users

@@ -7,7 +7,7 @@
 <script>
 export default {
   mounted() {
-    this.$store.commit("logout");
+    this.$store.commit("users/logout");
     this.$router.push("/");
   },
 };

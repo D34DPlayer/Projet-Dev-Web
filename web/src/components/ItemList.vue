@@ -1,15 +1,17 @@
 <template>
-  <b-col lg="3" md="4" sm="6" cols="12" class="my-3">
-    <b-card
-        tag="article"
-        no-body
-    >
+  <b-col xl="3" md="4" sm="6" cols="12" class="my-3">
+    <b-card tag="article" no-body>
       <b-card-body>
         <b-card-title>{{ product.name }}</b-card-title>
         <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
-        <b-card-text>{{ product.price }}</b-card-text>
+        <b-card-text :class="product.promo_price ? 'promo' : ''"
+          >{{ (product.promo_price || product.price).toFixed(2) }}€</b-card-text
+        >
       </b-card-body>
-      <b-aspect class="card-image" :style="{ backgroundImage: 'url(' + product.src[0] + ')' }">
+      <b-aspect
+        class="card-image"
+        :style="{ backgroundImage: 'url(' + product.src[0] + ')' }"
+      >
       </b-aspect>
     </b-card>
   </b-col>
@@ -40,5 +42,17 @@ export default {
 .card-image {
   background-position: center;
   background-size: cover;
+}
+
+.promo {
+  color: var(--danger);
+  &::before {
+    content: "PROMO";
+    background: var(--danger);
+    border-radius: 0.25rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-right: 0.3rem;
+    padding: 0.15rem;
+  }
 }
 </style>

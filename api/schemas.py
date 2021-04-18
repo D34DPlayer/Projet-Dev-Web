@@ -1,8 +1,10 @@
-from pydantic import BaseModel
 from typing import Optional
 
+from pydantic import BaseModel
+from sqlalchemy.dialects.postgresql import insert
+
 from .db import db
-from .models import users
+from .models import PriceType, horaire, products, users
 
 
 class TokenModel(BaseModel):
@@ -50,3 +52,105 @@ class DBUser(User):
             query = users.delete().where(users.c.username == username)
             await db.execute(query)
         return user
+
+    @classmethod
+    async def get_all(cls):
+        query = users.select()
+
+        return await db.fetch_all(query)
+
+
+class DayHoraire(BaseModel):
+    is_open: bool = False
+    open: Optional[str] = None
+    close: Optional[str] = None
+
+
+class Horaire(BaseModel):
+    lu: DayHoraire = DayHoraire()
+    ma: DayHoraire = DayHoraire()
+    me: DayHoraire = DayHoraire()
+    je: DayHoraire = DayHoraire()
+    ve: DayHoraire = DayHoraire()
+    sa: DayHoraire = DayHoraire()
+    di: DayHoraire = DayHoraire()
+
+    @classmethod
+    async def get(cls):
+        query = horaire.select()
+        reply = {}
+
+        async for row in db.iterate(query=query):
+            reply[row["day"]] = {**row}
+
+        return Horaire(**reply)
+
+    @classmethod
+    async def edit(cls, data):
+        for [key, val] in data.dict().items():
+            query = insert(horaire).values(day=key, **val).on_conflict_do_update(index_elements=["day"], set_=val)
+            await db.execute(query)
+        return data
+
+
+class Product(BaseModel):
+    id: Optional[int]
+    name: str
+    description: str
+    photos: list[str]
+    price: float
+    promo_price: float = None
+    price_type: PriceType
+    visibility: bool = False
+
+    @classmethod
+    async def add(cls, product: 'Product') -> 'Product':
+        values = product.dict()
+        if product.id is None:
+            values.pop('id')
+
+        query = products.insert().values(**values)
+        product.id = await db.execute(query)
+
+        return product
+
+    # @classmethod
+    # async def find(cls, id: Filter['Product']) -> list['Product']:
+    #     pass
+
+    @classmethod
+    async def get(cls, id: int) -> Optional['Product']:
+        query = products.select().where(products.c.id == id)
+        product = await db.fetch_one(query)
+        if product:
+            return Product(**product)
+
+    @classmethod
+    async def get_all(cls) -> list['Product']:
+        query = products.select()
+        return await db.fetch_all(query)
+
+    @classmethod
+    async def delete(cls, id: int) -> Optional['Product']:
+        product = await cls.get(id)
+        if product:
+            query = products.delete().where(products.c.id == id)
+            await db.execute(query)
+
+        return product
+
+    @classmethod
+    async def edit(cls, id: int, product: 'Product') -> 'Product':
+        pass
+
+    @classmethod
+    async def show(cls, id: int) -> Optional['Product']:
+        query = products.update().where(products.c.id == id).values(visibility=True)
+        await db.execute(query)
+        return cls.get(id)
+
+    @classmethod
+    async def hide(cls, id: int) -> Optional['Product']:
+        query = products.update().where(products.c.id == id).values(visibility=False)
+        await db.execute(query)
+        return cls.get(id)
