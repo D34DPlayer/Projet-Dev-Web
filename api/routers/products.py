@@ -16,3 +16,9 @@ async def add_product(product: Product):
     """Add a product."""
     print(product)
     return await Product.add(product)
+
+
+@router.get("", response_model=list[Product])
+async def get_products():
+    """get a list of product."""
+    return await Product.get_all()
