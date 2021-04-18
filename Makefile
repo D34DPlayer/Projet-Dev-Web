@@ -11,6 +11,7 @@ Utilitaire docker-compose
 
 Commandes:
 ----------
+    build    - Build le docker-compose.
     start    - Démarre les containers. Alias: up
     stop     - Arrête les containers. Alias: down
     restart  - Redémarre les containers.
@@ -25,6 +26,9 @@ export HELP
 
 help:
 	@echo "$$HELP"
+
+build:
+	$(DC) build
 
 start up:
 	$(DC) up -d
