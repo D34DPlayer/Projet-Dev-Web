@@ -33,6 +33,7 @@ products = sqlalchemy.Table(
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("name", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("categorie", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("description", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("photos", postgresql.ARRAY(sqlalchemy.String), nullable=False),
     sqlalchemy.Column("price", sqlalchemy.Numeric, nullable=False),

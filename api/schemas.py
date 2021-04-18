@@ -96,6 +96,7 @@ class Horaire(BaseModel):
 class Product(BaseModel):
     id: Optional[int]
     name: str
+    categorie: str
     description: str
     photos: list[str]
     price: float
