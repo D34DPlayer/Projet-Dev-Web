@@ -6,9 +6,7 @@ project ?= "devweb"
 DC = docker-compose -p $(project) -f $(compose_file)
 
 password ?= superpassword
-hashed_password ?= ` \
-	$(DC) exec api   \
-		python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'))"`
+hashed_password ?= `$(DC) exec api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
 
 define HELP
 Utilitaire docker-compose
