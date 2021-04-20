@@ -132,10 +132,10 @@ class Product(BaseModel):
         return await db.fetch_all(query)
 
     @classmethod
-    async def delete(cls, id: int) -> Optional['Product']:
-        product = await cls.get(id)
+    async def delete(cls, product_id: int) -> Optional['Product']:
+        product = await cls.get(product_id)
         if product:
-            query = products.delete().where(products.c.id == id)
+            query = products.delete().where(products.c.id == product_id)
             await db.execute(query)
 
         return product
