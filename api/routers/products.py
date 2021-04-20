@@ -20,6 +20,14 @@ def upload_files(path: str, files: List[Tuple[str, File]]):
             shutil.copyfileobj(file, f)
 
 
+def delete_files(files: List[str]):
+    for filename in files:
+        try:
+            os.remove(filename)
+        except FileNotFoundError:
+            pass
+
+
 @router.post("", response_model=Product, dependencies=[Depends(is_connected)])
 async def add_product(product: Product):
     """Add a product."""
@@ -66,10 +74,14 @@ async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile]
 
 
 @router.delete("/{id}/images", response_model=List[str], dependencies=[Depends(is_connected)])
-async def delete_images(id: int, files: List[str]):
+async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
+    path = f'/images/products/{id}/'
+    files = [(fn if '/' in fn else path + fn) for fn in files]
     images = await Product.remove_photos(id, files)
 
     if images is None:
         raise HTTPException(status_code=404, detail="Product not found")
+
+    tasks.add_task(delete_files, files)
 
     return images
