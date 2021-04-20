@@ -1,6 +1,12 @@
 {$DOMAIN_NAME}:{$WEB_PORT} {
-    reverse_proxy web:8080
-    handle_path /api/* {
-      reverse_proxy api:8000
-    }
+	reverse_proxy web:8080
+
+	handle_path /api/* {
+		reverse_proxy api:8000
+	}
+
+	handle_path /images/* {
+		root * /images/
+		file_server
+	}
 }
