@@ -104,8 +104,8 @@ export default {
     };
   },
   methods: {
-    toggleVisibility(id, visibility) {
-      console.log(id, visibility);
+    async toggleVisibility(id, visibility) {
+      await this.$store.dispatch("products/updateVisibility", [id, visibility]);
     },
     deleteProduct(id) {
       console.log(`${id} effacé.`);
