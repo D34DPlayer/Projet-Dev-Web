@@ -33,7 +33,7 @@ const actions = {
     } catch (e) {
       console.error(e);
       if (e.response.status === 401) {
-        commit("logout");
+        commit("users/logout", null, { root: true });
       }
       return e.response;
     }
