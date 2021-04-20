@@ -194,6 +194,7 @@ export default {
       }
 
       if (!this.photos.length) {
+        this.$store.dispatch("products/getProducts");
         return;
       }
 

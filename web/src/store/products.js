@@ -98,7 +98,7 @@ const actions = {
       return e.response;
     }
   },
-  async updateVisibility({state, rootState, dispatch}, [id, visibility]) {
+  async updateVisibility({ state, rootState, dispatch }, [id, visibility]) {
     const url = `${state.endpoints.products}/${id}/visibility`;
 
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
@@ -112,7 +112,7 @@ const actions = {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        data: {"visibility":visibility},
+        data: { "visibility": visibility },
       });
       dispatch("getProducts");
       return response;
@@ -143,6 +143,7 @@ const actions = {
       }
       return e.response;
     }
+  }
 };
 
 export default {
