@@ -49,7 +49,7 @@
         {{ row.item.description }}
         <div class="images-container">
           <img
-            v-for="(url, i) in row.item.src"
+            v-for="(url, i) in row.item.photos"
             :src="url"
             :alt="row.item.name"
             :key="i"
