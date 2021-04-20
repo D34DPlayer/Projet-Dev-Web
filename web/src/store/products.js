@@ -14,6 +14,21 @@ const mutations = {
 };
 
 const actions = {
+  async addImages({ state, rootState }, [productId, form]) {
+    const url = state.endpoints.products + `/${productId}/images`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    let result = await axios.post(url, form, {
+      headers: {
+        Accept: "*/*",
+        Authorization: AuthStr,
+        "Content-Type": "multipart/form-data",
+      },
+      credentials: "include",
+    });
+
+    return result;
+  },
   async addProduct({ state, commit, rootState }, data) {
     const url = state.endpoints.products;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);

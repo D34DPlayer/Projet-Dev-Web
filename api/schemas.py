@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
@@ -130,6 +131,26 @@ class Product(BaseModel):
     async def get_all(cls) -> list['Product']:
         query = products.select()
         return await db.fetch_all(query)
+
+    @classmethod
+    async def get_photos(cls, id: int) -> list[str]:
+        query = select([products.c.photos]).where(products.c.id == id)
+        return await db.execute(query)
+
+    @classmethod
+    async def edit_photos(cls, id: int, new_photos: list[str]) -> list[str]:
+        query = products.update().where(products.c.id == id).values(photos=new_photos)
+        await db.execute(query)
+        return new_photos
+
+    @classmethod
+    async def remove_photos(cls, id: int, to_remove: list[str]) -> list[str]:
+        photos = await Product.get_photos(id)
+
+        if photos is None:
+            return None
+
+        return await Product.edit_photos(id, [url for url in photos if url not in to_remove])
 
     @classmethod
     async def delete(cls, id: int) -> Optional['Product']:
