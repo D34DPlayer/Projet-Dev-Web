@@ -33,11 +33,9 @@ async def get_images(id: int):
 @router.post("/{id}/images", response_model=List[str], dependencies=[Depends(is_connected)])
 async def upload_images(id: int, files: List[UploadFile] = File(...)):
     for file in files:
-        print(file.filename)
         if not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail=f"'{file.filename}' is not an image")
 
-    print(f'uploading {len(files)}')
     images = await Product.get_photos(id)
     if images is None:
         raise HTTPException(status_code=404, detail="Product not found")
