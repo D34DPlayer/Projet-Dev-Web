@@ -74,8 +74,6 @@ export default {
       return val || "-----";
     },
     async deleteUser(username, ev) {
-      console.log(`User ${username} effacé :c`);
-
       let response = await this.$store.dispatch("users/deleteUser", username);
 
       switch (response.status) {

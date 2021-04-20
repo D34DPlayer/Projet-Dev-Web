@@ -1,8 +1,5 @@
-import os
-import shutil
-from typing import List, Tuple
-
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
+rom typing import List, Tuple
 
 from ..app import is_connected
 from ..schemas import Product, VisibilityModel
@@ -40,7 +37,7 @@ async def get_images(id: int):
     product = await Product.get(id)
 
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
     return product.photos
 
@@ -49,11 +46,11 @@ async def get_images(id: int):
 async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile] = File(...)):
     for file in files:
         if not file.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail=f"'{file.filename}' is not an image")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"'{file.filename}' is not an image")
 
     images = await Product.get_photos(id)
     if images is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
     path = f'/images/products/{id}/'
     filenames = []
@@ -62,7 +59,8 @@ async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile]
         filenames.append(fn)
 
         if fn in images:
-            raise HTTPException(status_code=409, detail=f"The file '{file.filename}' already exists")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                detail=f"The file '{file.filename}' already exists")
 
         images.append(fn)
 
@@ -80,17 +78,29 @@ async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
     images = await Product.remove_photos(id, files)
 
     if images is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
     tasks.add_task(delete_files, files)
 
     return images
+
 
 @router.get("", response_model=list[Product])
 async def get_products():
     """get a list of product."""
     return await Product.get_all()
 
+  
+@router.delete("/{product_id}", response_model=Product, dependencies=[Depends(is_connected)])
+async def delete_product(product_id: int):
+    """Delete an existing product."""
+    product = await Product.delete(product_id)
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No product with that id was found.")
+
+    return product
+
+  
 @router.put("/{id}/visibility", response_model=Product, dependencies=[Depends(is_connected)])
 async def update_product_visibility(id: int, visibility: VisibilityModel):
     """Updates the visibility of a product"""
@@ -101,3 +111,4 @@ async def update_product_visibility(id: int, visibility: VisibilityModel):
         return await Product.show(id)
     else:
         return await Product.hide(id)
+

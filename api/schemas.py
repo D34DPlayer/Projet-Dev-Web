@@ -147,7 +147,7 @@ class Product(BaseModel):
         return new_photos
 
     @classmethod
-    async def remove_photos(cls, id: int, to_remove: list[str]) -> list[str]:
+    async def remove_photos(cls, id: int, to_remove: list[str]) -> Optional[list[str]]:
         photos = await Product.get_photos(id)
 
         if photos is None:
@@ -156,10 +156,10 @@ class Product(BaseModel):
         return await Product.edit_photos(id, [url for url in photos if url not in to_remove])
 
     @classmethod
-    async def delete(cls, id: int) -> Optional['Product']:
-        product = await cls.get(id)
+    async def delete(cls, product_id: int) -> Optional['Product']:
+        product = await cls.get(product_id)
         if product:
-            query = products.delete().where(products.c.id == id)
+            query = products.delete().where(products.c.id == product_id)
             await db.execute(query)
 
         return product

@@ -35,9 +35,10 @@
         <b-icon icon="trash-fill"></b-icon>
       </b-button>
       <b-modal
-        @ok="deleteProduct(row.item.id)"
+        @ok="deleteProduct(row.item.id, $event)"
         :id="`modal-delete-${row.item.id}`"
         title="Effacer le produit"
+        size="lg"
       >
         <p>Voulez-vous vraiment supprimer le produit {{ row.item.name }} ?</p>
       </b-modal>
@@ -48,12 +49,32 @@
       <b-container>
         {{ row.item.description }}
         <div class="images-container">
-          <img
-            v-for="(url, i) in row.item.src"
-            :src="url"
-            :alt="row.item.name"
-            :key="i"
-          />
+          <div class="images-item" v-for="(url, i) in row.item.photos" :key="i">
+            <b-button
+              size="sm"
+              variant="danger"
+              class="image-delete"
+              v-b-modal="`modal-delete-${row.item.id}-image-${i}`"
+            >
+              <b-icon icon="trash-fill"></b-icon>
+            </b-button>
+            <img :src="url" :alt="row.item.name" />
+            <b-modal
+              @ok="deleteImage(row.item.id, url, $event)"
+              :id="`modal-delete-${row.item.id}-image-${i}`"
+              title="Effacer l'image"
+              size="lg"
+            >
+              <p>
+                Voulez-vous vraiment supprimer cette image du produit
+                {{ row.item.name }} ?
+              </p>
+              <img class="modal-image" :src="url" :alt="row.item.name" />
+            </b-modal>
+          </div>
+          <b-button pill size="lg">
+            <b-icon size="lg" icon="cloud-arrow-up"></b-icon>
+          </b-button>
         </div>
       </b-container>
     </template>
@@ -107,8 +128,39 @@ export default {
     async toggleVisibility(id, visibility) {
       await this.$store.dispatch("products/updateVisibility", [id, visibility]);
     },
-    deleteProduct(id) {
-      console.log(`${id} effacé.`);
+    async deleteProduct(id, ev) {
+      let response = await this.$store.dispatch("products/deleteProduct", id);
+
+      switch (response.status) {
+        case 404: // The product couldn't be found
+          await this.$store.dispatch("products/getProducts");
+          break;
+        case 200: // It went OK
+        case 401: // Wrong credentials, the page will redirect itself
+          break;
+        default:
+          // Unknown error
+          ev.preventDefault();
+          this.deleteAlert = response.data.detail;
+          this.showDeleteAlert = true;
+      }
+    },
+    async deleteImage(id, url, ev) {
+      let response = await this.$store.dispatch("products/deleteImage", [
+        id,
+        url,
+      ]);
+
+      switch (response.status) {
+        case 200: // It went OK
+        case 401: // Wrong credentials, the page will redirect itself
+          break;
+        default:
+          // Unknown error
+          ev.preventDefault();
+          this.deleteAlert = response.data.detail;
+          this.showDeleteAlert = true;
+      }
     },
     formatPrice(val) {
       return `${val.toFixed(2)}€`;
@@ -124,6 +176,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.images-item {
+  position: relative;
+}
+
+.image-delete {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  font-size: 0.75em;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+}
+
 .images-container {
   display: flex;
   align-items: center;

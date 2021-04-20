@@ -9,12 +9,12 @@ const state = () => ({
 
 const mutations = {
   updateProduct(state, payload) {
-    state.products = payload;
+    state.products = payload.sort((a, b) => 2 * (a.username > b.username) - 1);
   },
 };
 
 const actions = {
-  async addImages({ state, rootState }, [productId, form]) {
+  async addImages({ state, rootState, dispatch }, [productId, form]) {
     const url = state.endpoints.products + `/${productId}/images`;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
 
@@ -26,8 +26,36 @@ const actions = {
       },
       credentials: "include",
     });
-
+    dispatch("getProducts");
     return result;
+  },
+  async deleteImage(
+    { state, rootState, dispatch, commit },
+    [productId, imgUrl]
+  ) {
+    const url = state.endpoints.products + `/${productId}/images`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let result = await axios(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        data: [imgUrl],
+      });
+      dispatch("getProducts");
+      return result;
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 401) {
+        commit("users/logout", null, { root: true });
+      }
+      return e.response;
+    }
   },
   async addProduct({ state, commit, rootState }, data) {
     const url = state.endpoints.products;
@@ -93,6 +121,28 @@ const actions = {
       return e.response;
     }
   },
+  async deleteProduct({ state, commit, dispatch, rootState }, id) {
+    const url = `${state.endpoints.products}/${id}`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let response = await axios(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+        },
+        credentials: "include",
+      });
+      await dispatch("getProducts");
+      return response;
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 401) {
+        commit("users/logout", null, { root: true });
+      }
+      return e.response;
+    }
 };
 
 export default {
