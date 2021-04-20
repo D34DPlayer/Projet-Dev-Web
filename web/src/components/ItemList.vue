@@ -9,8 +9,8 @@
         >
       </b-card-body>
       <b-aspect
-        class="card-image"
-        :style="{ backgroundImage: 'url(https://medias.slash-paris.com/media_attachments/images/000/029/359/carre_noir_blackout_tuesday_art-1_medium.jpg?1591355942)' }"
+        :class="product.photos.length ? 'card-image' : 'card-image img-placeholder'"
+        :style="imageFound"
       >
       </b-aspect>
     </b-card>
@@ -24,12 +24,23 @@ export default {
   data() {
     return {
       size: "",
+      imageFound: {},
     };
   },
+  mounted() {
+    if (this.product.photos.length) {
+      this.imageFound.backgroundImage = this.product.photos[0];
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
+
+.img-placeholder {
+  background-image: url("~@/assets/imageNotFound.jpg");
+}
+
 .card-text {
   position: absolute;
   bottom: 0;

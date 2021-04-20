@@ -21,6 +21,9 @@ class User(BaseModel):
 class CreateUser(User):
     password: str
 
+class VisibilityModel(BaseModel):
+    visibility: bool
+
 
 class DBUser(User):
     hashed_password: str
@@ -169,10 +172,10 @@ class Product(BaseModel):
     async def show(cls, id: int) -> Optional['Product']:
         query = products.update().where(products.c.id == id).values(visibility=True)
         await db.execute(query)
-        return cls.get(id)
+        return await cls.get(id)
 
     @classmethod
     async def hide(cls, id: int) -> Optional['Product']:
         query = products.update().where(products.c.id == id).values(visibility=False)
         await db.execute(query)
-        return cls.get(id)
+        return await cls.get(id)
