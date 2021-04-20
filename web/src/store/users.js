@@ -30,7 +30,7 @@ const mutations = {
     state.user.email = payload.email;
   },
   updateUsers(state, payload) {
-    state.users = payload;
+    state.users = payload.sort((a, b) => 2 * (a.username > b.username) - 1);
   },
 };
 

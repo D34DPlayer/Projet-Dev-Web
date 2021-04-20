@@ -9,7 +9,7 @@ const state = () => ({
 
 const mutations = {
   updateProduct(state, payload) {
-    state.products = payload;
+    state.products = payload.sort((a, b) => 2 * (a.username > b.username) - 1);
   },
 };
 
