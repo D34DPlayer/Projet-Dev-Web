@@ -26,8 +26,36 @@ const actions = {
       },
       credentials: "include",
     });
-    dispatch('getProducts');
+    dispatch("getProducts");
     return result;
+  },
+  async deleteImage(
+    { state, rootState, dispatch, commit },
+    [productId, imgUrl]
+  ) {
+    const url = state.endpoints.products + `/${productId}/images`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let result = await axios(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        data: [imgUrl],
+      });
+      dispatch("getProducts");
+      return result;
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 401) {
+        commit("users/logout", null, { root: true });
+      }
+      return e.response;
+    }
   },
   async addProduct({ state, commit, rootState }, data) {
     const url = state.endpoints.products;
@@ -92,7 +120,7 @@ const actions = {
       }
       return e.response;
     }
-  }
+  },
 };
 
 export default {
