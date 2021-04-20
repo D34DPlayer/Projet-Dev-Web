@@ -29,7 +29,7 @@ export default {
   },
   mounted() {
     if (this.product.photos.length) {
-      this.imageFound.backgroundImage = this.product.photos[0];
+      this.$set(this.imageFound, "backgroundImage", `url(${this.product.photos[0]})`);
     }
   }
 };
