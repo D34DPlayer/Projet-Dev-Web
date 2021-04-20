@@ -14,7 +14,7 @@ const mutations = {
 };
 
 const actions = {
-  async addImages({ state, rootState }, [productId, form]) {
+  async addImages({ state, rootState, dispatch }, [productId, form]) {
     const url = state.endpoints.products + `/${productId}/images`;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
 
@@ -26,7 +26,7 @@ const actions = {
       },
       credentials: "include",
     });
-
+    dispatch('getProducts');
     return result;
   },
   async addProduct({ state, commit, rootState }, data) {
