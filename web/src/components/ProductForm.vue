@@ -193,6 +193,10 @@ export default {
           return;
       }
 
+      if (!this.photos.length) {
+        return;
+      }
+
       let data = new FormData();
       for (let file of this.photos) {
         data.append("files", file);
