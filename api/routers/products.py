@@ -1,8 +1,8 @@
 import os
 import shutil
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from typing import List
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from typing import List, Tuple
 
 from ..app import is_connected
 from ..schemas import Product
@@ -11,6 +11,13 @@ router = APIRouter(
     prefix="/products",
     tags=["products"],
 )
+
+
+def upload_files(path: str, files: List[Tuple[str, File]]):
+    os.makedirs(path, exist_ok=True)
+    for filename, file in files:
+        with open(filename, 'wb') as f:
+            shutil.copyfileobj(file, f)
 
 
 @router.post("", response_model=Product, dependencies=[Depends(is_connected)])
@@ -31,7 +38,7 @@ async def get_images(id: int):
 
 
 @router.post("/{id}/images", response_model=List[str], dependencies=[Depends(is_connected)])
-async def upload_images(id: int, files: List[UploadFile] = File(...)):
+async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile] = File(...)):
     for file in files:
         if not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail=f"'{file.filename}' is not an image")
@@ -53,10 +60,7 @@ async def upload_images(id: int, files: List[UploadFile] = File(...)):
 
     await Product.edit_photos(id, images)
 
-    os.makedirs(path, exist_ok=True)
-    for filename, file in zip(filenames, files):
-        with open(filename, 'wb') as f:
-            shutil.copyfileobj(file.file, f)
+    tasks.add_task(upload_files, path, zip(filenames, (f.file for f in files)))
 
     return filenames
 
