@@ -1,10 +1,12 @@
 include .env
-DC = docker-compose -p devweb
+
+compose_file ?= "docker-compose.yml"
+project ?= "devweb"
+
+DC = docker-compose -p $(project) -f $(compose_file)
 
 password ?= superpassword
-hashed_password ?= ` \
-	$(DC) exec api   \
-		python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'))"`
+hashed_password ?= `$(DC) exec api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
 
 define HELP
 Utilitaire docker-compose
@@ -44,7 +46,7 @@ upgrade: start
 
 revision rev: start
 	@read -p "Revision name: " rev; \
-	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$(rev)"
+	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
 
 setup_db: upgrade
 	@$(DC) exec db psql $(DB_NAME) $(DB_USER) -c "  \

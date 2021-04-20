@@ -10,7 +10,7 @@
       </b-card-body>
       <b-aspect
         class="card-image"
-        :style="{ backgroundImage: 'url(' + product.src[0] + ')' }"
+        :style="{ backgroundImage: 'url(https://medias.slash-paris.com/media_attachments/images/000/029/359/carre_noir_blackout_tuesday_art-1_medium.jpg?1591355942)' }"
       >
       </b-aspect>
     </b-card>

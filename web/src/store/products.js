@@ -4,9 +4,14 @@ const state = () => ({
   endpoints: {
     products: "/api/products",
   },
+  products: [],
 });
 
-const mutations = {};
+const mutations = {
+  updateProduct(state, payload) {
+    state.products = payload;
+  },
+};
 
 const actions = {
   async addImages({ state, rootState }, [productId, form]) {
@@ -43,8 +48,25 @@ const actions = {
     } catch (e) {
       console.error(e);
       if (e.response.status === 401) {
-        commit("logout");
+        commit("users/logout", null, { root: true });
       }
+      return e.response;
+    }
+  },
+  async getProducts({ state, commit }) {
+    const url = state.endpoints.products;
+
+    try {
+      let response = await axios(url, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+        },
+      });
+      commit("updateProduct", response.data);
+      return response;
+    } catch (e) {
+      console.error(e);
       return e.response;
     }
   },

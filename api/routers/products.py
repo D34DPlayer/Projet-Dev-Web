@@ -85,3 +85,8 @@ async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
     tasks.add_task(delete_files, files)
 
     return images
+
+@router.get("", response_model=list[Product])
+async def get_products():
+    """get a list of product."""
+    return await Product.get_all()
