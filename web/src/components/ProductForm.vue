@@ -152,8 +152,8 @@ export default {
         price_type: "/kilo",
         promo_price: null,
         visibility: true,
-        photos: [],
       },
+      photos: [],
       edit: false,
       alert: "",
     };
@@ -167,30 +167,50 @@ export default {
       this.$set(this.form, "promo_price", this.product.promo_price);
       this.$set(this.form, "price_type", this.product.price_type);
       this.$set(this.form, "visibility", this.product.visibility);
+      this.$set(this, "photos", this.product.photos);
       this.edit = true;
     }
   },
   methods: {
     async onSubmit() {
-      console.log(this.form);
-      if (!this.edit) {
-        let response = await this.$store.dispatch(
-          "products/addProduct",
-          this.form
-        );
-
-        switch (response.status) {
-          case 200: // It went OK
-          case 401: // Invalid token, Vuex will logout
-            this.$bvModal.hide("modal-add");
-            break;
-          default:
-            // Unknown error
-            this.alert = response.data.detail;
-            this.showAlert = true;
-        }
-      } else {
+      if (this.edit) {
         this.$bvModal.hide(`modal-edit-${this.product.id}`);
+      }
+      let response = await this.$store.dispatch(
+        "products/addProduct",
+        this.form
+      );
+
+      switch (response.status) {
+        case 200: // It went OK
+          break;
+        case 401: // Invalid token, Vuex will logout
+          return;
+        default:
+          // Unknown error
+          this.alert = response.data.detail;
+          this.showAlert = true;
+          return;
+      }
+
+      let data = new FormData();
+      for (let file of this.photos) {
+        data.append("files", file);
+      }
+
+      response = await this.$store.dispatch("products/addImages", [
+        response.data.id,
+        data,
+      ]);
+      switch (response.status) {
+        case 200: // It went OK
+        case 401: // Invalid token, Vuex will logout
+          this.$bvModal.hide("modal-add");
+          break;
+        default:
+          // Unknown error
+          this.alert = response.data.detail;
+          this.showAlert = true;
       }
     },
   },
