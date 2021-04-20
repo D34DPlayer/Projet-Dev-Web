@@ -35,7 +35,7 @@
         <b-icon icon="trash-fill"></b-icon>
       </b-button>
       <b-modal
-        @ok="deleteProduct(row.item.id)"
+        @ok="deleteProduct(row.item.id, $event)"
         :id="`modal-delete-${row.item.id}`"
         title="Effacer le produit"
       >
@@ -107,8 +107,22 @@ export default {
     toggleVisibility(id, visibility) {
       console.log(id, visibility);
     },
-    deleteProduct(id) {
-      console.log(`${id} effacé.`);
+    async deleteProduct(id, ev) {
+      let response = await this.$store.dispatch("products/deleteProduct", id);
+
+      switch (response.status) {
+        case 404: // The product couldn't be found
+          await this.$store.dispatch("products/getProducts");
+          break;
+        case 200: // It went OK
+        case 401: // Wrong credentials, the page will redirect itself
+          break;
+        default:
+          // Unknown error
+          ev.preventDefault();
+          this.deleteAlert = response.data.detail;
+          this.showDeleteAlert = true;
+      }
     },
     formatPrice(val) {
       return `${val.toFixed(2)}€`;

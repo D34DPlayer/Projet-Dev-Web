@@ -55,6 +55,29 @@ const actions = {
       return e.response;
     }
   },
+  async deleteProduct({ state, commit, dispatch, rootState }, id) {
+    const url = `${state.endpoints.products}/${id}`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let response = await axios(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+        },
+        credentials: "include",
+      });
+      await dispatch("getProducts");
+      return response;
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 401) {
+        commit("users/logout", null, { root: true });
+      }
+      return e.response;
+    }
+  }
 };
 
 export default {
