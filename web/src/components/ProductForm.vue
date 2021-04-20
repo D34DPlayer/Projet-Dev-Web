@@ -122,7 +122,7 @@
       <b-form-group label="Images :" label-for="input-images">
         <b-form-file
           id="input-images"
-          v-model="form.photos"
+          v-model="photos"
           browse-text="Parcourir"
           placeholder="Aucune image sélectionnée"
           drop-placeholder="Déposez les images ici"
