@@ -33,7 +33,7 @@ const actions = {
     } catch (e) {
       console.error(e);
       if (e.response.status === 401) {
-        commit("users/logout", null, { root: true });
+        commit("logout");
       }
       return e.response;
     }
@@ -49,6 +49,29 @@ const actions = {
         },
       });
       commit("updateProduct", response.data);
+      return response;
+    } catch (e) {
+      console.error(e);
+      return e.response;
+    }
+  },
+  async updateVisibility({state, rootState, dispatch}, [id, visibility]) {
+    const url = `${state.endpoints.products}/${id}/visibility`;
+
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let response = await axios(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        data: {"visibility":visibility},
+      });
+      dispatch("getProducts");
       return response;
     } catch (e) {
       console.error(e);
