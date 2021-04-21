@@ -1,19 +1,22 @@
 <template>
   <b-col xl="3" md="4" sm="6" cols="12" class="my-3">
-    <b-card tag="article" no-body>
-      <b-card-body>
-        <b-card-title>{{ product.name }}</b-card-title>
-        <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
-        <b-card-text :class="product.promo_price ? 'promo' : ''"
-          >{{ (product.promo_price || product.price).toFixed(2) }}€</b-card-text
+    <router-link :to="`/products/${product.id}`">
+      <b-card tag="article" no-body>
+        <b-card-body>
+          <b-card-title>{{ product.name }}</b-card-title>
+          <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
+          <b-card-text :class="product.promo_price ? 'promo' : ''"
+          >{{ (product.promo_price || product.price).toFixed(2) }}€
+          </b-card-text
+          >
+        </b-card-body>
+        <b-aspect
+            :class="product.photos.length ? 'card-image' : 'card-image img-placeholder'"
+            :style="imageFound"
         >
-      </b-card-body>
-      <b-aspect
-        :class="product.photos.length ? 'card-image' : 'card-image img-placeholder'"
-        :style="imageFound"
-      >
-      </b-aspect>
-    </b-card>
+        </b-aspect>
+      </b-card>
+    </router-link>
   </b-col>
 </template>
 
@@ -57,6 +60,7 @@ export default {
 
 .promo {
   color: var(--danger);
+
   &::before {
     content: "PROMO";
     background: var(--danger);
