@@ -31,7 +31,7 @@ services:
       - api
   api:
     build: ./api
-    command: python -m pytest api
+    command: python -m pytest --cov api --cov-config=/api/.coveragerc -v api
     volumes:
     - ./api:/api
     environment:
