@@ -167,7 +167,6 @@ export default {
       this.$set(this.form, "promo_price", this.product.promo_price);
       this.$set(this.form, "price_type", this.product.price_type);
       this.$set(this.form, "visibility", this.product.visibility);
-      this.$set(this, "photos", this.product.photos);
       this.edit = true;
     }
   },

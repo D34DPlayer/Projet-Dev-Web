@@ -105,7 +105,7 @@ class Product(BaseModel):
     name: str
     categorie: str
     description: str
-    photos: list[str]
+    photos: list[str] = []
     price: float
     promo_price: float = None
     price_type: PriceType

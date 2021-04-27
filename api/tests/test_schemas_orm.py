@@ -6,7 +6,7 @@ from api.db import db as database
 
 sys.path.append('/')
 
-from api.schemas import DBUser, Horaire
+from api.schemas import DBUser, Horaire, Product
 
 
 @pytest.fixture
@@ -86,3 +86,73 @@ class TestHoraire:
 
         horaire = await Horaire.get()
         assert horaire == self.horaire
+
+
+class TestProduct:
+    product = Product(
+        name="Viande",
+        categorie="Casher",
+        description="Ceci est très sympa",
+        price=1.32,
+        price_type="/kilo",
+        visibility=True
+    )
+
+    @pytest.mark.asyncio
+    async def test_add(self, db):
+        """TO DO: Test add method"""
+        await Product.add(self.product)
+
+    @pytest.mark.asyncio
+    async def test_get(self, db):
+        """TO DO: Test get method"""
+
+    @pytest.mark.asyncio
+    async def test_get_all(self, db):
+        """TO DO: Test get_all method"""
+
+    @pytest.mark.asyncio
+    async def test_edit_photos(self, db):
+        """TO DO: Test edit_photos method"""
+        await Product.edit_photos(1, ["/images/viande.png", "/images/poulet.png"])
+
+    @pytest.mark.asyncio
+    async def test_get_photos(self, db):
+        """TO DO: Test get_photos method"""
+
+    @pytest.mark.asyncio
+    async def test_remove_photos(self, db):
+        remove_photos = await Product.remove_photos(1, ["/images/viande.png"])
+        photos = await Product.get_photos(1)
+
+        assert len(photos) == len(remove_photos) == 1
+        assert "/images/poulet.png" in photos
+        assert "/images/poulet.png" in remove_photos
+
+        remove_photos = await Product.remove_photos(1, ["/images/poulet.png"])
+
+        assert len(remove_photos) == 0
+
+    @pytest.mark.asyncio
+    async def test_delete(self, db):
+        removed_product = await Product.delete(1)
+        fake_product = await Product.delete(69)
+
+        assert fake_product is None
+        assert removed_product == self.product
+
+        product = await Product.get(1)
+
+        assert product is None
+
+    @pytest.mark.asyncio
+    async def test_edit(self, db):
+        """TO DO: Test edit method"""
+
+    @pytest.mark.asyncio
+    async def test_show(self, db):
+        """TO DO: Test show method"""
+
+    @pytest.mark.asyncio
+    async def test_hide(self, db):
+        """TO DO: Test hide method"""

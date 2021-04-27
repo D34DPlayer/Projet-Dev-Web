@@ -60,7 +60,6 @@ const actions = {
   async addProduct({ state, commit, rootState }, data) {
     const url = state.endpoints.products;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
-    data.photos = [];
 
     try {
       return await axios(url, {
