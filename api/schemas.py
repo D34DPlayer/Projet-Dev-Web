@@ -38,9 +38,11 @@ class DBUser(User):
 
     @classmethod
     async def create(cls, user):
-        query = users.insert().values(**user.dict())
-        await db.execute(query)
-        return user
+        old_user = await cls.get(user.username)
+        if not old_user:
+            query = users.insert().values(**user.dict())
+            await db.execute(query)
+            return user
 
     @classmethod
     async def update(cls, username: str, user):
