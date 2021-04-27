@@ -21,6 +21,7 @@ class User(BaseModel):
 class CreateUser(User):
     password: str
 
+
 class VisibilityModel(BaseModel):
     visibility: bool
 
