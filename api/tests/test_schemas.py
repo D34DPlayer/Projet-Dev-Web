@@ -3,8 +3,6 @@ import sys
 from pydantic import ValidationError
 import pytest
 
-sys.path.append('/')
-
 from api import schemas as sch
 
 

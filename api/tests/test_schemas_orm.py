@@ -4,8 +4,6 @@ import pytest
 
 from api.db import db as database
 
-sys.path.append('/')
-
 from api.schemas import DBUser, Horaire, Product
 
 
