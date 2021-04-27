@@ -1,9 +1,6 @@
-import sys
-
 import pytest
 
 from api.db import db as database
-
 from api.schemas import DBUser, Horaire, Product
 
 

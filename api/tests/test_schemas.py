@@ -1,7 +1,7 @@
 import sys
 
-from pydantic import ValidationError
 import pytest
+from pydantic import ValidationError
 
 from api import schemas as sch
 
