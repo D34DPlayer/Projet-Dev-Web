@@ -7,6 +7,8 @@ DC = docker-compose -p $(project) -f $(compose_file)
 
 DC_test = docker-compose -p testdevweb -f docker-compose.test.yml
 
+test_exit ?= 0
+
 password ?= superpassword
 hashed_password ?= `$(DC) exec -T api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
 
@@ -25,6 +27,9 @@ Commandes:
                Pour changer le mot de passe par défaut du compte admin:
                   `make setup_db password=motdepasse`
     help     - Affiche l'aide.
+	test     - Lance l'environnement de test et exécute les tests backend et frontend.
+			   Pour que make s'arrête lorsqu'un test rate:
+			   	  `make test test_exit=1`
 endef
 export HELP
 
@@ -68,6 +73,7 @@ test:
 	@$(DC_test) up -d db
 	@sleep 3
 	@$(DC_test) run -T --rm --workdir /api api alembic upgrade head
+	
 	@echo Adding the default user...
 	-@$(DC_test) exec -T db psql test $(DB_USER) -c "                    \
 		INSERT INTO                                                          \
@@ -75,12 +81,20 @@ test:
 		VALUES(                                                              \
 			'admin',                                                         \
 			'admin@boucherie.tk',                                            \
-			'$2b$12$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
+			'$$2b$$12$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
 		);"
+
 	@echo Starting the tests...
+ifeq ($(test_exit),1)
+	$(DC_test) run --rm api
+	#$(DC_test) run --rm web-unit
+	#$(DC_test) run --rm web-e2e
+else
 	-$(DC_test) run --rm api
 	#-$(DC_test) run --rm web-unit
 	#-$(DC_test) run --rm web-e2e
+endif
 	@$(DC_test) down
+	
 	@echo Deleting the test database...
 	@docker volume rm testdevweb_postgres_data
