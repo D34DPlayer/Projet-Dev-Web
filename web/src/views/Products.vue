@@ -24,7 +24,9 @@ export default {
   },
   computed: {
     products() {
-      return this.$store.state.products.products.filter(product => product.visibility);
+      return this.$store.state.products.products.filter(
+        (product) => product.visibility
+      );
     },
   },
 };

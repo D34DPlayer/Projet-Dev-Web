@@ -3,11 +3,18 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
+import {
+  LinkPlugin,
+  LayoutPlugin,
+  NavbarPlugin,
+  ButtonPlugin,
+} from "bootstrap-vue";
 import "./app.scss";
 
-Vue.use(BootstrapVue);
-Vue.use(BootstrapVueIcons);
+Vue.use(NavbarPlugin);
+Vue.use(LinkPlugin);
+Vue.use(LayoutPlugin);
+Vue.use(ButtonPlugin);
 
 Vue.config.productionTip = false;
 

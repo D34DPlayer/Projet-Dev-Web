@@ -21,10 +21,12 @@ import ProductForm from "@/components/ProductForm.vue";
 import UsersAdmin from "@/components/UsersAdmin.vue";
 import UserForm from "@/components/UserForm.vue";
 import HoraireForm from "@/components/HoraireForm.vue";
+import { VBModal } from "bootstrap-vue";
 
 export default {
   name: "Admin",
   components: { ProductsAdmin, ProductForm, UsersAdmin, UserForm, HoraireForm },
+  directives: { "b-modal": VBModal },
   computed: {
     isConnected() {
       return !!this.$store.state.users.user.token;

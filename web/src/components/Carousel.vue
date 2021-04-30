@@ -31,7 +31,9 @@
 </style>
 
 <script>
+import { BCarousel, BCarouselSlide } from "bootstrap-vue";
 export default {
   name: "Carousel",
+  components: { BCarousel, BCarouselSlide },
 };
 </script>

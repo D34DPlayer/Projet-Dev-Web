@@ -71,7 +71,9 @@
 </style>
 
 <script>
+import { BAlert, BCard, BForm, BFormGroup, BFormInput } from "bootstrap-vue";
 export default {
+  components: { BAlert, BCard, BForm, BFormGroup, BFormInput },
   data() {
     return {
       form: {

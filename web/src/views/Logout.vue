@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <b-container>
     <p>Déconnexion en cours...</p>
-  </div>
+  </b-container>
 </template>
 
 <script>

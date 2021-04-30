@@ -6,13 +6,14 @@
           <b-card-title>{{ product.name }}</b-card-title>
           <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
           <b-card-text :class="product.promo_price ? 'promo' : ''"
-          >{{ (product.promo_price || product.price).toFixed(2) }}€
-          </b-card-text
-          >
+            >{{ (product.promo_price || product.price).toFixed(2) }}€
+          </b-card-text>
         </b-card-body>
         <b-aspect
-            :class="product.photos.length ? 'card-image' : 'card-image img-placeholder'"
-            :style="imageFound"
+          :class="
+            product.photos.length ? 'card-image' : 'card-image img-placeholder'
+          "
+          :style="imageFound"
         >
         </b-aspect>
       </b-card>
@@ -21,8 +22,24 @@
 </template>
 
 <script>
+import {
+  BCard,
+  BCardBody,
+  BCardTitle,
+  BCardSubTitle,
+  BCardText,
+  BAspect,
+} from "bootstrap-vue";
 export default {
   name: "ItemList",
+  components: {
+    BCard,
+    BCardBody,
+    BCardTitle,
+    BCardSubTitle,
+    BCardText,
+    BAspect,
+  },
   props: ["product"],
   data() {
     return {
@@ -32,14 +49,17 @@ export default {
   },
   mounted() {
     if (this.product.photos.length) {
-      this.$set(this.imageFound, "backgroundImage", `url(${this.product.photos[0]})`);
+      this.$set(
+        this.imageFound,
+        "backgroundImage",
+        `url(${this.product.photos[0]})`
+      );
     }
-  }
+  },
 };
 </script>
 
 <style scoped lang="scss">
-
 .img-placeholder {
   background-image: url("~@/assets/imageNotFound.jpg");
 }

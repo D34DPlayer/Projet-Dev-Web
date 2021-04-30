@@ -29,10 +29,11 @@
 
 <script>
 import HoraireTimePicker from "@/components/HoraireTimePicker.vue";
+import { BForm, BAlert, BFormCheckbox } from "bootstrap-vue";
 
 export default {
   name: "HoraireForm",
-  components: { HoraireTimePicker },
+  components: { HoraireTimePicker, BForm, BAlert, BFormCheckbox },
   data() {
     return {
       form: {

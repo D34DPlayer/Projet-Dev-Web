@@ -6,7 +6,7 @@
         size="sm"
         v-b-modal="`modal-user-edit-${row.item.username}`"
       >
-        <b-icon icon="pencil-square"></b-icon>
+        <b-icon-pencil-square />
       </b-button>
       <UserForm :user="row.item" :username="username" />
     </template>
@@ -19,7 +19,7 @@
         :disabled="row.item.username === username"
         v-b-modal="`modal-user-delete-${row.item.username}`"
       >
-        <b-icon icon="trash-fill"></b-icon>
+        <b-icon-trash-fill />
       </b-button>
       <b-modal
         size="lg"
@@ -41,10 +41,26 @@
 
 <script>
 import UserForm from "@/components/UserForm.vue";
+import {
+  BTable,
+  BModal,
+  BAlert,
+  BIconPencilSquare,
+  BIconTrashFill,
+  VBModal,
+} from "bootstrap-vue";
 
 export default {
   name: "UsersAdmin",
-  components: { UserForm },
+  components: {
+    UserForm,
+    BTable,
+    BModal,
+    BAlert,
+    BIconPencilSquare,
+    BIconTrashFill,
+  },
+  directives: { "b-modal": VBModal },
   props: ["users"],
   data() {
     return {
