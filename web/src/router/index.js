@@ -41,13 +41,13 @@ const routes = [
     path: "/admin",
     name: "Administration",
     component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Admin.vue"),
+      import(/* webpackChunkName: "admin" */ "../views/Admin.vue"),
   },
   {
     path: "/logout",
     name: "Se deconnecter",
     component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Logout.vue"),
+      import(/* webpackChunkName: "logout" */ "../views/Logout.vue"),
   },
 ];
 

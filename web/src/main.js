@@ -15,4 +15,8 @@ new Vue({
   router,
   store,
   render: (h) => h(App),
+  mounted() {
+    //So that the prerenderer knows when to take the snapshot
+    document.dispatchEvent(new Event("render-event"));
+  },
 }).$mount("#app");
