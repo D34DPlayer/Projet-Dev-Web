@@ -1,12 +1,20 @@
-name: CD
+name: CI/CD
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, testingSetup]
 
 jobs:
+  testing:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create .env
+        run: cp .env.example .env
+      - name: Deploy the testing containers
+        run: make test test_exit=1
   deploy:
-    if: github.ref == 'refs/heads/dev'
+    needs: testing
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
