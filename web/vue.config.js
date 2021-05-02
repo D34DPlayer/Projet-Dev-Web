@@ -29,7 +29,7 @@ const productionPlugins = [
     },
   }),
   new RobotstxtPlugin({
-    sitemap: `https://${process.env.DOMAIN_NAME}/robots.txt`,
+    sitemap: `https://${process.env.DOMAIN_NAME}/sitemap.xml`,
     host: `https://${process.env.DOMAIN_NAME}`,
   }),
 ];

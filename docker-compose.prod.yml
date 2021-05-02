@@ -11,7 +11,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        - DOMAIN_NAME
     depends_on:
       - api
     restart: unless-stopped
