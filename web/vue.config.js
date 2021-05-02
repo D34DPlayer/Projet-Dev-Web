@@ -43,11 +43,6 @@ module.exports = {
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === "production") {
       config.plugins.push(...productionPlugins);
-
-      fs.writeFileSync(
-        "dist/robots.txt",
-        `Sitemap: https://${process.env.DOMAIN_NAME}/sitemap.xml`
-      );
     }
   },
 };
