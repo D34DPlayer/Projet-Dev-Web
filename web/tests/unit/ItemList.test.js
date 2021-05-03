@@ -1,7 +1,7 @@
 import { shallowMount } from "@vue/test-utils";
 import ItemList from "@/components/ItemList.vue"
 
-describe("ItemList.spec.js", () =>{
+describe("ItemList.test.js", () =>{
     let cmp;
 
     beforeEach(() => {
