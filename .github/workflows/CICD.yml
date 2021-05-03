@@ -1,8 +1,7 @@
 name: CI/CD
 
 on:
-  push:
-    branches: [dev, testingSetup]
+  [push, pull_request]
 
 jobs:
   testing:
@@ -16,6 +15,7 @@ jobs:
   deploy:
     needs: testing
     runs-on: [ubuntu-latest]
+    if: github.ref == 'refs/heads/dev'
     steps:
       - uses: actions/checkout@v1
       - name: Push to server
