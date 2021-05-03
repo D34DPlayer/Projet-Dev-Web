@@ -60,10 +60,6 @@ async def delete_some_user(username: str, user: User = Depends(is_connected)):
 @router.post("", response_model=User)
 async def create_a_new_user(user: CreateUser):
     """Creates a new user."""
-    old_user = await DBUser.get(user.username)
-    if old_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The username is already in use.")
-
     hashed_pwd = get_password_hash(user.password)
 
     new_user = DBUser(**user.dict(), hashed_password=hashed_pwd)
@@ -71,7 +67,7 @@ async def create_a_new_user(user: CreateUser):
     new_user = await DBUser.create(new_user)
 
     if not new_user:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="The user couldn't be created.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The username is already in use.")
 
     return new_user
 

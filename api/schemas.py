@@ -21,6 +21,7 @@ class User(BaseModel):
 class CreateUser(User):
     password: str
 
+
 class VisibilityModel(BaseModel):
     visibility: bool
 
@@ -37,9 +38,11 @@ class DBUser(User):
 
     @classmethod
     async def create(cls, user):
-        query = users.insert().values(**user.dict())
-        await db.execute(query)
-        return user
+        old_user = await cls.get(user.username)
+        if not old_user:
+            query = users.insert().values(**user.dict())
+            await db.execute(query)
+            return user
 
     @classmethod
     async def update(cls, username: str, user):
@@ -102,7 +105,7 @@ class Product(BaseModel):
     name: str
     categorie: str
     description: str
-    photos: list[str]
+    photos: list[str] = []
     price: float
     promo_price: float = None
     price_type: PriceType
