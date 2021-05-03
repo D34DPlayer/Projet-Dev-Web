@@ -5,7 +5,7 @@ describe("ItemList.spec.js", () =>{
     let cmp;
 
     beforeEach(() => {
-       cmp = shallowMount(App, {
+       cmp = shallowMount(ItemList, {
            data: {"id":4,
                "name":"Bananne",
                "categorie":"Fruit",
