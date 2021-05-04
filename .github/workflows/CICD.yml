@@ -18,6 +18,23 @@ jobs:
             ${{ runner.os }}-buildx-
       - name: Create .env
         run: cp .env.example .env
+      - name: Build frontend
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: testdevweb_web:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,src=/tmp/.buildx-cache
+          context: ./web
+          dockerfile: Dockerfile.dev
+      - name: Build backend
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: testdevweb_api:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,src=/tmp/.buildx-cache
+          context: ./api
       - name: Setting up the test environment
         run: make _test-setup
       - name: Backend tests

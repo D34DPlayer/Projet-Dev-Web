@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   web-unit:
-    image: testdevweb-web
+    image: testdevweb_web
     build:
       context: ./web
       dockerfile: Dockerfile.dev
@@ -19,7 +19,7 @@ services:
       - ./web/src:/app/src
       - ./web/tests:/app/tests
   web-e2e:
-    image: testdevweb-web
+    image: testdevweb_web
     build:
       context: ./web
       dockerfile: Dockerfile.dev

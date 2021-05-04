@@ -75,8 +75,6 @@ setup_db: upgrade
 	@echo Password: $(password)
 
 _test-setup:
-	@echo Building the images...
-	@$(DC_test) build
 	@echo Setting up the test database...
 	@$(DC_test) up -d db
 	@sleep 3
