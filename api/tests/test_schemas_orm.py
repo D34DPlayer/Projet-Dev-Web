@@ -110,14 +110,11 @@ class TestProduct:
         product_get = await Product.get(666)
         assert product_get is None
 
-        
-
     @pytest.mark.asyncio
     async def test_get_all(self, db):
         """Test get_all method"""
         all_product = await Product.get_all()
         assert [Product(**x) for x in all_product] == [self.product]
-
 
     @pytest.mark.asyncio
     async def test_edit_photos(self, db):
@@ -145,6 +142,29 @@ class TestProduct:
         assert len(remove_photos) == 0
 
     @pytest.mark.asyncio
+    async def test_edit(self, db):
+        """TO DO: Test edit method"""
+
+    @pytest.mark.asyncio
+    async def test_hide(self, db):
+        """TO DO: Test hide method"""
+        Product_hide = await Product.hide(1)
+        assert not Product_hide.visibility
+
+        Product_hide = await Product.hide(666)
+        assert Product_hide is None
+
+    @pytest.mark.asyncio
+    async def test_show(self, db):
+        """TO DO: Test show method"""
+        Product_show = await Product.show(1)
+        assert Product_show == self.product
+        assert Product_show.visibility
+
+        Product_show = await Product.show(666)
+        assert Product_show is None
+
+    @pytest.mark.asyncio
     async def test_delete(self, db):
         removed_product = await Product.delete(1)
         fake_product = await Product.delete(69)
@@ -155,15 +175,3 @@ class TestProduct:
         product = await Product.get(1)
 
         assert product is None
-
-    @pytest.mark.asyncio
-    async def test_edit(self, db):
-        """TO DO: Test edit method"""
-
-    @pytest.mark.asyncio
-    async def test_show(self, db):
-        """TO DO: Test show method"""
-
-    @pytest.mark.asyncio
-    async def test_hide(self, db):
-        """TO DO: Test hide method"""
