@@ -29,7 +29,7 @@ export default {
           content: 'Boucherie artisanale Leuze, Namur'
         },
         {
-          property: 'og:site-name',
+          property: 'og:site_name',
           content: 'Boucherie Vangeebergen'
         },
         {
