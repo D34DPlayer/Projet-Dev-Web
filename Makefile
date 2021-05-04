@@ -76,7 +76,7 @@ setup_db: upgrade
 
 _test-setup:
 	@echo Setting up the test database...
-	@$(DC_test) up -d db
+	@$(DC_test) up --build -d db
 	@sleep 3
 	@$(DC_test) run -T --rm --workdir /api api alembic upgrade head
 
