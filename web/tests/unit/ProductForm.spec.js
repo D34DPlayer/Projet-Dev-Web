@@ -17,7 +17,6 @@ Vue.use(VueRouter);
 
 describe("ProductForm.vue", () => {
     const wrapper = mount(ProductForm, {
-        store,
         propsData: {
             static: true
         }
