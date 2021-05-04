@@ -17,6 +17,7 @@ services:
     command: npm run test:unit
     volumes:
       - ./web/src:/app/src
+      - ./web/tests:/app/tests
   web-e2e:
     image: testdevweb-web
     build:
@@ -25,6 +26,7 @@ services:
     command: npm run test:e2e
     volumes:
       - ./web/src:/app/src
+      - ./web/tests:/app/tests
     depends_on:
       - api
   api:

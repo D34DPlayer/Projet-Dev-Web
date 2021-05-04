@@ -10,8 +10,12 @@ jobs:
       - uses: actions/checkout@v1
       - name: Create .env
         run: cp .env.example .env
-      - name: Deploy the testing containers
-        run: make test test_exit=1
+      - name: Setting up the test environment
+        run: make _test-setup
+      - name: Backend tests
+        run: make _test-back test_exit=1
+      - name: Frontend unit tests
+        run: make test-front-unit test_exit=1
   deploy:
     needs: testing
     runs-on: [ubuntu-latest]
