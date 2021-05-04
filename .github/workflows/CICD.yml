@@ -8,6 +8,9 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          compose_file: docker-compose.test.yml
       - name: Create .env
         run: cp .env.example .env
       - name: Setting up the test environment
@@ -28,7 +31,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: | 
+          script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull
             make compose_file=docker-compose.prod.yml build
