@@ -25,9 +25,9 @@ jobs:
           load: true
           tags: testdevweb_web:latest
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
           context: ./web
-          dockerfile: Dockerfile.dev
+          file: Dockerfile.dev
       - name: Build backend
         uses: docker/build-push-action@v2
         with:
@@ -35,7 +35,7 @@ jobs:
           load: true
           tags: testdevweb_api:latest
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
           context: ./api
       - name: Setting up the test environment
         run: make _test-setup
