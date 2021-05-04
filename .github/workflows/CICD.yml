@@ -27,7 +27,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           context: ./web
-          file: Dockerfile.dev
+          file: ./web/Dockerfile.dev
       - name: Build backend
         uses: docker/build-push-action@v2
         with:
