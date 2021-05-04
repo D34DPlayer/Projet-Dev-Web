@@ -1,5 +1,4 @@
 const path = require("path");
-const fs = require("fs");
 
 const PrerenderSpaPlugin = require("prerender-spa-plugin");
 const SitemapPlugin = require("sitemap-webpack-plugin").default;
