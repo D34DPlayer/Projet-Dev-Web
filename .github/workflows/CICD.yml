@@ -14,7 +14,7 @@ jobs:
         run: docker-compose -p testdevweb -f docker-compose.test.yml pull
       - name: Cache images
         uses: satackey/action-docker-layer-caching@v0.0.11
-          continue-on-error: true
+        continue-on-error: true
       - name: Setting up the test environment
         run: make _test-setup
       - name: Backend tests
