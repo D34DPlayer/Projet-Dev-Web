@@ -97,10 +97,9 @@ describe("ProductsAdmin.vue", () => {
         expect(firstRow.find('td[aria-colindex="5"]').text()).toMatch("/kilo");
     });
 
-    /* TODO: mika
-    it("renders the visibility correctly", () => {
-        CODE
-    });
-    */
 
+    it("renders the visibility correctly", () => {
+        expect(firstRow.find('td[aria-colindex="6"] input').element.checked).toBe(true);
+        expect(secondRow.find('td[aria-colindex="6"] input').element.checked).toBe(false);
+    });
 });
