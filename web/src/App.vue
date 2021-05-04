@@ -51,7 +51,11 @@ export default {
         {
           property: 'og:locale',
           content: 'fr_FR'
-        }
+        },
+        {
+          property: 'description',
+          content: 'Nous vous proposons un large assortiment de viandes de premier choix, savoureuses et saines. Vous y trouverez également des charcuteries et des fromages ainsi qu’une variété de plats maison.'
+        },
       ]
     }
   }
