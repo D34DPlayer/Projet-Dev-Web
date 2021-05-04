@@ -71,7 +71,19 @@
 </style>
 
 <script>
+import { BAlert, BCard, BForm, BFormGroup, BFormInput } from "bootstrap-vue";
 export default {
+  components: { BAlert, BCard, BForm, BFormGroup, BFormInput },
+  metaInfo: {
+      title: 'Se connecter',
+      meta: [
+        {
+          vmid: 'title',
+          name: 'og:title',
+          content: 'Se connecter'
+        }
+      ]
+  },
   data() {
     return {
       form: {
@@ -90,7 +102,7 @@ export default {
   methods: {
     async onSubmit(ev) {
       ev.preventDefault();
-      this.loginAlert = false;
+      this.showAlert = false;
       let response = await this.$store.dispatch("users/login", this.form);
 
       switch (response.status) {

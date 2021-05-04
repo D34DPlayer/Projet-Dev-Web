@@ -70,9 +70,9 @@
             placeholder="Prix"
             required
           ></b-form-input>
-          <b-input-group-prepend class="input-group-append" is-text
-            >€</b-input-group-prepend
-          >
+          <b-input-group-text class="input-group-between">
+            €
+          </b-input-group-text>
           <b-form-select v-model="form.price_type" required>
             <option value="/kilo">/kilo</option>
             <option value="/unité">/unité</option>
@@ -90,9 +90,9 @@
             type="number"
             placeholder="Prix promo"
           ></b-form-input>
-          <b-input-group-prepend class="input-group-append" is-text
-            >€</b-input-group-prepend
-          >
+          <b-input-group-text class="input-group-between">
+            €
+          </b-input-group-text>
           <b-form-select v-model="form.price_type" disabled>
             <option value="/kilo">/kilo</option>
             <option value="/unité">/unité</option>
@@ -139,8 +139,34 @@
 </template>
 
 <script>
+import {
+  BModal,
+  BAlert,
+  BForm,
+  BFormGroup,
+  BFormInput,
+  BInputGroup,
+  BInputGroupText,
+  BFormTextarea,
+  BFormSelect,
+  BFormCheckbox,
+  BFormFile,
+} from "bootstrap-vue";
 export default {
   name: "ProductForm",
+  components: {
+    BModal,
+    BAlert,
+    BForm,
+    BFormGroup,
+    BFormInput,
+    BInputGroup,
+    BInputGroupText,
+    BFormTextarea,
+    BFormSelect,
+    BFormCheckbox,
+    BFormFile,
+  },
   props: ["product"],
   data() {
     return {
@@ -221,4 +247,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.input-group-between {
+  margin-left: -1px;
+  margin-right: -1px;
+  border-radius: 0;
+}
+</style>

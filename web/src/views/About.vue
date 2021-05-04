@@ -59,6 +59,21 @@
   </b-container>
 </template>
 
+<script>
+export default {
+  metaInfo: {
+      title: 'À propos de nous',
+      meta: [
+        {
+          vmid: 'title',
+          name: 'og:title',
+          content: 'À propos de nous'
+        }
+      ]
+  },
+}
+</script>
+
 <style scoped lang="scss">
 h1 {
   color: var(--primary);

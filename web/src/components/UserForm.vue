@@ -59,8 +59,10 @@
 </template>
 
 <script>
+import { BModal, BForm, BAlert, BFormGroup, BFormInput } from "bootstrap-vue";
 export default {
   name: "UserForm",
+  components: { BModal, BForm, BAlert, BFormGroup, BFormInput },
   props: ["user", "username"],
   data() {
     return {

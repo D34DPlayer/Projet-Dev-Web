@@ -19,7 +19,7 @@
     <!-- Bouton edit -->
     <template #cell(edit)="row">
       <b-button block size="sm" v-b-modal="`modal-edit-${row.item.id}`">
-        <b-icon icon="pencil-square"></b-icon>
+        <b-icon-pencil-square />
       </b-button>
       <ProductForm :product="row.item" />
     </template>
@@ -32,7 +32,7 @@
         size="sm"
         v-b-modal="`modal-delete-${row.item.id}`"
       >
-        <b-icon icon="trash-fill"></b-icon>
+        <b-icon-trash-fill />
       </b-button>
       <b-modal
         @ok="deleteProduct(row.item.id, $event)"
@@ -56,7 +56,7 @@
               class="image-delete"
               v-b-modal="`modal-delete-${row.item.id}-image-${i}`"
             >
-              <b-icon icon="trash-fill"></b-icon>
+              <b-icon-trash-fill />
             </b-button>
             <img :src="url" :alt="row.item.name" />
             <b-modal
@@ -73,7 +73,7 @@
             </b-modal>
           </div>
           <b-button pill size="lg">
-            <b-icon size="lg" icon="cloud-arrow-up"></b-icon>
+            <b-icon-cloud-arrow-up size="lg" />
           </b-button>
         </div>
       </b-container>
@@ -83,9 +83,27 @@
 
 <script>
 import ProductForm from "@/components/ProductForm.vue";
+import {
+  BTable,
+  BFormCheckbox,
+  BModal,
+  BIconTrashFill,
+  BIconPencilSquare,
+  BIconCloudArrowUp,
+  VBModal,
+} from "bootstrap-vue";
 
 export default {
-  components: { ProductForm },
+  components: {
+    ProductForm,
+    BTable,
+    BFormCheckbox,
+    BModal,
+    BIconTrashFill,
+    BIconPencilSquare,
+    BIconCloudArrowUp,
+  },
+  directives: { "b-modal": VBModal },
   name: "ProductsAdmin",
   props: ["products"],
   data() {

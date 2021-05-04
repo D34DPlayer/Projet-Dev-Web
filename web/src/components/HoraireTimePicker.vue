@@ -10,9 +10,7 @@
           @input="onInput('open', $event)"
         >
         </b-form-timepicker>
-        <b-input-group-prepend class="input-group-append" is-text>
-          -
-        </b-input-group-prepend>
+        <b-input-group-text class="input-group-between"> - </b-input-group-text>
         <b-form-timepicker
           :state="validation"
           :value="value.close"
@@ -43,8 +41,30 @@
 </template>
 
 <script>
+import {
+  BFormGroup,
+  BInputGroup,
+  BFormTimepicker,
+  BInputGroupText,
+  BInputGroupAppend,
+  BFormCheckbox,
+  BTooltip,
+  BFormInvalidFeedback,
+  VBTooltip,
+} from "bootstrap-vue";
 export default {
   name: "HoraireTimePicker",
+  components: {
+    BFormGroup,
+    BInputGroup,
+    BFormTimepicker,
+    BInputGroupText,
+    BFormCheckbox,
+    BTooltip,
+    BFormInvalidFeedback,
+    BInputGroupAppend,
+  },
+  directives: { "b-tooltip": VBTooltip },
   props: ["value", "day", "valCheck", "init"],
   data() {
     return {
@@ -70,10 +90,18 @@ export default {
   },
   computed: {
     validation() {
-      return this.value.is_open ? this.value.close > this.value.open : null;
+      return !this.value.is_open || this.value.close > this.value.open
+        ? null
+        : false;
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.input-group-between {
+  margin-left: -1px;
+  margin-right: -1px;
+  border-radius: 0;
+}
+</style>

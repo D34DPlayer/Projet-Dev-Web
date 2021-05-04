@@ -111,7 +111,7 @@ const actions = {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        data: { "visibility": visibility },
+        data: { visibility: visibility },
       });
       dispatch("getProducts");
       return response;
@@ -142,7 +142,7 @@ const actions = {
       }
       return e.response;
     }
-  }
+  },
 };
 
 export default {

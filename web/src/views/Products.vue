@@ -18,13 +18,25 @@ import ItemList from "@/components/ItemList.vue";
 
 export default {
   components: { ItemList },
+  metaInfo: () => ({
+      title: 'Nos produits',
+      meta: [
+        {
+          vmid: 'title',
+          name: 'og:title',
+          content: 'Nos produits'
+        }
+      ]
+  }),
   name: "ProduitList",
   mounted() {
     this.$store.dispatch("products/getProducts");
   },
   computed: {
     products() {
-      return this.$store.state.products.products.filter(product => product.visibility);
+      return this.$store.state.products.products.filter(
+        (product) => product.visibility
+      );
     },
   },
 };

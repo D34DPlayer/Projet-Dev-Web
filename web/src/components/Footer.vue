@@ -70,8 +70,20 @@
 </template>
 
 <script>
+import {
+  BIconGeoAltFill,
+  BIconTelephoneFill,
+  BIconEnvelopeFill,
+  BIconFacebook,
+} from "bootstrap-vue";
 export default {
   name: "Footer",
+  components: {
+    BIconGeoAltFill,
+    BIconTelephoneFill,
+    BIconEnvelopeFill,
+    BIconFacebook,
+  },
   mounted() {
     this.$store.dispatch("horaire/getHoraire");
   },
