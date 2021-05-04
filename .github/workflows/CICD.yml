@@ -11,6 +11,7 @@ jobs:
       - uses: whoan/docker-build-with-cache-action@v5
         with:
           compose_file: docker-compose.test.yml
+          push_image_and_stages: false
       - name: Create .env
         run: cp .env.example .env
       - name: Setting up the test environment
