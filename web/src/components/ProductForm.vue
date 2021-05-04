@@ -2,6 +2,7 @@
   <b-modal
     hide-footer
     size="lg"
+    :static="static"
     :id="`modal-${edit ? 'edit-' + product.id : 'add'}`"
     :title="`${edit ? 'Modifier le' : 'Ajouter un'} produit`"
   >
@@ -167,7 +168,7 @@ export default {
     BFormCheckbox,
     BFormFile,
   },
-  props: ["product"],
+  props: { product: Object, static: { type: Boolean, default: false } },
   data() {
     return {
       form: {
