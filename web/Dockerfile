@@ -1,7 +1,7 @@
 # build stage
 FROM node:lts as build-stage
 WORKDIR /app
-ARG DOMAIN_NAME=localhost
+ARG VUE_APP_DOMAIN_NAME=localhost
 RUN apt-get update && \
     apt-get -y install ca-certificates fonts-liberation                       \
         libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6    \

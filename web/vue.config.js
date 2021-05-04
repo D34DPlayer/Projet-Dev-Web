@@ -19,7 +19,7 @@ const productionPlugins = [
     }),
   }),
   new SitemapPlugin({
-    base: `https://${process.env.DOMAIN_NAME}`,
+    base: `https://${process.env.VUE_APP_DOMAIN_NAME}`,
     paths: routerPaths,
     options: {
       fileName: "sitemap.xml",
@@ -28,8 +28,8 @@ const productionPlugins = [
     },
   }),
   new RobotstxtPlugin({
-    sitemap: `https://${process.env.DOMAIN_NAME}/sitemap.xml`,
-    host: `https://${process.env.DOMAIN_NAME}`,
+    sitemap: `https://${process.env.VUE_APP_DOMAIN_NAME}/sitemap.xml`,
+    host: `https://${process.env.VUE_APP_DOMAIN_NAME}`,
   }),
 ];
 

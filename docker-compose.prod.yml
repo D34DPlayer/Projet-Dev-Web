@@ -14,7 +14,7 @@ services:
     build:
       context: ./web
       args:
-        - DOMAIN_NAME
+        - VUE_APP_DOMAIN_NAME=${DOMAIN_NAME}
     depends_on:
       - api
     restart: unless-stopped
