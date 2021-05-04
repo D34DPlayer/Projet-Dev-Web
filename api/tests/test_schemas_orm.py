@@ -100,11 +100,21 @@ class TestProduct:
 
     @pytest.mark.asyncio
     async def test_get(self, db):
-        """TO DO: Test get method"""
+        """Test get method"""
+        product_get = await Product.get(1)
+        assert product_get == self.product
+
+        product_get = await Product.get(666)
+        assert product_get is None
+
+        
 
     @pytest.mark.asyncio
     async def test_get_all(self, db):
-        """TO DO: Test get_all method"""
+        """Test get_all method"""
+        all_product = await Product.get_all()
+        assert [Product(**x) for x in all_product] == [self.product]
+
 
     @pytest.mark.asyncio
     async def test_edit_photos(self, db):
