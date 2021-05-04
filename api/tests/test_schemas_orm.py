@@ -92,11 +92,14 @@ class TestProduct:
         price_type="/kilo",
         visibility=True
     )
+    photos = ["/images/viande.png", "/images/poulet.png"]
 
     @pytest.mark.asyncio
     async def test_add(self, db):
         """TO DO: Test add method"""
-        await Product.add(self.product)
+        product = await Product.add(self.product)
+        assert product.id is not None
+        assert product == self.product
 
     @pytest.mark.asyncio
     async def test_get(self, db):
@@ -109,11 +112,14 @@ class TestProduct:
     @pytest.mark.asyncio
     async def test_edit_photos(self, db):
         """TO DO: Test edit_photos method"""
-        await Product.edit_photos(1, ["/images/viande.png", "/images/poulet.png"])
+        photos = await Product.edit_photos(1, self.photos)
+        assert photos == self.photos
 
     @pytest.mark.asyncio
     async def test_get_photos(self, db):
         """TO DO: Test get_photos method"""
+        photos = await Product.get_photos(1)
+        assert photos == self.photos
 
     @pytest.mark.asyncio
     async def test_remove_photos(self, db):
