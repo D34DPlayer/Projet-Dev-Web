@@ -16,7 +16,8 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
         with:
-          key: devweb-tests
+          key: devweb-tests-{hash}
+          restore-keys: devweb-tests-
       - name: Building the images
         run: docker-compose -p testdevweb -f docker-compose.test.yml build
       - name: Setting up the test environment
