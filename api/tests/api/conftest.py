@@ -17,3 +17,8 @@ def token():
     return 'Bearer ' + create_access_token(
         data={"sub": "admin"}, expires_delta=timedelta(minutes=5)
     )
+
+
+@pytest.fixture(scope="session")
+def headers(token):
+    return dict(Authorization=token)
