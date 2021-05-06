@@ -109,7 +109,7 @@ async def update_product_visibility(id: int, visibility: VisibilityModel):
     """Updates the visibility of a product"""
     product = await Product.get(id)
     if not product:
-        raise HTTPException(status=status.HTTP_404_NOT_FOUND, detail="The product doesn't exist.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The product doesn't exist.")
     if visibility.visibility:
         return await Product.show(id)
     else:
