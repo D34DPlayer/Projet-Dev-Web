@@ -1,5 +1,6 @@
 include .env
 
+.ONESHELL:
 compose_file ?= "docker-compose.yml"
 project ?= "devweb"
 
@@ -58,7 +59,7 @@ upgrade: start
 	$(DC) exec -T --workdir /api api alembic upgrade head
 
 revision rev: start
-	@read -p "Revision name: " rev; \
+	@read -p "Revision name: " rev
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
 
 setup_db: upgrade
