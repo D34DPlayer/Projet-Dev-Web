@@ -30,6 +30,9 @@ Commandes:
     setup_db - Setup la base de donnée.
                Pour changer le mot de passe par défaut du compte admin:
                  `make setup_db password=motdepasse`
+    logs     - Affiche les logs de docker-compose.
+    logs-CON - Affiche les logs du container CON.
+               Example: `make logs-api`
     help     - Affiche l'aide.
 
 Tests:
@@ -77,6 +80,12 @@ setup_db: upgrade
 
 	@echo User: admin
 	@echo Password: $(password)
+
+logs:
+	$(DC) logs
+
+logs-%:
+	$(DC) logs $*
 
 _test-setup:
 	@echo Setting up the test database...
