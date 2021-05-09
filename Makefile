@@ -1,6 +1,9 @@
 include .env
 
 .ONESHELL:
+.PHONY: build start up stop down restart upgrade revision rev setup_db help test-all \
+	test-back test-front-unit test-front-e2e _test-setup _test-cleanup _test-back _test-front-e2e
+
 compose_file ?= "docker-compose.yml"
 project ?= "devweb"
 
