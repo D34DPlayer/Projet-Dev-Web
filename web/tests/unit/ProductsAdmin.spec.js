@@ -76,7 +76,7 @@ describe("ProductsAdmin.vue", () => {
   });
 
   it("shows details on button click", async () => {
-    firstRow.find('td[aria-colindex="7"] button').trigger("click");
+    firstRow.find('td[aria-colindex="8"] button').trigger("click");
     await localVue.nextTick();
     expect(wrapper.find(".b-table-details").exists()).toBe(true);
   });
