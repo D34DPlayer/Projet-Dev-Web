@@ -107,7 +107,7 @@ export default {
 
       switch (response.status) {
         case 200:
-          await this.$router.push("/");
+          await this.$router.push("/admin");
           break;
         case 422:
           this.alert = "Un des champs n'a pas été rempli correctement.";
@@ -129,5 +129,12 @@ export default {
       this.$router.push("/");
     }
   },
+  watch: {
+    isConnected(val) {
+      if (val) {
+        this.$router.push("/admin");
+      }
+    }
+  }
 };
 </script>

@@ -50,12 +50,14 @@ export default {
   },
   watch: {
     isConnected(val) {
-      if (!val) this.$router.push("/");
+      if (!val) this.$router.push("/login");
     },
   },
-  mounted() {
-    this.$store.dispatch("products/getProducts");
-    if (this.isConnected) {
+  async mounted() {
+    if (!this.isConnected) {
+      await this.$router.push("/login");
+    } else {
+      this.$store.dispatch("products/getProducts");
       this.$store.dispatch("users/getUsers");
     }
   },
