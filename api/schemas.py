@@ -26,6 +26,10 @@ class VisibilityModel(BaseModel):
     visibility: bool
 
 
+class StockModel(BaseModel):
+    stock: bool
+
+
 class DBUser(User):
     hashed_password: str
 
@@ -110,6 +114,7 @@ class Product(BaseModel):
     promo_price: float = None
     price_type: PriceType
     visibility: bool = False
+    stock: bool = True
 
     @classmethod
     async def add(cls, product: 'Product') -> 'Product':
@@ -142,6 +147,12 @@ class Product(BaseModel):
     async def get_photos(cls, id: int) -> list[str]:
         query = select([products.c.photos]).where(products.c.id == id)
         return await db.execute(query)
+
+    @classmethod
+    async def update(cls, id: int, **kwargs) -> 'Product':
+        query = products.update().where(products.c.id == id).values(**kwargs)
+        await db.execute(query)
+        return await cls.get(id)
 
     @classmethod
     async def edit_photos(cls, id: int, new_photos: list[str]) -> list[str]:
