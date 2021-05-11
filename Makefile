@@ -1,6 +1,5 @@
 include .env
 
-.ONESHELL:
 .PHONY: build start up stop down restart upgrade revision rev setup_db help test-all \
 	test-back test-front-unit test-front-e2e _test-setup _test-cleanup _test-back _test-front-e2e
 
@@ -65,7 +64,7 @@ upgrade: start
 	$(DC) exec -T --workdir /api api alembic upgrade head
 
 revision rev: start
-	@read -p "Revision name: " rev
+	@read -p "Revision name: " rev; \
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
 
 setup_db: upgrade
