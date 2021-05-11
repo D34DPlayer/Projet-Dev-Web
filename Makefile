@@ -1,6 +1,6 @@
 include .env
 
-.PHONY: build start up stop down restart upgrade revision rev setup_db help test-all \
+.PHONY: build start up stop down restart upgrade revision rev setup_db help downgrade test-all \
 	test-back test-front-unit test-front-e2e _test-setup _test-cleanup _test-back _test-front-e2e
 
 compose_file ?= "docker-compose.yml"
@@ -20,19 +20,22 @@ Utilitaire docker-compose
 
 Commandes:
 ----------
-    build    - Build le docker-compose.
-    start    - Démarre les containers. Alias: up
-    stop     - Arrête les containers. Alias: down
-    restart  - Redémarre les containers.
-    upgrade  - Met à jour la base de données.
-    revision - Crée une révision de la base de donnée. Alias: rev
-    setup_db - Setup la base de donnée.
-               Pour changer le mot de passe par défaut du compte admin:
+    build     - Build le docker-compose.
+    start     - Démarre les containers. Alias: up
+    stop      - Arrête les containers. Alias: down
+    restart   - Redémarre les containers.
+    upgrade   - Met à jour la base de données.
+    downgrade - Met à jour la base de données.
+    revision  - Crée une révision de la base de donnée. Alias: rev
+    setup_db  - Setup la base de donnée.
+                Pour changer le mot de passe par défaut du compte admin:
                  `make setup_db password=motdepasse`
-    logs     - Affiche les logs de docker-compose.
-    logs-CON - Affiche les logs du container CON.
-               Example: `make logs-api`
-    help     - Affiche l'aide.
+    logs      - Affiche les logs de docker-compose.
+    logs-CON  - Affiche les logs du container CON.
+                Example: `make logs-api`
+    sh-CON    - Execute un shell dans le container CON.
+                Example: `make sh-api`
+    help      - Affiche l'aide.
 
 Tests:
 ------
@@ -63,6 +66,9 @@ restart:
 upgrade: start
 	$(DC) exec -T --workdir /api api alembic upgrade head
 
+downgrade: start
+	$(DC) exec -T --workdir /api api alembic downgrade -1
+
 revision rev: start
 	@read -p "Revision name: " rev; \
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
@@ -85,6 +91,9 @@ logs:
 
 logs-%:
 	$(DC) logs $*
+
+sh-%:
+	$(DC) exec $* sh
 
 _test-setup:
 	@echo Setting up the test database...
