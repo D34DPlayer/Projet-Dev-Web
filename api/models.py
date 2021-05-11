@@ -40,4 +40,5 @@ products = sqlalchemy.Table(
     sqlalchemy.Column("promo_price", sqlalchemy.Numeric),
     sqlalchemy.Column("price_type", sqlalchemy.Enum(PriceType), nullable=False),
     sqlalchemy.Column("visibility", sqlalchemy.Boolean, nullable=False),
+    sqlalchemy.Column("stock", sqlalchemy.Boolean, nullable=False, default=True),
 )
