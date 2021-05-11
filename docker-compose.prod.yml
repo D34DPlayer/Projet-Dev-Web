@@ -7,6 +7,8 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - db_net
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -15,6 +17,8 @@ services:
       context: ./web
       args:
         - VUE_APP_DOMAIN_NAME=${DOMAIN_NAME}
+    networks:
+      - caddy_net
     depends_on:
       - api
     restart: unless-stopped
@@ -23,6 +27,9 @@ services:
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --root-path /api
     volumes:
       - images:/images
+    networks:
+      - caddy_net
+      - db_net
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
       - SECRET_KEY=${SECRET_KEY}
@@ -36,6 +43,8 @@ services:
     volumes:
       - caddy_data:/data
       - images:/images
+    networks:
+      - caddy_net
     environment:
       - WEB_PORT=${WEB_PORT}
       - DOMAIN_NAME=${DOMAIN_NAME}
@@ -51,3 +60,7 @@ volumes:
   postgres_data: {}
   caddy_data: {}
   images: {}
+
+networks:
+  db_net: {}
+  caddy_net: {}
