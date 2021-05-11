@@ -120,6 +120,28 @@ const actions = {
       return e.response;
     }
   },
+  async updateStock({ state, rootState, dispatch }, [id, stock]) {
+    const url = `${state.endpoints.products}/${id}/stock`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let response = await axios(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        data: { stock: stock },
+      });
+      dispatch("getProducts");
+      return response;
+    } catch (e) {
+      console.error(e);
+      return e.response;
+    }
+  },
   async deleteProduct({ state, commit, dispatch, rootState }, id) {
     const url = `${state.endpoints.products}/${id}`;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);

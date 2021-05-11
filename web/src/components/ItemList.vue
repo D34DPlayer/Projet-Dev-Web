@@ -11,7 +11,9 @@
         </b-card-body>
         <b-aspect
           :class="
-            product.photos.length ? 'card-image' : 'card-image img-placeholder'
+            'card-image' +
+            (product.photos.length ? '' : ' img-placeholder') +
+            (product.stock ? '' : ' out-of-stock')
           "
           :style="imageFound"
         >
@@ -62,6 +64,15 @@ export default {
 <style scoped lang="scss">
 .img-placeholder {
   background-image: url("~@/assets/imageNotFound.jpg");
+}
+
+.out-of-stock::before {
+  content: "Hors Stock";
+  font-size: 2em;
+  width: 100%;
+  padding-top: 35%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .card-text {

@@ -119,6 +119,25 @@
           Afficher dans la liste des produits
         </b-form-checkbox>
       </b-form-group>
+      <!-- Input Stock -->
+      <b-form-group
+        label="En stock :"
+        label-for="input-stock"
+        label-class="sr-only"
+        class="text-right"
+      >
+        <b-form-checkbox
+          switch
+          class="ml-auto"
+          id="input-stock"
+          v-model="form.stock"
+          name="checkbox-1"
+          value="true"
+          unchecked-value="false"
+        >
+          Le produit est en stock
+        </b-form-checkbox>
+      </b-form-group>
       <!-- Input Images -->
       <b-form-group label="Images :" label-for="input-images">
         <b-form-file
@@ -179,6 +198,7 @@ export default {
         price_type: "/kilo",
         promo_price: null,
         visibility: true,
+        stock: true,
       },
       photos: [],
       edit: false,

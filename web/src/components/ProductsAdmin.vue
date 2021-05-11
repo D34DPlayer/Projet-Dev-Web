@@ -16,6 +16,15 @@
       ></b-form-checkbox>
     </template>
 
+    <!-- Checkbox stock -->
+    <template #cell(stock)="row">
+      <b-form-checkbox
+        switch
+        v-model="row.item.stock"
+        @change="toggleStock(row.item.id, row.item.stock)"
+      ></b-form-checkbox>
+    </template>
+
     <!-- Bouton edit -->
     <template #cell(edit)="row">
       <b-button block size="sm" v-b-modal="`modal-edit-${row.item.id}`">
@@ -136,6 +145,12 @@ export default {
           sortable: true,
           class: "text-center",
         },
+        {
+          key: "stock",
+          label: "En stock",
+          sortable: true,
+          class: "text-center",
+        },
         { key: "detail", label: "Détail", class: "text-center" },
         { key: "edit", label: "Modifier", class: "text-center" },
         { key: "delete", label: "Supprimer", class: "text-center" },
@@ -145,6 +160,9 @@ export default {
   methods: {
     async toggleVisibility(id, visibility) {
       await this.$store.dispatch("products/updateVisibility", [id, visibility]);
+    },
+    async toggleStock(id, stock) {
+      await this.$store.dispatch("products/updateStock", [id, stock]);
     },
     async deleteProduct(id, ev) {
       let response = await this.$store.dispatch("products/deleteProduct", id);
