@@ -5,7 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Up
 from typing import List, Tuple
 
 from ..app import is_connected
-from ..schemas import Product, VisibilityModel
+from ..schemas import Product, VisibilityModel, StockModel
 
 router = APIRouter(
     prefix="/products",
@@ -114,3 +114,13 @@ async def update_product_visibility(id: int, visibility: VisibilityModel):
         return await Product.show(id)
     else:
         return await Product.hide(id)
+
+
+@router.put("/{id}/stock", response_model=Product, dependencies=[Depends(is_connected)])
+async def update_stock(id: int, stock: StockModel):
+    """Updates the stock of a product"""
+    product = await Product.get(id)
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found.")
+
+    return await Product.update(id, stock=stock.stock)
