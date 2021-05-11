@@ -90,7 +90,8 @@ class TestProduct:
         description="Ceci est très sympa",
         price=1.32,
         price_type="/kilo",
-        visibility=True
+        visibility=True,
+        stock=True
     )
     photos = ["/images/viande.png", "/images/poulet.png"]
 

@@ -111,23 +111,23 @@ class TestProduct(BaseModelTest):
         "id": 3, "name": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
         "price": 12.56, "promo_price": None,
-        "price_type": "/kilo", "visibility": False
+        "price_type": "/kilo", "visibility": False, "stock": True
     }
     wrong_data = [{
         "id": 3, "name": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
         "price": "prix", "promo_price": None,
-        "price_type": "/kilo", "visibility": False
+        "price_type": "/kilo", "visibility": False, "stock": True
     }, {
         "id": 3, "nameu": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
         "price": 12.56, "promo_price": None,
-        "price_type": "/kilo", "visibility": False
+        "price_type": "/kilo", "visibility": False, "stock": True
     }]
     irregular_data = [{
         "id": 3, "name": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
-        "price": 12.56, "price_type": "/kilo", "visibility": False
+        "price": 12.56, "price_type": "/kilo", "visibility": False, "stock": True
     }, {
         "id": 3, "name": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
@@ -137,5 +137,5 @@ class TestProduct(BaseModelTest):
         "id": 3, "name": "Viande", "categorie": "truc",
         "description": "ceciestunedescription", "photos": ["/img1", "/img2"],
         "price": 12.56, "promo_price": None,
-        "price_type": "/kilo", "visibility": False, "extra": "extra"
+        "price_type": "/kilo", "visibility": False, "stock": True, "extra": "extra"
     }]
