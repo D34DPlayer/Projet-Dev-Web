@@ -75,14 +75,14 @@ import { BAlert, BCard, BForm, BFormGroup, BFormInput } from "bootstrap-vue";
 export default {
   components: { BAlert, BCard, BForm, BFormGroup, BFormInput },
   metaInfo: {
-      title: 'Se connecter',
-      meta: [
-        {
-          vmid: 'title',
-          name: 'og:title',
-          content: 'Se connecter'
-        }
-      ]
+    title: "Se connecter",
+    meta: [
+      {
+        vmid: "title",
+        name: "og:title",
+        content: "Se connecter",
+      },
+    ],
   },
   data() {
     return {

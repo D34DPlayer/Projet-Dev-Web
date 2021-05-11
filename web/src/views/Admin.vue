@@ -26,14 +26,14 @@ import { VBModal } from "bootstrap-vue";
 export default {
   name: "Admin",
   metaInfo: {
-      title: 'Panneau d\'administration',
-      meta: [
-        {
-          vmid: 'title',
-          name: 'og:title',
-          content: 'Panneau d\'administration'
-        }
-      ]
+    title: "Panneau d'administration",
+    meta: [
+      {
+        vmid: "title",
+        name: "og:title",
+        content: "Panneau d'administration",
+      },
+    ],
   },
   components: { ProductsAdmin, ProductForm, UsersAdmin, UserForm, HoraireForm },
   directives: { "b-modal": VBModal },

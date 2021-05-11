@@ -33,14 +33,14 @@ export default {
   name: "Contact",
   components: { ContactForm },
   metaInfo: {
-      title: 'Nous contacter',
-      meta: [
-        {
-          vmid: 'title',
-          name: 'og:title',
-          content: 'Nous contacter'
-        }
-      ]
+    title: "Nous contacter",
+    meta: [
+      {
+        vmid: "title",
+        name: "og:title",
+        content: "Nous contacter",
+      },
+    ],
   },
 };
 </script>

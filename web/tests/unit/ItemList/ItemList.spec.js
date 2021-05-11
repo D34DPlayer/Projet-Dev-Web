@@ -13,22 +13,22 @@ const component = () => {
   return mount(ItemList, {
     propsData: {
       product: {
-        "id": 4,
-        "name": "Banane",
-        "categorie": "Fruit",
-        "description": "c'est un fruit",
-        "photos": ["/images/products/4/alpaga.jpg"],
-        "price": 50.0,
-        "promo_price": 25.0,
-        "price_type": "/kilo",
-        "visibility": true
-      }
+        id: 4,
+        name: "Banane",
+        categorie: "Fruit",
+        description: "c'est un fruit",
+        photos: ["/images/products/4/alpaga.jpg"],
+        price: 50.0,
+        promo_price: 25.0,
+        price_type: "/kilo",
+        visibility: true,
+      },
     },
-    stubs: { RouterLink: RouterLinkStub }
-  })
-}
+    stubs: { RouterLink: RouterLinkStub },
+  });
+};
 
-describe('ItemList.spec.js', () => {
+describe("ItemList.spec.js", () => {
   it("Test text de la carte.", () => {
     const wrapper = component();
     expect(wrapper.text()).toBe("Banane Fruit 25.00€");
@@ -38,30 +38,34 @@ describe('ItemList.spec.js', () => {
     const wrapper = component();
     await wrapper.trigger("click");
     await Vue.nextTick();
-    expect(wrapper.findComponent(RouterLinkStub).props().to).toBe('/products/4')
+    expect(wrapper.findComponent(RouterLinkStub).props().to).toBe(
+      "/products/4"
+    );
   });
 
   it("Test Photo Source Image", () => {
     const wrapper = component();
-    expect(wrapper.vm.imageFound.backgroundImage).toBe("url(/images/products/4/alpaga.jpg)");
+    expect(wrapper.vm.imageFound.backgroundImage).toBe(
+      "url(/images/products/4/alpaga.jpg)"
+    );
   });
 
-  it("Test No Photo Source Image",() => {
+  it("Test No Photo Source Image", () => {
     const wrapper = mount(ItemList, {
       propsData: {
         product: {
-          "id": 4,
-          "name": "Banane",
-          "categorie": "Fruit",
-          "description": "c'est un fruit",
-          "photos": [],
-          "price": 50.0,
-          "promo_price": 25.0,
-          "price_type": "/kilo",
-          "visibility": true
-        }
+          id: 4,
+          name: "Banane",
+          categorie: "Fruit",
+          description: "c'est un fruit",
+          photos: [],
+          price: 50.0,
+          promo_price: 25.0,
+          price_type: "/kilo",
+          visibility: true,
+        },
       },
-      stubs: { RouterLink: RouterLinkStub }
+      stubs: { RouterLink: RouterLinkStub },
     });
     expect(wrapper.vm.imageFound).isEmpty;
   });

@@ -2,7 +2,7 @@
   <b-modal
     hide-footer
     size="lg"
-    :static="static"
+    :static="_static"
     :id="`modal-${edit ? 'edit-' + product.id : 'add'}`"
     :title="`${edit ? 'Modifier le' : 'Ajouter un'} produit`"
   >
@@ -187,7 +187,7 @@ export default {
     BFormCheckbox,
     BFormFile,
   },
-  props: { product: Object, static: { type: Boolean, default: false } },
+  props: { product: Object, _static: { type: Boolean, default: false } },
   data() {
     return {
       form: {
@@ -240,7 +240,8 @@ export default {
       }
 
       if (!this.photos.length) {
-        this.$store.dispatch("products/getProducts");
+        await this.$store.dispatch("products/getProducts");
+        this.$bvModal.hide("modal-add");
         return;
       }
 
