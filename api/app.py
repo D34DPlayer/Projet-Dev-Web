@@ -70,8 +70,7 @@ async def is_connected(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        expire: int = payload.get("exp")
-        if username is None or expire is None or datetime.utcfromtimestamp(expire) < datetime.utcnow():
+        if username is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
