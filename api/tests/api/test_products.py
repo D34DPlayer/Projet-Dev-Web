@@ -52,6 +52,27 @@ class TestProduct:
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == self.product.dict()
 
+    def test_update_product_stock(self, client: TestClient, headers: dict):
+        # Check for authorizations
+        response = client.put(f"/products/{self.product.id}/stock", json=dict(stock=True))
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+        # Update the stock of a non-existant product.
+        response = client.put("/products/666/stock", json=dict(stock=True), headers=headers)
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+        # Update the stock of our product.
+        response = client.put(f"/products/{self.product.id}/stock", json=dict(stock=False), headers=headers)
+        out_of_stock = self.product.dict()  # Copy the product
+        out_of_stock['stock'] = False  # and update it's stock to true.
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == out_of_stock
+
+        # Set the stock back to true.
+        response = client.put(f"/products/{self.product.id}/stock", json=dict(stock=True), headers=headers)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == self.product.dict()
+
     def test_get_images_empty(self, client: TestClient):
         # Check the product's images before uploading. It should be empty.
         response = client.get(f"/products/{self.product.id}/images")
