@@ -11,3 +11,7 @@
 		file_server
 	}
 }
+
+www.{$DOMAIN_NAME}:{$WEB_PORT} {
+	redir https://{$DOMAIN_NAME}:{$WEB_PORT}{uri}
+}
