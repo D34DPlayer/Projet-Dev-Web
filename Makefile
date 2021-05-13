@@ -108,7 +108,7 @@ _test-setup:
 		VALUES(                                                                 \
 			'admin',                                                            \
 			'admin@boucherie.tk',                                               \
-			'$$2b$$12$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
+			'\$$2b\$$12\$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
 		);"
 
 _test-cleanup:
