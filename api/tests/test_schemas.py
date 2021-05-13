@@ -139,3 +139,58 @@ class TestProduct(BaseModelTest):
         "price": 12.56, "promo_price": None,
         "price_type": "/kilo", "visibility": False, "stock": True, "extra": "extra"
     }]
+
+
+class TestAddress(BaseModelTest):
+    schema = sch.Address
+    correct_data = {
+        "street": "Chaussée de Namur 301",
+        "city": "B-5310 Leuze (Nam.)"
+    }
+    wrong_data = [{"street": "Chaussée machin", "citi": "Pécrot"},
+                  {"strit": "Chaussée machin", "city": "Pécrot"}]
+    irregular_data = [{"street": "Chaussée de Namur 301", "city": "B-5310 Leuze (Nam.)", "extra": "no"}]
+
+
+class TestPhone(BaseModelTest):
+    schema = sch.Phone
+    correct_data = {
+        "office": "081 40 06 16",
+        "mobile": "0477 86 07 92"
+    }
+    wrong_data = [{"offyce": "081 40 06 16", "mobile": "0477 86 07 92"},
+                  {"office": "081 40 06 16", "mobyle": "0477 86 07 92"}]
+    irregular_data = [{"office": "081 40 06 16", "mobile": "0477 86 07 92", "extra": "no"}]
+
+
+class TestContact(BaseModelTest):
+    schema = sch.Contact
+    correct_data = {
+        "address": {
+            "street": "Chaussée de Namur 301",
+            "city": "B-5310 Leuze (Nam.)"
+        },
+        "phone": {
+            "office": "081 40 06 16",
+            "mobile": "0477 86 07 92"
+        },
+        "email": "info@boucherie-vangeebergen.be",
+        "tva": "BE 0700.234.189",
+        "facebook": "https://www.facebook.com/boucherievangeebergen/"
+    }
+    wrong_data = [{"address": TestAddress.correct_data, "phone": {}, "e-mail": "", "tva": "", "facebook": ""},
+                  {"address": {}, "phone": TestPhone.correct_data, "email": "", "tva": "", "f4ac3b00k": ""}]
+    irregular_data = [{
+        "address": {
+            "street": "Chaussée de Namur 301",
+            "city": "B-5310 Leuze (Nam.)"
+        },
+        "phone": {
+            "office": "081 40 06 16",
+            "mobile": "0477 86 07 92"
+        },
+        "email": "info@boucherie-vangeebergen.be",
+        "tva": "BE 0700.234.189",
+        "facebook": "https://www.facebook.com/boucherievangeebergen/",
+        "extra": "no"
+    }]
