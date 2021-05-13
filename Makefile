@@ -11,6 +11,7 @@ DC = docker-compose -p $(project) -f $(compose_file)
 DC_test = docker-compose -p testdevweb -f docker-compose.test.yml
 
 test_exit ?= 0
+user ?= `id -u`
 
 password ?= superpassword
 hashed_password ?= `$(DC) exec -T api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
@@ -72,6 +73,7 @@ downgrade: start
 revision rev: start
 	@read -p "Revision name: " rev; \
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
+	$(DC) exec --workdir /api/alembic/versions api chown -R $(user) .
 
 setup_db: upgrade
 	@$(DC) exec -T db psql $(DB_NAME) $(DB_USER) -c "  \
