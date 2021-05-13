@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, horaire, products, users
+from .models import PriceType, contact, horaire, products, users
 
 
 class TokenModel(BaseModel):
@@ -196,3 +196,68 @@ class Product(BaseModel):
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
+
+
+class Address(BaseModel):
+    city: str
+    street: str
+
+
+class Phone(BaseModel):
+    mobile: str
+    office: str
+
+
+class Contact(BaseModel):
+    address: Address
+    email: str
+    facebook: str
+    phone: Phone
+    tva: str
+
+    @classmethod
+    async def get(cls) -> 'Contact':
+        """Get the contact informations from hte database. If it doesn't exists yet, it will insert default values."""
+        data = await db.fetch_one(contact.select())
+        if data is None:
+            # Insert default values
+            # Currently it's not possible with sqlalchemy
+            # And we use "returning" to return the inserted values.
+            data = await db.fetch_one(f"INSERT INTO contact DEFAULT VALUES RETURNING *")
+
+        # Convert it to a dictionary
+        data = dict(data)
+        # Then convert address_* to an object
+        data['address'] = Address(
+            city=data.pop('address_city'),
+            street=data.pop('address_street')
+        )
+        # Do the same for phon_*
+        data['phone'] = Phone(
+            mobile=data.pop('phone_mobile'),
+            office=data.pop('phone_office')
+        )
+        # And return this contact
+        return Contact(**data)
+
+    @classmethod
+    async def edit(cls, c: 'Contact') -> 'Contact':
+        """Edit the contact informations."""
+        # Convert the contact to a dictionary
+        values = c.dict()
+        # Remove address and phone from the values
+        values.pop('address')
+        values.pop('phone')
+
+        # Convert the address and phone numbers to  flat data
+        values.update({
+            'id': 1,  # Update the unique row
+            'address_city': c.address.city,
+            'address_street': c.address.street,
+            'phone_mobile': c.phone.mobile,
+            'phone_office': c.phone.office
+        })
+
+        # Execute the query and return the inserted values
+        await db.execute(contact.update().values(**values))
+        return await cls.get()
