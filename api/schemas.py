@@ -155,6 +155,12 @@ class Product(BaseModel):
         return await cls.get(id)
 
     @classmethod
+    def edit(cls, id: int, product: 'Product') -> 'Product':
+        product = product.dict()
+        product.pop('id')
+        return cls.update(id, **product)
+
+    @classmethod
     async def edit_photos(cls, id: int, new_photos: list[str]) -> list[str]:
         query = products.update().where(products.c.id == id).values(photos=new_photos)
         await db.execute(query)
@@ -177,10 +183,6 @@ class Product(BaseModel):
             await db.execute(query)
 
         return product
-
-    @classmethod
-    async def edit(cls, id: int, product: 'Product') -> 'Product':
-        pass
 
     @classmethod
     async def show(cls, id: int) -> Optional['Product']:
