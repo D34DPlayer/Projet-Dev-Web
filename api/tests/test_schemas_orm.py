@@ -143,8 +143,12 @@ class TestProduct:
         assert len(remove_photos) == 0
 
     @pytest.mark.asyncio
-    async def test_edit(self, db):
-        """TO DO: Test edit method"""
+    async def test_update(self, db):
+        product = await Product.update(1, name="test")
+        assert product.name == "test"
+
+        product = await Product.edit(1, self.product)
+        assert product == self.product
 
     @pytest.mark.asyncio
     async def test_hide(self, db):
