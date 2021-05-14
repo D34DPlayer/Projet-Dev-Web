@@ -150,9 +150,10 @@ class Product(BaseModel):
 
     @classmethod
     async def update(cls, id: int, **kwargs) -> 'Product':
-        query = products.update().where(products.c.id == id).values(**kwargs)
-        await db.execute(query)
-        return await cls.get(id)
+        query = products.update().where(products.c.id == id).values(**kwargs).returning(products)
+        product = await db.fetch_one(query)
+        if product:
+            return Product(**product)
 
     @classmethod
     def edit(cls, id: int, product: 'Product') -> 'Product':
@@ -170,10 +171,8 @@ class Product(BaseModel):
     async def remove_photos(cls, id: int, to_remove: list[str]) -> Optional[list[str]]:
         photos = await Product.get_photos(id)
 
-        if photos is None:
-            return None
-
-        return await Product.edit_photos(id, [url for url in photos if url not in to_remove])
+        if photos is not None:
+            return await Product.edit_photos(id, [url for url in photos if url not in to_remove])
 
     @classmethod
     async def delete(cls, product_id: int) -> Optional['Product']:
@@ -186,12 +185,14 @@ class Product(BaseModel):
 
     @classmethod
     async def show(cls, id: int) -> Optional['Product']:
-        query = products.update().where(products.c.id == id).values(visibility=True)
-        await db.execute(query)
-        return await cls.get(id)
+        query = products.update().where(products.c.id == id).values(visibility=True).returning(products)
+        product = await db.fetch_one(query)
+        if product:
+            return Product(**product)
 
     @classmethod
     async def hide(cls, id: int) -> Optional['Product']:
-        query = products.update().where(products.c.id == id).values(visibility=False)
-        await db.execute(query)
-        return await cls.get(id)
+        query = products.update().where(products.c.id == id).values(visibility=False).returning(products)
+        product = await db.fetch_one(query)
+        if product:
+            return Product(**product)
