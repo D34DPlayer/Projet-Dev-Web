@@ -5,7 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, horaire, products, users
+from .models import PriceType, horaire, products, users, messages
+from datetime import datetime
 
 
 class TokenModel(BaseModel):
@@ -28,6 +29,10 @@ class VisibilityModel(BaseModel):
 
 class StockModel(BaseModel):
     stock: bool
+
+
+class SeenModel(BaseModel):
+    seen: bool
 
 
 class DBUser(User):
@@ -196,3 +201,58 @@ class Product(BaseModel):
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
+
+
+class MessageBrief(BaseModel):
+    id: Optional[int]
+    name: str
+    seen: Optional[bool] = False
+    timestamp: Optional[datetime] = datetime.now()
+
+
+class Message(MessageBrief):
+    email: str
+    comment: str
+    address: Optional[str]
+    telephone: Optional[str]
+
+    @classmethod
+    async def get_all(cls):
+        query = messages.select()
+        return await db.fetch_all(query)
+
+    @classmethod
+    async def get(cls, id: int):
+        query = messages.select().where(messages.c.id == id)
+        message = await db.fetch_one(query)
+        if message:
+            await cls.change_seen(id, True)
+            return Message(**message)
+
+    @classmethod
+    async def add(cls, message):
+        values = message.dict()
+        if message.id is None:
+            values.pop('id')
+
+        query = messages.insert().values(**values)
+        message.id = await db.execute(query)
+
+        return message
+
+    @classmethod
+    async def delete(cls, id: int):
+        old_message = await cls.get(id)
+
+        if old_message:
+            query = messages.delete().where(messages.c.id == id)
+            await db.execute(query)
+
+            return old_message
+
+    @classmethod
+    async def change_seen(cls, id: int, seen: bool):
+        query = messages.update().where(messages.c.id == id).values(seen=seen).returning(messages)
+        message = await db.fetch_one(query)
+        if message:
+            return Message(**message)
