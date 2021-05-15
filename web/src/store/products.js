@@ -5,12 +5,16 @@ const state = () => ({
     products: "/api/products",
   },
   products: [],
+  detailProduct: {},
 });
 
 const mutations = {
   updateProduct(state, payload) {
     state.products = payload.sort((a, b) => 2 * (a.username > b.username) - 1);
   },
+  updateDetail(state, payload) {
+    state.detailProduct = payload;
+  }
 };
 
 const actions = {
@@ -92,6 +96,23 @@ const actions = {
         },
       });
       commit("updateProduct", response.data);
+      return response;
+    } catch (e) {
+      console.error(e);
+      return e.response;
+    }
+  },
+  async getProductId({state, commit}, id) {
+    const url = `${state.endpoints.products}/${id}`;
+
+    try {
+      let response = await axios(url, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+        },
+      });
+      commit("updateDetail", response.data);
       return response;
     } catch (e) {
       console.error(e);
