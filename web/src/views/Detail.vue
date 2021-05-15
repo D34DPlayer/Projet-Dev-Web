@@ -1,8 +1,7 @@
 <template>
   <b-container>
-
     <b-row>
-      <b-col>
+      <b-col sm="12" md="5">
         <div>
           <CarrouselDetail :images="product.photos" :name="product.name"/>
         </div>
@@ -16,8 +15,6 @@
             {{ product.categorie }}
           </figcaption>
         </figure>
-        <!--<p class="promo">{{ product.promo_price }}$</p>-->
-        <!--<h5>{{ product.price }}{{ product.price_type }}</h5>-->
         <h5 :class="product.promo_price ? 'promo' : ''">{{ (product.promo_price || product.price) }}€ {{
             product.price_type
           }}</h5>
