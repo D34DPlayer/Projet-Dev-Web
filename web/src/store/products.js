@@ -57,12 +57,12 @@ const actions = {
       return e.response;
     }
   },
-  async addProduct({ state, commit, rootState }, data) {
+  async addProduct({ state, commit, rootState, dispatch }, data) {
     const url = state.endpoints.products;
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
 
     try {
-      return await axios(url, {
+      let response = await axios(url, {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -72,6 +72,8 @@ const actions = {
         credentials: "include",
         data: data,
       });
+      dispatch("getProducts");
+      return response;
     } catch (e) {
       console.error(e);
       if (e.response.status === 401) {
