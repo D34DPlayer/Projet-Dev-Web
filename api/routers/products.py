@@ -124,3 +124,13 @@ async def update_stock(id: int, stock: StockModel):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found.")
 
     return await Product.update(id, stock=stock.stock)
+
+
+@router.put("/{id}", response_model=Product, dependencies=[Depends(is_connected)])
+async def edit_a_product(id: int, product: Product):
+    """Updates the information stored about a product."""
+    updated_product = await Product.edit(id, product)
+    if not updated_product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found.")
+
+    return updated_product
