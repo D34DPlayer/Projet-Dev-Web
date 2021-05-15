@@ -2,6 +2,7 @@
   <b-modal
     hide-footer
     size="lg"
+    ref="userModal"
     :id="modal"
     :title="`${
       edit
@@ -11,7 +12,12 @@
   >
     <!-- Formulaire pour les utilisateurs -->
     <b-form @submit.prevent="onSubmit">
-      <b-alert v-model="showError" variant="danger" dismissible>
+      <b-alert
+        :show="error !== ''"
+        @dismissed="error = ''"
+        variant="danger"
+        dismissible
+      >
         {{ error }}
       </b-alert>
       <!-- Username -->
@@ -73,7 +79,6 @@ export default {
         password: "",
       },
       error: "",
-      showError: false,
     };
   },
   computed: {
@@ -101,21 +106,18 @@ export default {
             password: "",
           };
           this.error = "";
-          this.showError = false;
-          this.$bvModal.hide(this.modal);
+          this.$refs.userModal.hide();
           break;
         case 400: // Name already used
           this.error = "Un utilisateur avec ce nom existe déjà.";
-          this.showError = true;
           break;
         case 404: // User not found
           await this.$store.dispatch("users/getUsers");
-          this.$bvModal.hide(this.modal);
+          this.$refs.userModal.hide();
           break;
         default:
           // Unknown error
-          this.error = response.data.detail;
-          this.showError = true;
+          this.error = response.data.detail || "Unknown error";
       }
     },
   },
@@ -127,7 +129,6 @@ export default {
         this.$set(this.form, "email", val.email);
 
         if (val.username === this.username) {
-          this.showError = true;
           this.error =
             "Après avoir modifié l'utilisateur en cours, vous devrez vous reconnecter.";
         }
