@@ -211,19 +211,27 @@ export default {
       return `modal-${this.edit ? "edit-" + this.product.id : "add"}`;
     },
   },
-  mounted() {
-    if (this.product) {
-      this.$set(this.form, "name", this.product.name);
-      this.$set(this.form, "categorie", this.product.categorie);
-      this.$set(this.form, "description", this.product.description);
-      this.$set(this.form, "price", this.product.price);
-      this.$set(this.form, "promo_price", this.product.promo_price);
-      this.$set(this.form, "price_type", this.product.price_type);
-      this.$set(this.form, "visibility", this.product.visibility);
-      this.edit = true;
+  watch: {
+    product(val) {
+      this.update(val);
     }
   },
+  mounted() {
+    this.update(this.product);
+  },
   methods: {
+    update(val) {
+      if (val) {
+      this.$set(this.form, "name", val.name);
+      this.$set(this.form, "categorie", val.categorie);
+      this.$set(this.form, "description", val.description);
+      this.$set(this.form, "price", val.price);
+      this.$set(this.form, "promo_price", val.promo_price);
+      this.$set(this.form, "price_type", val.price_type);
+      this.$set(this.form, "visibility", val.visibility);
+      this.edit = true;
+    }
+    },
     async onSubmit() {
       let response;
 

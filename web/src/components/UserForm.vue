@@ -54,6 +54,7 @@
           v-model="form.password"
           type="password"
           placeholder="Entrez le mot de passe"
+          required
         ></b-form-input>
       </b-form-group>
       <!-- Bouton submit -->
@@ -120,9 +121,7 @@ export default {
           this.error = response.data.detail || "Unknown error";
       }
     },
-  },
-  watch: {
-    user(val) {
+    update(val) {
       if (val) {
         this.edit = true;
         this.$set(this.form, "username", val.username);
@@ -133,8 +132,16 @@ export default {
             "Après avoir modifié l'utilisateur en cours, vous devrez vous reconnecter.";
         }
       }
+    }
+  },
+  watch: {
+    user(val) {
+      this.update(val);
     },
   },
+  mounted() {
+    this.update(this.user);
+  }
 };
 </script>
 
