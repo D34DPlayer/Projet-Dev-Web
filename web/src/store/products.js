@@ -165,6 +165,31 @@ const actions = {
       return e.response;
     }
   },
+  async editProduct({ state, commit, dispatch, rootState }, [id, data]) {
+    const url = `${state.endpoints.products}/${id}`;
+    const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+    try {
+      let response = await axios(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          Authorization: AuthStr,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        data: data,
+      });
+      dispatch("getProducts");
+      return response;
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 401) {
+        commit("users/logout", null, { root: true });
+      }
+      return e.response;
+    }
+  },
 };
 
 export default {
