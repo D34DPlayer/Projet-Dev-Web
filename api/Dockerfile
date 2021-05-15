@@ -8,11 +8,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir -U setuptools wheel
 
+# COPY THE REQUIREMENTS
+RUN mkdir /api
+COPY ./requirements.txt /api/requirements.txt
+
+# INSTALL PYTHON PACKAGES
+RUN pip install --no-cache-dir -r /api/requirements.txt
+
 # COPY APP SOURCE CODE
 COPY . /api
-
-# INSTAL PYTHON PACKAGES
-RUN pip install --no-cache-dir -r /api/requirements.txt
 
 # CREATE IMAGES FOLDER
 RUN mkdir /images
