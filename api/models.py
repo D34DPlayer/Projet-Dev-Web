@@ -42,3 +42,16 @@ products = sqlalchemy.Table(
     sqlalchemy.Column("visibility", sqlalchemy.Boolean, nullable=False),
     sqlalchemy.Column("stock", sqlalchemy.Boolean, nullable=False, default=True),
 )
+
+messages = sqlalchemy.Table(
+    "messages",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("name", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("email", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("comment", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("address", sqlalchemy.String),
+    sqlalchemy.Column("telephone", sqlalchemy.String),
+    sqlalchemy.Column("seen", sqlalchemy.Boolean, default=False),
+    sqlalchemy.Column("timestamp", sqlalchemy.DateTime, default=sqlalchemy.func.now()),
+)
