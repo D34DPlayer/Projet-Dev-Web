@@ -40,12 +40,6 @@ import {
   BAlert,
   BForm,
   BFormGroup,
-  BFormInput,
-  BInputGroup,
-  BInputGroupText,
-  BFormTextarea,
-  BFormSelect,
-  BFormCheckbox,
   BFormFile,
 } from "bootstrap-vue";
 export default {
