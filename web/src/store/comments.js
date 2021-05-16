@@ -17,6 +17,12 @@ const mutations = {
   updateCurrentComment(state, payload) {
     state.currentComment = payload;
   },
+  seenComment(state, id) {
+    let comment = state.comments.findIndex(v => v.id === id);
+    if (comment >= 0) {
+      state.comments[comment].seen = true;
+    }
+  },
 };
 
 const actions = {

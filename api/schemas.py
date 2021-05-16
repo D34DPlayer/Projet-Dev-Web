@@ -225,9 +225,9 @@ class Comment(CommentBrief):
     async def get(cls, id: int):
         query = comments.select().where(comments.c.id == id)
         comment = await db.fetch_one(query)
-        if comment:
-            await cls.change_seen(id, True)
-            return Comment(**comment)
+        if comment and not comment['seen']:
+            return await cls.change_seen(id, True)
+        return comment or None
 
     @classmethod
     async def add(cls, comment):

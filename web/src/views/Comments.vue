@@ -5,8 +5,12 @@
         :items="comments"
         :fields="fields"
         @row-clicked="infoComment">
+      <template #cell(name)="row">
+        <span :class="row.item.seen ? '' : 'puce'">{{ row.item.name }}</span>
+      </template>
     </b-table-lite>
     <b-modal
+    ok-only
     id="moadalComment"
     ref="modalComment"
     size="lg"
@@ -46,7 +50,6 @@ export default {
     return {
       fields: [
         { key: "name", label: "Nom", class: "text-center" },
-        { key: "seen", label: "Vu", class: "text-center" },
         {
           key: "timestamp",
           label: "Date",
@@ -63,6 +66,7 @@ export default {
       return newDate.toLocaleDateString("fr-FR", options);
     },
     async infoComment(item) {
+      this.$store.commit("comments/seenComment", item.id);
       await this.$store.dispatch("comments/getComment",item.id);
       this.$refs.modalComment.show();
     },
@@ -73,17 +77,41 @@ export default {
     },
     info() {
       return this.$store.state.comments.currentComment;
-    }
+    },
+    isConnected() {
+      return !!this.$store.state.users.user.token;
+    },
+  },
+  watch: {
+    isConnected(val) {
+      if (!val) this.$router.push("/login");
+    },
   },
   mounted() {
-    this.$store.dispatch("comments/getComments");
+    if (!this.isConnected) {
+      this.$router.push("/login");
+    } else {
+      this.$store.dispatch("comments/getComments");
+    }
   },
 };
 </script>
 
 
-<style scoped>
+<style>
+tbody tr:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .label {
   font-weight: bolder;
+}
+.puce::before {
+  content: "●";
+  color: var(--primary);
+  font-size: 1.5em;
+  display: inline-block;
+  float: left;
+  margin-top: -0.30em;
 }
 </style>
