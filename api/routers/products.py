@@ -31,7 +31,6 @@ def delete_files(files: List[str]):
 @router.post("", response_model=Product, dependencies=[Depends(is_connected)])
 async def add_product(product: Product):
     """Add a product."""
-    print(product)
     return await Product.add(product)
 
 
