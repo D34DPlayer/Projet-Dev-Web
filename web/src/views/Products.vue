@@ -30,7 +30,9 @@ export default {
   }),
   name: "ProduitList",
   mounted() {
-    this.$store.dispatch("products/getProducts");
+    this.$store.dispatch("products/getProducts", [
+      this.$store.state.products.page,
+    ]);
   },
   computed: {
     products() {

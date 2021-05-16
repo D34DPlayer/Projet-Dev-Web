@@ -214,7 +214,7 @@ export default {
   watch: {
     product(val) {
       this.update(val);
-    }
+    },
   },
   mounted() {
     this.update(this.product);
@@ -222,15 +222,15 @@ export default {
   methods: {
     update(val) {
       if (val) {
-      this.$set(this.form, "name", val.name);
-      this.$set(this.form, "categorie", val.categorie);
-      this.$set(this.form, "description", val.description);
-      this.$set(this.form, "price", val.price);
-      this.$set(this.form, "promo_price", val.promo_price);
-      this.$set(this.form, "price_type", val.price_type);
-      this.$set(this.form, "visibility", val.visibility);
-      this.edit = true;
-    }
+        this.$set(this.form, "name", val.name);
+        this.$set(this.form, "categorie", val.categorie);
+        this.$set(this.form, "description", val.description);
+        this.$set(this.form, "price", val.price);
+        this.$set(this.form, "promo_price", val.promo_price);
+        this.$set(this.form, "price_type", val.price_type);
+        this.$set(this.form, "visibility", val.visibility);
+        this.edit = true;
+      }
     },
     async onSubmit() {
       let response;
@@ -248,7 +248,9 @@ export default {
         case 200: // It went OK
           break;
         case 404: // Product not found
-          await this.$store.dispatch("products/getProducts");
+          await this.$store.dispatch("products/getProducts", [
+            this.$store.state.products.page,
+          ]);
           break;
         case 401: // Invalid token, Vuex will logout
           return;

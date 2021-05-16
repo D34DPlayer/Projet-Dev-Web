@@ -186,7 +186,9 @@ export default {
 
       switch (response.status) {
         case 404: // The product couldn't be found
-          await this.$store.dispatch("products/getProducts");
+          await this.$store.dispatch("products/getProducts", [
+            this.$store.state.products.page,
+          ]);
           break;
         case 200: // It went OK
         case 401: // Wrong credentials, the page will redirect itself
