@@ -9,7 +9,7 @@ class TestContact:
         address=Address(city="Pécrot", street="Rue machin"),
         phone=Phone(mobile="555 06 90 12", office="010 23 23 23"),
         email="test@boucherie.tk",
-        facebook="facedebouc.com/boucherie",
+        facebook="https://www.facebook.com/boucherie",
         tva="BE 57 01 35 42"
     )
 
