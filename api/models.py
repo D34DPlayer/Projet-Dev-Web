@@ -43,8 +43,8 @@ products = sqlalchemy.Table(
     sqlalchemy.Column("stock", sqlalchemy.Boolean, nullable=False, default=True),
 )
 
-messages = sqlalchemy.Table(
-    "messages",
+comments = sqlalchemy.Table(
+    "comments",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("name", sqlalchemy.String, nullable=False),

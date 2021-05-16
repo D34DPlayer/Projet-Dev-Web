@@ -1,11 +1,11 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, horaire, products, users, messages
+from .models import PriceType, horaire, products, users, comments
 from datetime import datetime
 
 
@@ -203,14 +203,14 @@ class Product(BaseModel):
             return Product(**product)
 
 
-class MessageBrief(BaseModel):
+class CommentBrief(BaseModel):
     id: Optional[int]
     name: str
     seen: Optional[bool] = False
-    timestamp: Optional[datetime] = datetime.now()
+    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 
-class Message(MessageBrief):
+class Comment(CommentBrief):
     email: str
     comment: str
     address: Optional[str]
@@ -218,41 +218,41 @@ class Message(MessageBrief):
 
     @classmethod
     async def get_all(cls):
-        query = messages.select()
+        query = comments.select()
         return await db.fetch_all(query)
 
     @classmethod
     async def get(cls, id: int):
-        query = messages.select().where(messages.c.id == id)
-        message = await db.fetch_one(query)
-        if message:
+        query = comments.select().where(comments.c.id == id)
+        comment = await db.fetch_one(query)
+        if comment:
             await cls.change_seen(id, True)
-            return Message(**message)
+            return Comment(**comment)
 
     @classmethod
-    async def add(cls, message):
-        values = message.dict()
-        if message.id is None:
+    async def add(cls, comment):
+        values = comment.dict()
+        if comment.id is None:
             values.pop('id')
 
-        query = messages.insert().values(**values)
-        message.id = await db.execute(query)
+        query = comments.insert().values(**values)
+        comment.id = await db.execute(query)
 
-        return message
+        return comment
 
     @classmethod
     async def delete(cls, id: int):
-        old_message = await cls.get(id)
+        old_comment = await cls.get(id)
 
-        if old_message:
-            query = messages.delete().where(messages.c.id == id)
+        if old_comment:
+            query = comments.delete().where(comments.c.id == id)
             await db.execute(query)
 
-            return old_message
+            return old_comment
 
     @classmethod
     async def change_seen(cls, id: int, seen: bool):
-        query = messages.update().where(messages.c.id == id).values(seen=seen).returning(messages)
-        message = await db.fetch_one(query)
-        if message:
-            return Message(**message)
+        query = comments.update().where(comments.c.id == id).values(seen=seen).returning(comments)
+        comment = await db.fetch_one(query)
+        if comment:
+            return Comment(**comment)
