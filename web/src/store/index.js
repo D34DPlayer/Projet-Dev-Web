@@ -5,10 +5,11 @@ import createPersistedState from "vuex-persistedstate";
 import users from "./users";
 import horaire from "./horaire";
 import products from "./products";
+import comments from "./comments";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   plugins: [createPersistedState()],
-  modules: { users, horaire, products },
+  modules: { users, horaire, products, comments },
 });
