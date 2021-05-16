@@ -5,8 +5,10 @@
         <b-card-body>
           <b-card-title>{{ product.name }}</b-card-title>
           <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
-          <b-card-text :class="product.promo_price ? 'promo' : ''"
-            >{{ (product.promo_price || product.price).toFixed(2) }}€
+          <b-card-text
+            :class="product.promo_price && product.stock ? 'promo' : ''"
+          >
+            {{ (product.promo_price || product.price).toFixed(2) }}€
           </b-card-text>
         </b-card-body>
         <b-aspect
