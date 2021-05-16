@@ -96,9 +96,11 @@
     </b-table>
     <b-pagination
       v-model="currentPage"
-      :total-rows="rows"
+      :total-rows="totalProducts"
       :per-page="perPage"
-      aria-controls="my-table"
+      limit="10"
+      align="center"
+      small
     ></b-pagination>
   </b-container>
 </template>
@@ -173,6 +175,22 @@ export default {
         { key: "delete", label: "Supprimer", class: "text-center" },
       ],
     };
+  },
+  computed: {
+    totalProducts() {
+      return this.$store.state.products.total_products;
+    },
+    perPage() {
+      return this.$store.state.products.size;
+    },
+    currentPage: {
+      get() {
+        return this.$store.state.products.page;
+      },
+      set(value) {
+        this.$store.dispatch("products/getProducts", [value]);
+      },
+    },
   },
   methods: {
     async toggleVisibility(id, visibility) {
