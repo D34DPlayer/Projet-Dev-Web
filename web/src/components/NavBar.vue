@@ -33,6 +33,7 @@
           <b-dropdown-item to="/admin">
             Panneau d'administration
           </b-dropdown-item>
+          <b-dropdown-item to="/comments"> Commentaires </b-dropdown-item>
           <b-dropdown-item href="/api/docs">
             Documentation API
           </b-dropdown-item>
