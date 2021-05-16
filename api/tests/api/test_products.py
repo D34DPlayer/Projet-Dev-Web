@@ -163,6 +163,26 @@ class TestProduct:
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == []
 
+    def test_edit_product(self, client: TestClient, headers: dict):
+        product = self.product.dict()
+        product['description'] = "A ne consommer que les mardis à 14h."
+
+        # Check for authorizations
+        response = client.put(f"/products/{self.product.id}", json=product)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+        # Update a product that doesn't exist. It should return a 404 error.
+        response = client.put("/products/666", json=product, headers=headers)
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+        # Update the product's description.
+        response = client.put(f"/products/{self.product.id}", json=product, headers=headers)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == product
+
+        # Update the new description for the following tests.
+        self.product.description = response.json().get('description')
+
     def test_delete_product(self, client: TestClient, headers: dict):
         # Check for authorizations
         response = client.delete(f"/products/{self.product.id}")

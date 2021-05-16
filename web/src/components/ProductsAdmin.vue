@@ -81,9 +81,10 @@
               <img class="modal-image" :src="url" :alt="row.item.name" />
             </b-modal>
           </div>
-          <b-button pill size="lg">
+          <b-button pill size="lg" v-b-modal="`modal-image-${row.item.id}`">
             <b-icon-cloud-arrow-up size="lg" />
           </b-button>
+          <AddImageForm :productId="row.item.id" />
         </div>
       </b-container>
     </template>
@@ -92,6 +93,7 @@
 
 <script>
 import ProductForm from "@/components/ProductForm.vue";
+import AddImageForm from "@/components/AddImageForm";
 import {
   BTable,
   BFormCheckbox,
@@ -111,6 +113,7 @@ export default {
     BIconTrashFill,
     BIconPencilSquare,
     BIconCloudArrowUp,
+    AddImageForm,
   },
   directives: { "b-modal": VBModal },
   name: "ProductsAdmin",

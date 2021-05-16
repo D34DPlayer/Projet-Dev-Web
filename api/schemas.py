@@ -156,10 +156,10 @@ class Product(BaseModel):
             return Product(**product)
 
     @classmethod
-    def edit(cls, id: int, product: 'Product') -> 'Product':
+    async def edit(cls, id: int, product: 'Product') -> 'Product':
         product = product.dict()
         product.pop('id')
-        return cls.update(id, **product)
+        return await cls.update(id, **product)
 
     @classmethod
     async def edit_photos(cls, id: int, new_photos: list[str]) -> list[str]:

@@ -121,6 +121,7 @@ _test-back:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm api
 else
+	$(DC_test) build api
 	-$(DC_test) run --rm api
 endif
 
@@ -129,6 +130,7 @@ test-front-unit:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm web-unit
 else
+	$(DC_test) build web-unit
 	-$(DC_test) run --rm web-unit
 endif
 
@@ -137,6 +139,7 @@ _test-front-e2e:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm web-e2e
 else
+	$(DC_test) build web-e2e
 	-$(DC_test) run --rm web-e2e
 endif
 
