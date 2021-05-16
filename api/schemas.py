@@ -8,6 +8,12 @@ from .db import db
 from .models import PriceType, contact, horaire, products, users
 
 
+class PaginationModel(BaseModel):
+    page: int = 1
+    size: int = 50
+    total: int
+
+
 class TokenModel(BaseModel):
     access_token: str
     token_type = "bearer"
@@ -139,9 +145,15 @@ class Product(BaseModel):
             return Product(**product)
 
     @classmethod
-    async def get_all(cls) -> list['Product']:
-        query = products.select()
-        return await db.fetch_all(query)
+    async def get_all(cls, page: int = 1, size: int = 50) -> 'ListProduct':
+        query = products.select().order_by(products.c.id).offset((page - 1) * size).limit(size)
+        total = await db.execute(products.count())
+        return ListProduct(
+            items=await db.fetch_all(query),
+            total=total,
+            page=page,
+            size=size
+        )
 
     @classmethod
     async def get_photos(cls, id: int) -> list[str]:
@@ -196,6 +208,10 @@ class Product(BaseModel):
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
+
+
+class ListProduct(PaginationModel):
+    items: list[Product]
 
 
 class Address(BaseModel):
