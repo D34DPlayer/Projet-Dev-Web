@@ -113,6 +113,9 @@ _test-setup:
 			'\$$2b\$$12\$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
 		);"
 
+lint:
+	$(DC_test) run --rm api-lint
+
 _test-cleanup:
 	@echo Deleting the test database...
 	@$(DC_test) down
@@ -145,8 +148,8 @@ else
 	-$(DC_test) run --rm web-e2e
 endif
 
-test-all: _test-setup _test-back test-front-unit _test-cleanup
+test-all: _test-setup lint _test-back test-front-unit _test-cleanup
 
-test-back: _test-setup _test-back _test-cleanup
+test-back: _test-setup lint _test-back _test-cleanup
 
 test-front-e2e: _test-setup _test-front-e2e _test-cleanup
