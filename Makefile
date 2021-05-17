@@ -114,7 +114,8 @@ _test-setup:
 		);"
 
 lint:
-	$(DC_test) run --rm api-lint
+	@echo Linting backend...
+	$(DC_test) run --rm -w /api api flake8
 
 _test-cleanup:
 	@echo Deleting the test database...

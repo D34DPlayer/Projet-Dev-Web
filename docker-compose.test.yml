@@ -40,12 +40,6 @@ services:
       - ACCESS_TOKEN_EXPIRE=${ACCESS_TOKEN_EXPIRE}
     depends_on:
       - db
-  api-lint:
-    build: ./api
-    working_dir: /api
-    command: python -m flake8 /
-    volumes:
-      - ./api:/api
 
 volumes:
   postgres_data: {}
