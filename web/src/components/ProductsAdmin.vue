@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <b-table striped bordered responsive :items="products" :fields="fields">
+    <b-table striped bordered responsive :items="products.products" :fields="fields">
       <!-- Bouton détail -->
       <template #cell(detail)="row">
         <b-button block variant="info" size="sm" @click="row.toggleDetails">
@@ -178,14 +178,14 @@ export default {
   },
   computed: {
     totalProducts() {
-      return this.$store.state.products.total_products;
+      return this.products.total_products;
     },
     perPage() {
-      return this.$store.state.products.size;
+      return this.products.size;
     },
     currentPage: {
       get() {
-        return this.$store.state.products.page;
+        return this.products.page;
       },
       set(value) {
         this.$store.dispatch("products/getProducts", [value]);
@@ -205,7 +205,7 @@ export default {
       switch (response.status) {
         case 404: // The product couldn't be found
           await this.$store.dispatch("products/getProducts", [
-            this.$store.state.products.page,
+            this.currentPage,
           ]);
           break;
         case 200: // It went OK

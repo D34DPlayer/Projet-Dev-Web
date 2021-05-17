@@ -57,7 +57,7 @@ export default {
       return this.$store.state.users.users;
     },
     products() {
-      return this.$store.state.products.products;
+      return this.$store.state.products;
     },
   },
   watch: {
