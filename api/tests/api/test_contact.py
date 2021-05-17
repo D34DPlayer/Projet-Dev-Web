@@ -17,7 +17,7 @@ class TestContact:
         # Get contact informations. It should have the default values
         response = client.get("/contact")
         assert response.status_code == status.HTTP_200_OK
-        assert Contact(**response.json()) # validation
+        assert Contact(**response.json())  # validation
 
     def test_edit_contact(self, client: TestClient, headers: dict):
         # Check for authorizations

@@ -223,7 +223,7 @@ class Contact(BaseModel):
             # Insert default values
             # Currently it's not possible with sqlalchemy
             # And we use "returning" to return the inserted values.
-            data = await db.fetch_one(f"INSERT INTO contact DEFAULT VALUES RETURNING *")
+            data = await db.fetch_one("INSERT INTO contact DEFAULT VALUES RETURNING *")
 
         # Convert it to a dictionary
         data = dict(data)
