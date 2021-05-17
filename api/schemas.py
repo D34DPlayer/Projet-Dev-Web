@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
@@ -147,7 +147,8 @@ class Product(BaseModel):
     @classmethod
     async def get_all(cls, page: int = 1, size: int = 50) -> 'ListProduct':
         query = products.select().order_by(products.c.id).offset((page - 1) * size).limit(size)
-        total = await db.execute(products.count())
+        total = await db.execute(select([func.count()]).select_from(products))
+
         return ListProduct(
             items=await db.fetch_all(query),
             total=total,
