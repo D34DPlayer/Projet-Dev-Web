@@ -117,6 +117,10 @@ lint:
 	@echo Linting backend...
 	$(DC_test) run --rm -w /api api flake8
 
+format:
+	@echo Formatting backend...
+	docker run --rm -v $(shell pwd)/api:/data cytopia/black --config setup.cfg .
+
 _test-cleanup:
 	@echo Deleting the test database...
 	@$(DC_test) down
