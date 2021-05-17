@@ -119,7 +119,7 @@ lint:
 
 format:
 	@echo Formatting backend...
-	docker run --rm -v $(shell pwd)/api:/data cytopia/black --config setup.cfg .
+	docker run --rm -v $(shell pwd)/api:/data cytopia/black .
 
 _test-cleanup:
 	@echo Deleting the test database...
