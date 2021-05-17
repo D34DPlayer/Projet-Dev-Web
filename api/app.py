@@ -15,9 +15,9 @@ from slowapi.middleware import SlowAPIMiddleware
 from .db import db
 from .schemas import DBUser, TokenModel
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE'))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE"))
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 app = FastAPI(title="Boucherie", root_path="/api")
@@ -92,7 +92,5 @@ async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequ
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}

@@ -51,10 +51,7 @@ contact = sqlalchemy.Table(
     sqlalchemy.Column("address_street", sqlalchemy.String, nullable=False, server_default="Chaussée de Namur 301"),
     sqlalchemy.Column("email", sqlalchemy.String, nullable=False, server_default="info@boucherie-vangeebergen.be"),
     sqlalchemy.Column(
-        "facebook",
-        sqlalchemy.String,
-        nullable=False,
-        server_default="https://www.facebook.com/boucherievangeebergen/"
+        "facebook", sqlalchemy.String, nullable=False, server_default="https://www.facebook.com/boucherievangeebergen/"
     ),
     sqlalchemy.Column("phone_mobile", sqlalchemy.String, nullable=False, server_default="0477 86 07 92"),
     sqlalchemy.Column("phone_office", sqlalchemy.String, nullable=False, server_default="081 40 06 16"),

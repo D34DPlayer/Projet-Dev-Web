@@ -117,10 +117,10 @@ class Product(BaseModel):
     stock: bool = True
 
     @classmethod
-    async def add(cls, product: 'Product') -> 'Product':
+    async def add(cls, product: "Product") -> "Product":
         values = product.dict()
         if product.id is None:
-            values.pop('id')
+            values.pop("id")
 
         query = products.insert().values(**values)
         product.id = await db.execute(query)
@@ -132,14 +132,14 @@ class Product(BaseModel):
     #     pass
 
     @classmethod
-    async def get(cls, id: int) -> Optional['Product']:
+    async def get(cls, id: int) -> Optional["Product"]:
         query = products.select().where(products.c.id == id)
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
 
     @classmethod
-    async def get_all(cls) -> list['Product']:
+    async def get_all(cls) -> list["Product"]:
         query = products.select()
         return await db.fetch_all(query)
 
@@ -149,16 +149,16 @@ class Product(BaseModel):
         return await db.execute(query)
 
     @classmethod
-    async def update(cls, id: int, **kwargs) -> 'Product':
+    async def update(cls, id: int, **kwargs) -> "Product":
         query = products.update().where(products.c.id == id).values(**kwargs).returning(products)
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
 
     @classmethod
-    async def edit(cls, id: int, product: 'Product') -> 'Product':
+    async def edit(cls, id: int, product: "Product") -> "Product":
         product = product.dict()
-        product.pop('id')
+        product.pop("id")
         return await cls.update(id, **product)
 
     @classmethod
@@ -175,7 +175,7 @@ class Product(BaseModel):
             return await Product.edit_photos(id, [url for url in photos if url not in to_remove])
 
     @classmethod
-    async def delete(cls, product_id: int) -> Optional['Product']:
+    async def delete(cls, product_id: int) -> Optional["Product"]:
         product = await cls.get(product_id)
         if product:
             query = products.delete().where(products.c.id == product_id)
@@ -184,14 +184,14 @@ class Product(BaseModel):
         return product
 
     @classmethod
-    async def show(cls, id: int) -> Optional['Product']:
+    async def show(cls, id: int) -> Optional["Product"]:
         query = products.update().where(products.c.id == id).values(visibility=True).returning(products)
         product = await db.fetch_one(query)
         if product:
             return Product(**product)
 
     @classmethod
-    async def hide(cls, id: int) -> Optional['Product']:
+    async def hide(cls, id: int) -> Optional["Product"]:
         query = products.update().where(products.c.id == id).values(visibility=False).returning(products)
         product = await db.fetch_one(query)
         if product:
@@ -216,7 +216,7 @@ class Contact(BaseModel):
     tva: str
 
     @classmethod
-    async def get(cls) -> 'Contact':
+    async def get(cls) -> "Contact":
         """Get the contact informations from hte database. If it doesn't exists yet, it will insert default values."""
         data = await db.fetch_one(contact.select())
         if data is None:
@@ -228,35 +228,31 @@ class Contact(BaseModel):
         # Convert it to a dictionary
         data = dict(data)
         # Then convert address_* to an object
-        data['address'] = Address(
-            city=data.pop('address_city'),
-            street=data.pop('address_street')
-        )
+        data["address"] = Address(city=data.pop("address_city"), street=data.pop("address_street"))
         # Do the same for phon_*
-        data['phone'] = Phone(
-            mobile=data.pop('phone_mobile'),
-            office=data.pop('phone_office')
-        )
+        data["phone"] = Phone(mobile=data.pop("phone_mobile"), office=data.pop("phone_office"))
         # And return this contact
         return Contact(**data)
 
     @classmethod
-    async def edit(cls, c: 'Contact') -> 'Contact':
+    async def edit(cls, c: "Contact") -> "Contact":
         """Edit the contact informations."""
         # Convert the contact to a dictionary
         values = c.dict()
         # Remove address and phone from the values
-        values.pop('address')
-        values.pop('phone')
+        values.pop("address")
+        values.pop("phone")
 
         # Convert the address and phone numbers to  flat data
-        values.update({
-            'id': 1,  # Update the unique row
-            'address_city': c.address.city,
-            'address_street': c.address.street,
-            'phone_mobile': c.phone.mobile,
-            'phone_office': c.phone.office
-        })
+        values.update(
+            {
+                "id": 1,  # Update the unique row
+                "address_city": c.address.city,
+                "address_street": c.address.street,
+                "phone_mobile": c.phone.mobile,
+                "phone_office": c.phone.office,
+            }
+        )
 
         # Execute the query and return the inserted values
         await db.execute(contact.update().values(**values))

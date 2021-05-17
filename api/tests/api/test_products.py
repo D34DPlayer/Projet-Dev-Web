@@ -5,11 +5,11 @@ from fastapi.testclient import TestClient
 
 class TestProduct:
     product = Product(
-        name='Haché',
-        categorie='Viande',
-        description='A consommer avec modération.',
+        name="Haché",
+        categorie="Viande",
+        description="A consommer avec modération.",
         price=4.5,
-        price_type=PriceType.kilo
+        price_type=PriceType.kilo,
     )
 
     def test_add_product(self, client: TestClient, headers: dict):
@@ -20,8 +20,8 @@ class TestProduct:
         # Add a product
         response = client.post("/products", json=self.product.dict(), headers=headers)
         assert response.status_code == status.HTTP_200_OK
-        assert isinstance(response.json().get('id'), int)  # The id must be given and should be an integer
-        self.product.id = response.json().get('id')  # Assign it so we can use it later and use Pydantic validation
+        assert isinstance(response.json().get("id"), int)  # The id must be given and should be an integer
+        self.product.id = response.json().get("id")  # Assign it so we can use it later and use Pydantic validation
         assert response.json() == self.product
 
     def test_get_products(self, client: TestClient):
@@ -43,7 +43,7 @@ class TestProduct:
         # Update the visibility of our product.
         response = client.put(f"/products/{self.product.id}/visibility", json=dict(visibility=True), headers=headers)
         visible = self.product.dict()  # Copy the product
-        visible['visibility'] = True  # and update it's visibility to true.
+        visible["visibility"] = True  # and update it's visibility to true.
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == visible
 
@@ -64,7 +64,7 @@ class TestProduct:
         # Update the stock of our product.
         response = client.put(f"/products/{self.product.id}/stock", json=dict(stock=False), headers=headers)
         out_of_stock = self.product.dict()  # Copy the product
-        out_of_stock['stock'] = False  # and update it's stock to true.
+        out_of_stock["stock"] = False  # and update it's stock to true.
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == out_of_stock
 
@@ -85,12 +85,10 @@ class TestProduct:
 
     def test_upload_images(self, client: TestClient, headers: dict):
         files = [
-            ['files', ('file1.png', 'image_data', 'image/png')],
-            ['files', ('file2.png', 'image_data', 'image/png')]
+            ["files", ("file1.png", "image_data", "image/png")],
+            ["files", ("file2.png", "image_data", "image/png")],
         ]
-        invalid_files = {
-            'files': ('file3.png', 'data', 'text/html')
-        }
+        invalid_files = {"files": ("file3.png", "data", "text/html")}
 
         # Check for authorizations
         response = client.post(f"/products/{self.product.id}/images")
@@ -111,18 +109,15 @@ class TestProduct:
         response = client.post(f"/products/{self.product.id}/images", files=files, headers=headers)
         assert response.status_code == status.HTTP_200_OK
         assert isinstance(response.json(), list) and len(response.json()) == 2
-        assert response.json()[0].endswith('file1.png')
-        assert response.json()[1] == f'/images/products/{self.product.id}/file2.png'
+        assert response.json()[0].endswith("file1.png")
+        assert response.json()[1] == f"/images/products/{self.product.id}/file2.png"
 
         # Send the files once more. It should conflict with the images already added and return a 409 error.
         response = client.post(f"/products/{self.product.id}/images", files=files, headers=headers)
         assert response.status_code == status.HTTP_409_CONFLICT
 
     def test_get_images(self, client: TestClient):
-        files = [
-            'file1.png',
-            f'/images/products/{self.product.id}/file2.png'
-        ]
+        files = ["file1.png", f"/images/products/{self.product.id}/file2.png"]
 
         # Check that the images previously inserted were added.
         response = client.get(f"/products/{self.product.id}/images")
@@ -132,10 +127,7 @@ class TestProduct:
         assert response.json()[1] == files[1]
 
     def test_delete_images(self, client: TestClient, headers: dict):
-        files = [
-            'file1.png',
-            f'/images/products/{self.product.id}/file2.png'
-        ]
+        files = ["file1.png", f"/images/products/{self.product.id}/file2.png"]
 
         # Check for authorizations
         response = client.delete(f"/products/{self.product.id}/images")
@@ -146,7 +138,7 @@ class TestProduct:
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
         # Delete an image that doesn't exist. It won't return any error, but won't remove anything.
-        response = client.delete(f"/products/{self.product.id}/images", json=['file3.png'], headers=headers)
+        response = client.delete(f"/products/{self.product.id}/images", json=["file3.png"], headers=headers)
         assert response.status_code == status.HTTP_200_OK
         # Both files should still exists.
         assert isinstance(response.json(), list) and len(response.json()) == 2
@@ -165,7 +157,7 @@ class TestProduct:
 
     def test_edit_product(self, client: TestClient, headers: dict):
         product = self.product.dict()
-        product['description'] = "A ne consommer que les mardis à 14h."
+        product["description"] = "A ne consommer que les mardis à 14h."
 
         # Check for authorizations
         response = client.put(f"/products/{self.product.id}", json=product)
@@ -181,7 +173,7 @@ class TestProduct:
         assert response.json() == product
 
         # Update the new description for the following tests.
-        self.product.description = response.json().get('description')
+        self.product.description = response.json().get("description")
 
     def test_delete_product(self, client: TestClient, headers: dict):
         # Check for authorizations
