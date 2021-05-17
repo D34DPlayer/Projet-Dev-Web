@@ -1,7 +1,6 @@
 name: CI/CD
 
-on:
-  [push, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 jobs:
   testing:
@@ -43,6 +42,4 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull
-            make compose_file=docker-compose.prod.yml build
-            make compose_file=docker-compose.prod.yml upgrade
-
+            make compose_file=docker-compose.prod.yml build upgrade
