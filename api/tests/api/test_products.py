@@ -44,7 +44,11 @@ class TestProduct:
         assert response.json()['items'] == []
 
         # Check an invalid page.
-        response = client.get("/products", params=dict(size=24, page=0))
+        response = client.get("/products", params=dict(page=0))
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+        # Check a really big page.
+        response = client.get("/products", params=dict(size=99999))
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     def test_update_product_visibility(self, client: TestClient, headers: dict):
