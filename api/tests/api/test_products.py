@@ -1,6 +1,7 @@
-from api.schemas import PriceType, Product
 from fastapi import status
 from fastapi.testclient import TestClient
+
+from api.schemas import PriceType, Product
 
 
 class TestProduct:
@@ -27,9 +28,28 @@ class TestProduct:
     def test_get_products(self, client: TestClient):
         # Check if the product we added in the previous test has been added.
         # We run the tests against a fresh database every time, so it should contain only our product.
-        response = client.get("/products")
+        response = client.get("/products", params=dict(size=24))
         assert response.status_code == status.HTTP_200_OK
-        assert response.json() == [self.product]
+        assert response.json()['page'] == 1
+        assert response.json()['size'] == 24
+        assert response.json()['total'] == 1
+        assert response.json()['items'] == [self.product]
+
+        # Check the second page. We should get an empty list
+        response = client.get("/products", params=dict(size=24, page=2))
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()['page'] == 2
+        assert response.json()['size'] == 24
+        assert response.json()['total'] == 1
+        assert response.json()['items'] == []
+
+        # Check an invalid page.
+        response = client.get("/products", params=dict(page=0))
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+        # Check a really big page.
+        response = client.get("/products", params=dict(size=99999))
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     def test_update_product_visibility(self, client: TestClient, headers: dict):
         # Check for authorizations
@@ -192,4 +212,5 @@ class TestProduct:
         # Check that the product does not exists anymore.
         response = client.get("/products")
         assert response.status_code == status.HTTP_200_OK
-        assert response.json() == []
+        assert response.json()['total'] == 0
+        assert response.json()['items'] == []
