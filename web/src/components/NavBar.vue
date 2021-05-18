@@ -33,7 +33,9 @@
           <b-dropdown-item to="/admin">
             Panneau d'administration
           </b-dropdown-item>
-          <b-dropdown-item to="/comments"> Commentaires </b-dropdown-item>
+          <b-dropdown-item to="/comments">
+            Commentaires <b-badge variant="danger" v-if="unseen">{{ unseen }}</b-badge>
+          </b-dropdown-item>
           <b-dropdown-item href="/api/docs">
             Documentation API
           </b-dropdown-item>
@@ -62,6 +64,12 @@ export default {
     user() {
       return this.$store.state.users.user.username;
     },
+    unseen() {
+      return this.$store.getters["comments/unreadComments"];
+    },
+    comments() {
+      return this.$store.state.comments.comments.length;
+    }
   },
   methods: {
     updateScroll() {
@@ -70,6 +78,9 @@ export default {
   },
   mounted() {
     window.addEventListener("scroll", this.updateScroll);
+    if (this.isConnected) {
+      this.$store.dispatch("comments/getComments");
+    }
   },
 };
 </script>
@@ -85,5 +96,8 @@ export default {
 }
 .big {
   width: 6rem;
+}
+.badge {
+  transform: translateY(-.15rem);
 }
 </style>
