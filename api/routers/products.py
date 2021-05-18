@@ -1,11 +1,11 @@
 import os
 import shutil
-
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
 from typing import List, Tuple
 
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
+
 from ..app import is_connected
-from ..schemas import Product, VisibilityModel, StockModel
+from ..schemas import ListProduct, Product, StockModel, VisibilityModel
 
 router = APIRouter(
     prefix="/products",
@@ -31,7 +31,6 @@ def delete_files(files: List[str]):
 @router.post("", response_model=Product, dependencies=[Depends(is_connected)])
 async def add_product(product: Product):
     """Add a product."""
-    print(product)
     return await Product.add(product)
 
 
@@ -88,10 +87,16 @@ async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
     return images
 
 
-@router.get("", response_model=list[Product])
-async def get_products():
+@router.get("", response_model=ListProduct)
+async def get_products(page: int = 1, size: int = 50):
     """get a list of product."""
-    return await Product.get_all()
+    if page < 1:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Page index must be at least 1.")
+
+    if size > 100:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Page size cannot exceed 100 items.")
+
+    return await Product.get_all(page, size)
 
 
 @router.delete("/{product_id}", response_model=Product, dependencies=[Depends(is_connected)])

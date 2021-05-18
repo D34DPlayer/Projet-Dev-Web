@@ -1,7 +1,7 @@
 <template>
   <b-col xl="3" md="4" sm="6" cols="12" class="my-3">
     <router-link :to="`/products/${product.id}`" class="link">
-      <b-card tag="article" no-body>
+      <b-card tag="article" no-body class="h-100">
         <b-card-body>
           <b-card-title>{{ product.name }}</b-card-title>
           <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>

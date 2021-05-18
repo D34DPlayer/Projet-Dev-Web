@@ -1,94 +1,108 @@
 <template>
-  <b-table striped bordered responsive :items="products" :fields="fields">
-    <!-- Bouton détail -->
-    <template #cell(detail)="row">
-      <b-button block variant="info" size="sm" @click="row.toggleDetails">
-        {{ row.detailsShowing ? "Cacher" : "Afficher" }}
-      </b-button>
-    </template>
+  <b-container>
+    <b-table striped bordered responsive :items="products.products" :fields="fields">
+      <!-- Bouton détail -->
+      <template #cell(detail)="row">
+        <b-button block variant="info" size="sm" @click="row.toggleDetails">
+          {{ row.detailsShowing ? "Cacher" : "Afficher" }}
+        </b-button>
+      </template>
 
-    <!-- Checkbox visibilité -->
-    <template #cell(visibility)="row">
-      <b-form-checkbox
-        switch
-        v-model="row.item.visibility"
-        @change="toggleVisibility(row.item.id, row.item.visibility)"
-      ></b-form-checkbox>
-    </template>
+      <!-- Checkbox visibilité -->
+      <template #cell(visibility)="row">
+        <b-form-checkbox
+          switch
+          v-model="row.item.visibility"
+          @change="toggleVisibility(row.item.id, row.item.visibility)"
+        ></b-form-checkbox>
+      </template>
 
-    <!-- Checkbox stock -->
-    <template #cell(stock)="row">
-      <b-form-checkbox
-        switch
-        v-model="row.item.stock"
-        @change="toggleStock(row.item.id, row.item.stock)"
-      ></b-form-checkbox>
-    </template>
+      <!-- Checkbox stock -->
+      <template #cell(stock)="row">
+        <b-form-checkbox
+          switch
+          v-model="row.item.stock"
+          @change="toggleStock(row.item.id, row.item.stock)"
+        ></b-form-checkbox>
+      </template>
 
-    <!-- Bouton edit -->
-    <template #cell(edit)="row">
-      <b-button block size="sm" v-b-modal="`modal-edit-${row.item.id}`">
-        <b-icon-pencil-square />
-      </b-button>
-      <ProductForm :product="row.item" />
-    </template>
+      <!-- Bouton edit -->
+      <template #cell(edit)="row">
+        <b-button block size="sm" v-b-modal="`modal-edit-${row.item.id}`">
+          <b-icon-pencil-square />
+        </b-button>
+        <ProductForm :product="row.item" />
+      </template>
 
-    <!-- Bouton delete -->
-    <template #cell(delete)="row">
-      <b-button
-        block
-        variant="danger"
-        size="sm"
-        v-b-modal="`modal-delete-${row.item.id}`"
-      >
-        <b-icon-trash-fill />
-      </b-button>
-      <b-modal
-        @ok="deleteProduct(row.item.id, $event)"
-        :id="`modal-delete-${row.item.id}`"
-        title="Effacer le produit"
-        size="lg"
-      >
-        <p>Voulez-vous vraiment supprimer le produit {{ row.item.name }} ?</p>
-      </b-modal>
-    </template>
+      <!-- Bouton delete -->
+      <template #cell(delete)="row">
+        <b-button
+          block
+          variant="danger"
+          size="sm"
+          v-b-modal="`modal-delete-${row.item.id}`"
+        >
+          <b-icon-trash-fill />
+        </b-button>
+        <b-modal
+          @ok="deleteProduct(row.item.id, $event)"
+          :id="`modal-delete-${row.item.id}`"
+          title="Effacer le produit"
+          size="lg"
+        >
+          <p>Voulez-vous vraiment supprimer le produit {{ row.item.name }} ?</p>
+        </b-modal>
+      </template>
 
-    <!-- Develloppement de détail (dscr img) -->
-    <template #row-details="row">
-      <b-container>
-        {{ row.item.description }}
-        <div class="images-container">
-          <div class="images-item" v-for="(url, i) in row.item.photos" :key="i">
-            <b-button
-              size="sm"
-              variant="danger"
-              class="image-delete"
-              v-b-modal="`modal-delete-${row.item.id}-image-${i}`"
+      <!-- Develloppement de détail (dscr img) -->
+      <template #row-details="row">
+        <b-container>
+          {{ row.item.description }}
+          <div class="images-container">
+            <div
+              class="images-item"
+              v-for="(url, i) in row.item.photos"
+              :key="i"
             >
-              <b-icon-trash-fill />
+              <b-button
+                size="sm"
+                variant="danger"
+                class="image-delete"
+                v-b-modal="`modal-delete-${row.item.id}-image-${i}`"
+              >
+                <b-icon-trash-fill />
+              </b-button>
+              <img :src="url" :alt="row.item.name" />
+              <b-modal
+                @ok="deleteImage(row.item.id, url, $event)"
+                :id="`modal-delete-${row.item.id}-image-${i}`"
+                title="Effacer l'image"
+                size="lg"
+              >
+                <p>
+                  Voulez-vous vraiment supprimer cette image du produit
+                  {{ row.item.name }} ?
+                </p>
+                <img class="modal-image" :src="url" :alt="row.item.name" />
+              </b-modal>
+            </div>
+            <b-button pill size="lg" v-b-modal="`modal-image-${row.item.id}`">
+              <b-icon-cloud-arrow-up size="lg" />
             </b-button>
-            <img :src="url" :alt="row.item.name" />
-            <b-modal
-              @ok="deleteImage(row.item.id, url, $event)"
-              :id="`modal-delete-${row.item.id}-image-${i}`"
-              title="Effacer l'image"
-              size="lg"
-            >
-              <p>
-                Voulez-vous vraiment supprimer cette image du produit
-                {{ row.item.name }} ?
-              </p>
-              <img class="modal-image" :src="url" :alt="row.item.name" />
-            </b-modal>
+            <AddImageForm :productId="row.item.id" />
           </div>
-          <b-button pill size="lg" v-b-modal="`modal-image-${row.item.id}`">
-            <b-icon-cloud-arrow-up size="lg" />
-          </b-button>
-          <AddImageForm :productId="row.item.id" />
-        </div>
-      </b-container>
-    </template>
-  </b-table>
+        </b-container>
+      </template>
+    </b-table>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="totalProducts"
+      :per-page="perPage"
+      limit="10"
+      align="center"
+      small
+    ></b-pagination>
+  </b-container>
 </template>
 
 <script>
@@ -96,6 +110,7 @@ import ProductForm from "@/components/ProductForm.vue";
 import AddImageForm from "@/components/AddImageForm";
 import {
   BTable,
+  BPagination,
   BFormCheckbox,
   BModal,
   BIconTrashFill,
@@ -108,6 +123,7 @@ export default {
   components: {
     ProductForm,
     BTable,
+    BPagination,
     BFormCheckbox,
     BModal,
     BIconTrashFill,
@@ -160,6 +176,22 @@ export default {
       ],
     };
   },
+  computed: {
+    totalProducts() {
+      return this.products.total_products;
+    },
+    perPage() {
+      return this.products.size;
+    },
+    currentPage: {
+      get() {
+        return this.products.page;
+      },
+      set(value) {
+        this.$store.dispatch("products/getProducts", [value]);
+      },
+    },
+  },
   methods: {
     async toggleVisibility(id, visibility) {
       await this.$store.dispatch("products/updateVisibility", [id, visibility]);
@@ -172,7 +204,9 @@ export default {
 
       switch (response.status) {
         case 404: // The product couldn't be found
-          await this.$store.dispatch("products/getProducts");
+          await this.$store.dispatch("products/getProducts", [
+            this.currentPage,
+          ]);
           break;
         case 200: // It went OK
         case 401: // Wrong credentials, the page will redirect itself

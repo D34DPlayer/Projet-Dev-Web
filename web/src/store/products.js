@@ -5,11 +5,18 @@ const state = () => ({
     products: "/api/products",
   },
   products: [],
+  page: 1,
+  size: 20,
+  total_products: 0,
 });
 
 const mutations = {
   updateProduct(state, payload) {
-    state.products = payload.sort((a, b) => 2 * (a.username > b.username) - 1);
+    state.page = payload.page;
+    state.total_products = payload.total;
+    state.products = payload.items.sort(
+      (a, b) => 2 * (a.username > b.username) - 1
+    );
   },
 };
 
@@ -26,7 +33,7 @@ const actions = {
       },
       credentials: "include",
     });
-    dispatch("getProducts");
+    dispatch("getProducts", [state.page]);
     return result;
   },
   async deleteImage(
@@ -47,7 +54,7 @@ const actions = {
         credentials: "include",
         data: [imgUrl],
       });
-      dispatch("getProducts");
+      dispatch("getProducts", [state.page]);
       return result;
     } catch (e) {
       console.error(e);
@@ -72,7 +79,7 @@ const actions = {
         credentials: "include",
         data: data,
       });
-      dispatch("getProducts");
+      dispatch("getProducts", [state.page]);
       return response;
     } catch (e) {
       console.error(e);
@@ -82,12 +89,16 @@ const actions = {
       return e.response;
     }
   },
-  async getProducts({ state, commit }) {
+  async getProducts({ state, commit }, [page = 1]) {
     const url = state.endpoints.products;
 
     try {
       let response = await axios(url, {
         method: "GET",
+        params: {
+          page: page,
+          size: state.size,
+        },
         headers: {
           Accept: "*/*",
         },
@@ -115,7 +126,7 @@ const actions = {
         credentials: "include",
         data: { visibility: visibility },
       });
-      dispatch("getProducts");
+      dispatch("getProducts", [state.page]);
       return response;
     } catch (e) {
       console.error(e);
@@ -137,7 +148,7 @@ const actions = {
         credentials: "include",
         data: { stock: stock },
       });
-      dispatch("getProducts");
+      dispatch("getProducts", [state.page]);
       return response;
     } catch (e) {
       console.error(e);
@@ -157,7 +168,7 @@ const actions = {
         },
         credentials: "include",
       });
-      await dispatch("getProducts");
+      await dispatch("getProducts", [state.page]);
       return response;
     } catch (e) {
       console.error(e);
@@ -182,7 +193,7 @@ const actions = {
         credentials: "include",
         data: data,
       });
-      dispatch("getProducts");
+      dispatch("getProducts", [state.page]);
       return response;
     } catch (e) {
       console.error(e);

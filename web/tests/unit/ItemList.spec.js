@@ -31,7 +31,9 @@ const component = () => {
 describe("ItemList.spec.js", () => {
   it("Test text de la carte.", () => {
     const wrapper = component();
-    expect(wrapper.text()).toBe("Banane Fruit 25.00€");
+    expect(wrapper.text()).toMatch("Banane");
+    expect(wrapper.text()).toMatch("Fruit");
+    expect(wrapper.text()).toMatch("25.00€");
   });
 
   it("Test de click sur une carte", async () => {
