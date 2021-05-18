@@ -69,8 +69,10 @@
 </template>
 
 <script>
+import { BEmbed } from "bootstrap-vue";
 export default {
   name: "Accueil",
+  components: { BEmbed },
 };
 </script>
 

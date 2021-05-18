@@ -1,0 +1,45 @@
+version: "3.6"
+
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  web-unit:
+    image: testdevweb_web
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    command: npm run test:unit
+    volumes:
+      - ./web/src:/app/src
+      - ./web/tests:/app/tests
+  web-e2e:
+    image: testdevweb_web
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    command: npm run test:e2e
+    volumes:
+      - ./web/src:/app/src
+      - ./web/tests:/app/tests
+    depends_on:
+      - api
+  api:
+    build: ./api
+    command: python -m pytest --cov api --cov-report html:/api/htmlcov --cov-config=/api/setup.cfg -v api
+    volumes:
+      - ./api:/api
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/test
+      - SECRET_KEY=${SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE=${ACCESS_TOKEN_EXPIRE}
+    depends_on:
+      - db
+
+volumes:
+  postgres_data: {}

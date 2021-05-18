@@ -16,6 +16,8 @@ services:
     command: npm run serve
     volumes:
       - ./web/src:/app/src
+    environment:
+      - VUE_APP_DOMAIN_NAME=${DOMAIN_NAME}
     depends_on:
       - api
   api:

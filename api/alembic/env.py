@@ -25,7 +25,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 sys.path.append('/')
 
-import api.models
+from api import models
 from api.db import metadata
 
 target_metadata = metadata

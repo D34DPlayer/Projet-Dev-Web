@@ -1,17 +1,22 @@
-FROM python:3-alpine
+FROM python:3-slim
 ENV PYTHONUNBUFFERED=1
-WORKDIR /api
-
-# INSTALL THE PYTHON PACKAGES THAT HAVE BUILD DEP.
-RUN apk update && \
- apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev cargo && \
- apk add postgresql-dev libffi-dev openssl-dev
-RUN pip install psycopg2==2.8.6 asyncpg==0.22.0 cryptography==3.4.6 bcrypt==3.2.0 
-RUN apk del .build-deps
-
-# INSTALL THE OTHER REQUIREMENTS
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
 WORKDIR /
+
+# INSTALL THE BUILD DEP.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libpq-dev gcc libc-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir -U setuptools wheel
+
+# COPY THE REQUIREMENTS
+RUN mkdir /api
+COPY ./requirements.txt /api/requirements.txt
+
+# INSTALL PYTHON PACKAGES
+RUN pip install --no-cache-dir -r /api/requirements.txt
+
+# COPY APP SOURCE CODE
+COPY . /api
+
+# CREATE IMAGES FOLDER
+RUN mkdir /images

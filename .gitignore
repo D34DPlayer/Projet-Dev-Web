@@ -10,6 +10,7 @@ __pycache__/
 .coverage
 coverage.xml
 .pytest_cache/
+api/htmlcov/
 
 # Django stuff:
 *.log

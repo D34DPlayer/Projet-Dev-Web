@@ -1,28 +1,51 @@
 include .env
 
+.PHONY: build start up stop down restart upgrade revision rev setup_db help downgrade test-all \
+	test-back test-front-unit test-front-e2e _test-setup _test-cleanup _test-back _test-front-e2e
+
 compose_file ?= "docker-compose.yml"
 project ?= "devweb"
 
 DC = docker-compose -p $(project) -f $(compose_file)
 
+DC_test = docker-compose -p testdevweb -f docker-compose.test.yml
+
+test_exit ?= 0
+user ?= `id -u`
+
 password ?= superpassword
-hashed_password ?= `$(DC) exec api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
+hashed_password ?= `$(DC) exec -T api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
 
 define HELP
 Utilitaire docker-compose
 
 Commandes:
 ----------
-    build    - Build le docker-compose.
-    start    - Démarre les containers. Alias: up
-    stop     - Arrête les containers. Alias: down
-    restart  - Redémarre les containers.
-    upgrade  - Met à jour la base de données.
-    revision - Crée une révision de la base de donnée. Alias: rev
-    setup_db - Setup la base de donnée.
-               Pour changer le mot de passe par défaut du compte admin:
-                  `make setup_db password=motdepasse`
-    help     - Affiche l'aide.
+    build     - Build le docker-compose.
+    start     - Démarre les containers. Alias: up
+    stop      - Arrête les containers. Alias: down
+    restart   - Redémarre les containers.
+    upgrade   - Met à jour la base de données.
+    downgrade - Met à jour la base de données.
+    revision  - Crée une révision de la base de donnée. Alias: rev
+    setup_db  - Setup la base de donnée.
+                Pour changer le mot de passe par défaut du compte admin:
+                 `make setup_db password=motdepasse`
+    logs      - Affiche les logs de docker-compose.
+    logs-CON  - Affiche les logs du container CON.
+                Example: `make logs-api`
+    sh-CON    - Execute un shell dans le container CON.
+                Example: `make sh-api`
+    help      - Affiche l'aide.
+
+Tests:
+------
+    test-all        - Lance l'environnement de test et exécute les tests backend et frontend.
+                      Pour que make s'arrête lorsqu'un test rate:
+                        `make test-all test_exit=1`
+    test-back       - Exécute que les tests unitaires backend.
+    test-front-unit - Exécute que les tests unitaires frontend.
+    test-front-e2e  - Exécute que les tests end-to-end frontend.
 endef
 export HELP
 
@@ -36,20 +59,24 @@ start up:
 	$(DC) up -d
 
 stop down:
-	$(DC) down
+	$(DC) down -t 3
 
 restart:
 	$(DC) restart
 
 upgrade: start
-	$(DC) exec --workdir /api api alembic upgrade head
+	$(DC) exec -T --workdir /api api alembic upgrade head
+
+downgrade: start
+	$(DC) exec -T --workdir /api api alembic downgrade -1
 
 revision rev: start
 	@read -p "Revision name: " rev; \
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
+	$(DC) exec --workdir /api/alembic/versions api chown -R $(user) .
 
 setup_db: upgrade
-	@$(DC) exec db psql $(DB_NAME) $(DB_USER) -c "  \
+	@$(DC) exec -T db psql $(DB_NAME) $(DB_USER) -c "  \
 		INSERT INTO                                 \
 			users(username, email, hashed_password) \
 		VALUES(                                     \
@@ -60,3 +87,76 @@ setup_db: upgrade
 
 	@echo User: admin
 	@echo Password: $(password)
+
+logs:
+	$(DC) logs
+
+logs-%:
+	$(DC) logs $*
+
+sh-%:
+	$(DC) exec $* sh
+
+_test-setup:
+	@echo Setting up the test database...
+	@$(DC_test) up -d db
+	@sleep 3
+	@$(DC_test) run -T --rm --workdir /api api alembic upgrade head
+
+	@echo Adding the default user...
+	-@$(DC_test) exec -T db psql test $(DB_USER) -c "                           \
+		INSERT INTO                                                             \
+			users(username, email, hashed_password)                             \
+		VALUES(                                                                 \
+			'admin',                                                            \
+			'admin@boucherie.tk',                                               \
+			'\$$2b\$$12\$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
+		);"
+
+lint:
+	@echo Linting backend...
+	$(DC_test) run --rm -w /api api flake8
+
+format:
+	@echo Formatting backend...
+	docker run --rm -v $(shell pwd)/api:/data cytopia/black .
+	@echo Formatting frontend...
+	$(DC) run --rm web npm run lint
+
+_test-cleanup:
+	@echo Deleting the test database...
+	@$(DC_test) down
+	@docker volume rm testdevweb_postgres_data
+
+_test-back:
+	@echo Running backend tests...
+ifeq ($(test_exit),1)
+	$(DC_test) run --rm api
+else
+	$(DC_test) build api
+	-$(DC_test) run --rm api
+endif
+
+test-front-unit:
+	@echo Running frontend unit tests...
+ifeq ($(test_exit),1)
+	$(DC_test) run --rm web-unit
+else
+	$(DC_test) build web-unit
+	-$(DC_test) run --rm web-unit
+endif
+
+_test-front-e2e:
+	@echo Running frontend e2e tests...
+ifeq ($(test_exit),1)
+	$(DC_test) run --rm web-e2e
+else
+	$(DC_test) build web-e2e
+	-$(DC_test) run --rm web-e2e
+endif
+
+test-all: _test-setup lint _test-back test-front-unit _test-cleanup
+
+test-back: _test-setup lint _test-back _test-cleanup
+
+test-front-e2e: _test-setup _test-front-e2e _test-cleanup

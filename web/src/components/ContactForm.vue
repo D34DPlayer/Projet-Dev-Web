@@ -117,8 +117,24 @@
 </template>
 
 <script>
+import {
+  BForm,
+  BFormGroup,
+  BFormInput,
+  BFormTextarea,
+  BFormCheckbox,
+  BButton,
+} from "bootstrap-vue";
 export default {
   name: "ContactForm",
+  components: {
+    BForm,
+    BFormGroup,
+    BFormInput,
+    BFormTextarea,
+    BFormCheckbox,
+    BButton,
+  },
   data() {
     return {
       form: {

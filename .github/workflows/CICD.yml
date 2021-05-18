@@ -1,0 +1,45 @@
+name: CI/CD
+
+on: [push, workflow_dispatch]
+
+jobs:
+  testing:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create .env
+        run: cp .env.example .env
+      - name: Pull images
+        run: docker-compose -p testdevweb -f docker-compose.test.yml pull
+      - name: Cache images
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: devweb-tests-{hash}
+          restore-keys: devweb-tests-
+      - name: Building the images
+        run: docker-compose -p testdevweb -f docker-compose.test.yml build
+      - name: Setting up the test environment
+        run: make _test-setup
+      - name: Backend tests
+        run: make _test-back test_exit=1
+      - name: Linting
+        run: make lint
+      - name: Frontend unit tests
+        run: make test-front-unit test_exit=1
+  deploy:
+    needs: testing
+    runs-on: [ubuntu-latest]
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            git pull
+            make compose_file=docker-compose.prod.yml build upgrade

@@ -10,8 +10,8 @@
               <b-icon-geo-alt-fill class="openingDay" />
             </b-col>
             <b-col>
-              <div>Chaussée de Namur 301</div>
-              <div>B-5310 Leuze (Nam.)</div>
+              <div>{{ contact.address.street }}</div>
+              <div>{{ contact.address.city }}</div>
               <div>Plan d’accès</div>
             </b-col>
           </b-row>
@@ -20,8 +20,8 @@
               <b-icon-telephone-fill class="openingDay" />
             </b-col>
             <b-col>
-              <div>Tél : 081 40 06 16</div>
-              <div>Gsm: 0477 86 07 92</div>
+              <div>Tél : {{ contact.phone.office }}</div>
+              <div>Gsm : {{ contact.phone.mobile }}</div>
             </b-col>
           </b-row>
           <b-row align-v="center">
@@ -29,8 +29,8 @@
               <b-icon-envelope-fill class="openingDay" />
             </b-col>
             <b-col>
-              <div>info@boucherie-vangeebergen.be</div>
-              <div>N° TVA : BE 0700.234.189</div>
+              <div>{{ contact.email }}</div>
+              <div>N° TVA : {{ contact.tva }}</div>
             </b-col>
           </b-row>
         </b-col>
@@ -57,11 +57,7 @@
         </b-col>
       </b-row>
       <b-row cols="12" class="social-media">
-        <b-link
-          href="https://www.facebook.com/boucherievangeebergen/"
-          class="facebook"
-          target="_blank"
-        >
+        <b-link :href="contact.facebook" class="facebook" target="_blank">
           <b-icon-facebook />
         </b-link>
       </b-row>
@@ -70,15 +66,31 @@
 </template>
 
 <script>
+import {
+  BIconGeoAltFill,
+  BIconTelephoneFill,
+  BIconEnvelopeFill,
+  BIconFacebook,
+} from "bootstrap-vue";
 export default {
   name: "Footer",
+  components: {
+    BIconGeoAltFill,
+    BIconTelephoneFill,
+    BIconEnvelopeFill,
+    BIconFacebook,
+  },
   mounted() {
     this.$store.dispatch("horaire/getHoraire");
+    this.$store.dispatch("contact/getContact");
   },
   computed: {
     days() {
       let days = this.$store.state.horaire.days;
       return Object.entries(days).filter((i) => i[1].is_open);
+    },
+    contact() {
+      return this.$store.state.contact.contact;
     },
   },
   methods: {
