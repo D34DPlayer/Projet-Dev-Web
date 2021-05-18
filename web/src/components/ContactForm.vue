@@ -162,6 +162,15 @@ export default {
     };
   },
   methods: {
+    wipe() {
+      this.form = {
+        name: "",
+        address: "",
+        comment: "",
+        email: "",
+        telephone: null,
+      }
+    },
     async onSubmit() {
       let response = await this.$store.dispatch(
         "comments/addComment",
@@ -170,7 +179,8 @@ export default {
 
       switch (response.status) {
         case 200: //It went OK
-          this.success = false;
+          this.success = true;
+          this.wipe();
           break;
         default:
           this.alert = response.data.detail;
