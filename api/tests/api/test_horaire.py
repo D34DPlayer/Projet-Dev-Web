@@ -11,7 +11,7 @@ class TestHoraire:
         je=DayHoraire(is_open=True, open="08:00:00", close="18:00:00"),
         ve=DayHoraire(is_open=True, open="08:00:00", close="18:00:00"),
         sa=DayHoraire(is_open=True, open="08:00:00", close="18:00:00"),
-        di=DayHoraire()
+        di=DayHoraire(),
     )
 
     def test_update_horaire(self, client: TestClient, headers: dict):

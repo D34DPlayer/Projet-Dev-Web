@@ -31,9 +31,9 @@ services:
       - api
   api:
     build: ./api
-    command: python -m pytest --cov api --cov-report html:/api/htmlcov --cov-config=/api/.coveragerc -v api
+    command: python -m pytest --cov api --cov-report html:/api/htmlcov --cov-config=/api/setup.cfg -v api
     volumes:
-    - ./api:/api
+      - ./api:/api
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:5432/test
       - SECRET_KEY=${SECRET_KEY}

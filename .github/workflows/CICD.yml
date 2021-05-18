@@ -1,7 +1,6 @@
 name: CI/CD
 
-on:
-  [push, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 jobs:
   testing:
@@ -24,6 +23,8 @@ jobs:
         run: make _test-setup
       - name: Backend tests
         run: make _test-back test_exit=1
+      - name: Linting
+        run: make lint
       - name: Frontend unit tests
         run: make test-front-unit test_exit=1
   deploy:
@@ -41,6 +42,4 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull
-            make compose_file=docker-compose.prod.yml build
-            make compose_file=docker-compose.prod.yml upgrade
-
+            make compose_file=docker-compose.prod.yml build upgrade

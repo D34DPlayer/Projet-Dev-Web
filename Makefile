@@ -113,6 +113,16 @@ _test-setup:
 			'\$$2b\$$12\$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
 		);"
 
+lint:
+	@echo Linting backend...
+	$(DC_test) run --rm -w /api api flake8
+
+format:
+	@echo Formatting backend...
+	docker run --rm -v $(shell pwd)/api:/data cytopia/black .
+	@echo Formatting frontend...
+	$(DC) run --rm web npm run lint
+
 _test-cleanup:
 	@echo Deleting the test database...
 	@$(DC_test) down
@@ -145,8 +155,8 @@ else
 	-$(DC_test) run --rm web-e2e
 endif
 
-test-all: _test-setup _test-back test-front-unit _test-cleanup
+test-all: _test-setup lint _test-back test-front-unit _test-cleanup
 
-test-back: _test-setup _test-back _test-cleanup
+test-back: _test-setup lint _test-back _test-cleanup
 
 test-front-e2e: _test-setup _test-front-e2e _test-cleanup

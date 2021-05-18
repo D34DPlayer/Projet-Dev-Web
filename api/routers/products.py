@@ -16,7 +16,7 @@ router = APIRouter(
 def upload_files(path: str, files: List[Tuple[str, File]]):
     os.makedirs(path, exist_ok=True)
     for filename, file in files:
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             shutil.copyfileobj(file, f)
 
 
@@ -47,22 +47,23 @@ async def get_images(id: int):
 @router.post("/{id}/images", response_model=List[str], dependencies=[Depends(is_connected)])
 async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile] = File(...)):
     for file in files:
-        if not file.content_type.startswith('image/'):
+        if not file.content_type.startswith("image/"):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"'{file.filename}' is not an image")
 
     images = await Product.get_photos(id)
     if images is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
-    path = f'/images/products/{id}/'
+    path = f"/images/products/{id}/"
     filenames = []
     for file in files:
         fn = path + file.filename
         filenames.append(fn)
 
         if fn in images:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                detail=f"The file '{file.filename}' already exists")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail=f"The file '{file.filename}' already exists"
+            )
 
         images.append(fn)
 
@@ -75,8 +76,8 @@ async def upload_images(id: int, tasks: BackgroundTasks, files: List[UploadFile]
 
 @router.delete("/{id}/images", response_model=List[str], dependencies=[Depends(is_connected)])
 async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
-    path = f'/images/products/{id}/'
-    files = [(fn if '/' in fn else path + fn) for fn in files]
+    path = f"/images/products/{id}/"
+    files = [(fn if "/" in fn else path + fn) for fn in files]
     images = await Product.remove_photos(id, files)
 
     if images is None:

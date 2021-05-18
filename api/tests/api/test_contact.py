@@ -10,14 +10,14 @@ class TestContact:
         phone=Phone(mobile="555 06 90 12", office="010 23 23 23"),
         email="test@boucherie.tk",
         facebook="https://www.facebook.com/boucherie",
-        tva="BE 57 01 35 42"
+        tva="BE 57 01 35 42",
     )
 
     def test_get_contact(self, client: TestClient):
         # Get contact informations. It should have the default values
         response = client.get("/contact")
         assert response.status_code == status.HTTP_200_OK
-        assert Contact(**response.json()) # validation
+        assert Contact(**response.json())  # validation
 
     def test_edit_contact(self, client: TestClient, headers: dict):
         # Check for authorizations
@@ -25,7 +25,7 @@ class TestContact:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
         # Edit the contact informations
-        response = client.put('/contact', json=self.contact.dict(), headers=headers)
+        response = client.put("/contact", json=self.contact.dict(), headers=headers)
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == self.contact.dict()
 
