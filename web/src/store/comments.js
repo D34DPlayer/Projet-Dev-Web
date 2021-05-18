@@ -8,10 +8,16 @@ const state = () => ({
   },
 });
 
+const getters = {
+  unreadComments(state) {
+    return state.comments.filter(c => !c.seen).length;
+  },
+}
+
 const mutations = {
   updateComments(state, payload) {
     state.comments = payload.sort(
-      (a, b) => 2 * (a.timestamp > b.timestamp) - 1
+      (a, b) => 2 * (a.timestamp < b.timestamp) - 1
     );
   },
   updateCurrentComment(state, payload) {
@@ -115,10 +121,10 @@ const actions = {
       return e.response;
     }
   },
-  async unseenComment({ state, dispatch, commit, rootState }, id) {
+  async unseenComment({ state, dispatch, commit, rootState }, [id, seen]) {
     const url = `${state.endpoints.comments}/${id}/seen`;
 
-    const data = { seen: false };
+    const data = { seen };
 
     const AuthStr = "Bearer ".concat(rootState.users.user.token);
 
@@ -134,6 +140,7 @@ const actions = {
         data: data,
       });
       dispatch("getComments");
+      commit("updateCurrentComment", response.data);
       return response;
     } catch (e) {
       console.error(e);
@@ -150,4 +157,5 @@ export default {
   state,
   actions,
   mutations,
+  getters,
 };
