@@ -1,23 +1,25 @@
+import asyncio
 import os
 from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.requests import Request
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 
 from .db import db
 from .schemas import DBUser, TokenModel
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE"))
+DB_RETRIES = int(os.getenv('DB_RETRIES', 3))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE'))
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 app = FastAPI(title="Boucherie", root_path="/api")
@@ -32,7 +34,18 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @app.on_event("startup")
 async def startup():
-    await db.connect()
+    exception = None
+    for retries in range(DB_RETRIES):
+        try:
+            await db.connect()
+            break
+        except ConnectionRefusedError as e:
+            exception = e
+            backoff = 2**retries / 10
+            print(f"Couldn't connect to the database. Retrying in {backoff}s.")
+            await asyncio.sleep(backoff)
+    else:
+        raise exception
 
 
 @app.on_event("shutdown")
