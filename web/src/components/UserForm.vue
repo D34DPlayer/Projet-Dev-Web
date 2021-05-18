@@ -58,7 +58,7 @@
         ></b-form-input>
       </b-form-group>
       <!-- Bouton submit -->
-      <b-button type="submit" variant="primary" block
+      <b-button type="submit" variant="primary" block :disabled="inProgress"
         >{{ edit ? "Modifier" : "Ajouter" }}
       </b-button>
     </b-form>
@@ -80,6 +80,7 @@ export default {
         password: "",
       },
       error: "",
+      inProgress: false,
     };
   },
   computed: {
@@ -89,6 +90,7 @@ export default {
   },
   methods: {
     async onSubmit() {
+      this.inProgress = true;
       let response;
       if (this.edit) {
         response = await this.$store.dispatch("users/editUser", [
@@ -120,6 +122,7 @@ export default {
           // Unknown error
           this.error = response.data.detail || "Unknown error";
       }
+      this.inProgress = false;
     },
     update(val) {
       if (val) {

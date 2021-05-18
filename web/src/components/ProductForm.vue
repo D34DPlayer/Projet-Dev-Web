@@ -152,9 +152,9 @@
         ></b-form-file>
       </b-form-group>
       <!-- Bouton submit -->
-      <b-button type="submit" variant="primary" block>{{
-        edit ? "Modifier" : "Ajouter"
-      }}</b-button>
+      <b-button type="submit" variant="primary" block :disabled="inProgress">
+        {{edit ? "Modifier" : "Ajouter" }}
+      </b-button>
     </b-form>
   </b-modal>
 </template>
@@ -204,6 +204,7 @@ export default {
       photos: [],
       edit: false,
       alert: "",
+      inProgress: false,
     };
   },
   computed: {
@@ -233,8 +234,8 @@ export default {
       }
     },
     async onSubmit() {
+      this.inProgress = true;
       let response;
-
       if (this.edit) {
         response = await this.$store.dispatch("products/editProduct", [
           this.product.id,
@@ -256,6 +257,7 @@ export default {
           return;
         default:
           // Unknown error
+          this.inProgress = false;
           this.alert = response.data.detail || "Unknown error";
           return;
       }
@@ -276,10 +278,12 @@ export default {
             break;
           default:
             // Unknown error
+            this.inProgress = false;
             this.alert = response.data.detail || "Unknown error";
             return;
         }
       }
+      this.inProgress = false;
       this.$refs.productModal.hide();
     },
   },
