@@ -99,6 +99,7 @@ async def get_products(page: int = 1, size: int = 50):
 
     return await Product.get_all(page, size)
 
+
 @router.get("/{product_id}", response_model=Product)
 async def get_product_id(product_id: int):
     """get a product by id"""
