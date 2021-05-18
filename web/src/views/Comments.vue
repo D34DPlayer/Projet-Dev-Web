@@ -40,12 +40,12 @@
         </b-row>
         <b-row class="mt-3">
           <b-col>
-            <b-button block :disabled="seenDisabled" @click="seenComment(info.id, !info.seen)">
+            <b-button block :disabled="seenDisable" @click="seenComment(info.id, !info.seen)">
               {{ info.seen ? 'Marquer comme non lu': 'Marquer comme lu' }}
             </b-button>
           </b-col>
           <b-col>
-            <b-button block :disabled="deleteDisabled" variant="danger" @click="deleteComment(info.id)">
+            <b-button block :disabled="deleteDisable" variant="danger" @click="deleteComment(info.id)">
               Supprimer le commentaire
             </b-button>
           </b-col>
