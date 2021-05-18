@@ -8,8 +8,12 @@
         :fields="fields"
         sort-by="timestamp"
         @row-clicked="infoComment">
+      <template #cell(seen)="row">
+        <BIconEnvelope v-if="!row.item.seen" class="colored" font-scale="1.5" />
+        <BIconEnvelopeOpen v-if="row.item.seen" class="grey" font-scale="1.5" />
+      </template>
       <template #cell(name)="row">
-        <span :class="row.item.seen ? '' : 'puce'">{{ row.item.name }}</span>
+        {{ row.item.name }}
       </template>
     </b-table-lite>
     <b-modal
@@ -52,18 +56,21 @@
 </template>
 
 <script>
-import { BTableLite, BModal } from "bootstrap-vue";
+import { BTableLite, BModal, BIconEnvelope, BIconEnvelopeOpen } from "bootstrap-vue";
 
 export default {
   name: "Comments",
 
   components: {
     BTableLite,
-     BModal
+    BModal,
+    BIconEnvelope,
+    BIconEnvelopeOpen
   },
   data() {
     return {
       fields: [
+        { key: "seen", label: "", class: "text-center" },
         { key: "name", label: "Nom", class: "text-center" },
         {
           key: "timestamp",
@@ -147,16 +154,16 @@ tbody tr:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
+.colored {
+  color: var(--primary);
+}
+
+.grey {
+  color: var(--secondary);
+}
+
 .label {
   font-weight: bolder;
-}
-.puce::before {
-  content: "●";
-  color: var(--primary);
-  font-size: 1.5em;
-  display: inline-block;
-  float: left;
-  margin-top: -0.30em;
 }
 
 .main-badge {
