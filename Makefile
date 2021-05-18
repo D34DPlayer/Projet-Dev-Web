@@ -115,7 +115,12 @@ _test-setup:
 
 lint:
 	@echo Linting backend...
+ifeq ($(test_exit),1)
 	$(DC_test) run --rm -w /api api flake8
+else
+	$(DC_test) build api
+	-$(DC_test) run --rm -w /api api flake8
+endif
 
 format:
 	@echo Formatting backend...
