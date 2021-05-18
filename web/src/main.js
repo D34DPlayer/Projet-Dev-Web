@@ -9,6 +9,7 @@ import {
   LayoutPlugin,
   NavbarPlugin,
   ButtonPlugin,
+  BadgePlugin,
 } from "bootstrap-vue";
 import "./app.scss";
 
@@ -18,6 +19,7 @@ Vue.use(NavbarPlugin);
 Vue.use(LinkPlugin);
 Vue.use(LayoutPlugin);
 Vue.use(ButtonPlugin);
+Vue.use(BadgePlugin);
 
 Vue.config.productionTip = false;
 
