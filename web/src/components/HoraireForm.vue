@@ -71,7 +71,8 @@ export default {
           case 200: // It went OK
           case 401: // Invalid token, Vuex will logout
             break;
-          default: // Unknown error
+          default:
+            // Unknown error
             this.alert = response.data.detail;
             this.showAlert = true;
         }

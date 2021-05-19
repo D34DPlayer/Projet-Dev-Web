@@ -1,11 +1,22 @@
 <template>
   <b-form @submit.prevent="onSubmit">
+    <b-alert v-model="success" variant="success" dissmissable>
+      Merci pour votre message, nous le traîterons dès que possible.
+    </b-alert>
+    <b-alert
+      :show="alert != ''"
+      variant="danger"
+      dissmissable
+      @dissmissed="alert = ''"
+    >
+      {{ alert }}
+    </b-alert>
     <b-container>
       <b-row>
         <b-col cols="6">
           <b-form-group
             id="groupe-name"
-            label="Nom :"
+            label="Nom* :"
             label-for="input-name"
             label-class="sr-only"
           >
@@ -13,7 +24,7 @@
               id="input-name"
               v-model="form.name"
               type="text"
-              placeholder="Nom"
+              placeholder="Nom*"
               required
             >
             </b-form-input>
@@ -56,7 +67,7 @@
         <b-col cols="6">
           <b-form-group
             id="groupe-email"
-            label="Adresse email:"
+            label="Adresse email* :"
             label-for="input-email"
             label-class="sr-only"
           >
@@ -64,7 +75,7 @@
               id="input-email"
               v-model="form.email"
               type="email"
-              placeholder="Adresse email"
+              placeholder="Adresse email*"
               required
             >
             </b-form-input>
@@ -75,14 +86,14 @@
         <b-col cols="12">
           <b-form-group
             id="groupe-comment"
-            label="Commentaire:"
+            label="Commentaire* :"
             label-for="input-comment"
             label-class="sr-only"
           >
             <b-form-textarea
               id="input-comment"
               v-model="form.comment"
-              placeholder="Commentaire"
+              placeholder="Commentaire*"
               rows="3"
               max-rows="10"
               required
@@ -95,7 +106,6 @@
         <b-col cols="9">
           <b-form-checkbox
             id="input-tos"
-            v-model="form.tos"
             name="checkbox-1"
             value="true"
             unchecked-value="false"
@@ -104,12 +114,12 @@
             <b-link
               href="https://cdnnen.proxi.tools/res/global/html/confidentialites-fr.html"
               target="_blank"
-              >les conditions générales d'utilisation</b-link
-            >
+              >les conditions générales d'utilisation
+            </b-link>
           </b-form-checkbox>
         </b-col>
         <b-col cols="3" class="text-right">
-          <b-button type="submit" variant="primary"> Envoyer </b-button>
+          <b-button type="submit" variant="primary"> Envoyer</b-button>
         </b-col>
       </b-row>
     </b-container>
@@ -124,7 +134,9 @@ import {
   BFormTextarea,
   BFormCheckbox,
   BButton,
+  BAlert,
 } from "bootstrap-vue";
+
 export default {
   name: "ContactForm",
   components: {
@@ -134,6 +146,7 @@ export default {
     BFormTextarea,
     BFormCheckbox,
     BButton,
+    BAlert,
   },
   data() {
     return {
@@ -143,13 +156,35 @@ export default {
         comment: "",
         email: "",
         telephone: null,
-        tos: false,
       },
+      alert: "",
+      success: false,
     };
   },
   methods: {
-    onSubmit() {
-      console.log(this.form);
+    wipe() {
+      this.form = {
+        name: "",
+        address: "",
+        comment: "",
+        email: "",
+        telephone: null,
+      }
+    },
+    async onSubmit() {
+      let response = await this.$store.dispatch(
+        "comments/addComment",
+        this.form
+      );
+
+      switch (response.status) {
+        case 200: //It went OK
+          this.success = true;
+          this.wipe();
+          break;
+        default:
+          this.alert = response.data.detail;
+      }
     },
   },
 };

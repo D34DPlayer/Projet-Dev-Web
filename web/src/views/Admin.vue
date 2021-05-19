@@ -65,9 +65,9 @@ export default {
       if (!val) this.$router.push("/login");
     },
   },
-  async mounted() {
+  mounted() {
     if (!this.isConnected) {
-      await this.$router.push("/login");
+      this.$router.push("/login");
     } else {
       this.$store.dispatch("products/getProducts", [
         this.$store.state.products.page,

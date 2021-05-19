@@ -1,11 +1,12 @@
 from typing import Optional
 
-from pydantic import BaseModel
-from sqlalchemy import func, select
+from pydantic import BaseModel, Field
+from sqlalchemy import select, func
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, contact, horaire, products, users
+from .models import PriceType, horaire, products, users, comments, contact
+from datetime import datetime
 
 
 class PaginationModel(BaseModel):
@@ -210,6 +211,80 @@ class Product(BaseModel):
         if product:
             return Product(**product)
 
+
+class CommentBrief(BaseModel):
+    id: Optional[int]
+    name: str
+    seen: Optional[bool] = False
+    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
+
+
+class Comment(CommentBrief):
+    email: str
+    comment: str
+    address: Optional[str]
+    telephone: Optional[str]
+
+    @classmethod
+    async def get_all(cls):
+        query = comments.select()
+        return await db.fetch_all(query)
+
+    @classmethod
+    async def get(cls, id: int):
+        query = comments.select().where(comments.c.id == id)
+        comment = await db.fetch_one(query)
+        if comment and not comment['seen']:
+            return await cls.change_seen(id, True)
+        return comment or None
+
+    @classmethod
+    async def add(cls, comment):
+        values = comment.dict()
+        if comment.id is None:
+            values.pop('id')
+
+        query = comments.insert().values(**values)
+        comment.id = await db.execute(query)
+
+        return comment
+
+    @classmethod
+    async def delete(cls, id: int):
+        old_comment = await cls.get(id)
+
+        if old_comment:
+            query = comments.delete().where(comments.c.id == id)
+            await db.execute(query)
+
+            return old_comment
+
+    @classmethod
+    async def change_seen(cls, id: int, seen: bool):
+        query = comments.update().where(comments.c.id == id).values(seen=seen).returning(comments)
+        comment = await db.fetch_one(query)
+        if comment:
+            return Comment(**comment)
+
+    @classmethod
+    async def change_list_seen(cls, ids: list[int], seen: bool) -> 'list[Comment]':
+        query = comments.update().where(comments.c.id.in_(ids)).values(seen=seen).returning(comments)
+        print(query)
+        return await db.fetch_all(query)
+
+    @classmethod
+    async def delete_list(cls, ids: list[int]) -> 'list[Comment]':
+        query = comments.delete().where(comments.c.id.in_(ids)).returning(comments)
+        return await db.fetch_all(query)
+
+
+class SeenModel(BaseModel):
+    seen: bool
+    comments: Optional[list[int]] = None
+
+
+class DeleteListModel(BaseModel):
+    ids: list[int]
 
 class ListProduct(PaginationModel):
     items: list[Product]

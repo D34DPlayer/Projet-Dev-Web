@@ -50,6 +50,12 @@ const routes = [
       import(/* webpackChunkName: "admin" */ "../views/Admin.vue"),
   },
   {
+    path: "/comments",
+    name: "Commentaires",
+    component: () =>
+      import(/* webpackChunkName: "admin" */ "../views/Comments.vue"),
+  },
+  {
     path: "/logout",
     name: "Se deconnecter",
     component: () =>

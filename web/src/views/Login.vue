@@ -134,7 +134,7 @@ export default {
       if (val) {
         this.$router.push("/admin");
       }
-    }
-  }
+    },
+  },
 };
 </script>
