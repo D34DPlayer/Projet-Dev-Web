@@ -40,6 +40,14 @@ async def get_a_comment(id: int):
     return comment
 
 
+@router.delete("/delete", response_model=list[Comment], dependencies=[Depends(is_connected)])
+async def delete_list_comment(body: DeleteListModel):
+    print(body)
+    if len(body.ids) == 0:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="List Id is required.")
+    return await Comment.delete_list(body.ids)
+
+
 @router.delete("/{id}", response_model=Comment, dependencies=[Depends(is_connected)])
 async def delete_a_comment(id: int):
     """Deletes a comment from the database."""
