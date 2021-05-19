@@ -6,7 +6,6 @@ from ..app import is_connected
 
 from ..schemas import CommentBrief, Comment, SeenModel
 
-
 router = APIRouter(
     prefix="/comments",
     tags=["comments"],
@@ -59,5 +58,14 @@ async def see_a_comment(id: int, body: SeenModel):
     comment = await Comment.change_seen(id, body.seen)
     if not comment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found.")
+
+    return comment
+
+
+@router.put("/seen", response_model=list[Comment], dependencies=[Depends(is_connected)])
+async def see_list_comment(body: SeenModel):
+    if body.comments is None:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="List Id is required.")
+    comment = await Comment.change_list_seen(body.comments, body.seen)
 
     return comment
