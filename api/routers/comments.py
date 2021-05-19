@@ -4,7 +4,7 @@ from typing import List
 
 from ..app import is_connected
 
-from ..schemas import CommentBrief, Comment, SeenModel
+from ..schemas import CommentBrief, Comment, SeenModel, DeleteListModel
 
 router = APIRouter(
     prefix="/comments",
