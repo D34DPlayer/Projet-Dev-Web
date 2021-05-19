@@ -31,10 +31,6 @@ class StockModel(BaseModel):
     stock: bool
 
 
-class SeenModel(BaseModel):
-    seen: bool
-
-
 class DBUser(User):
     hashed_password: str
 
@@ -256,3 +252,14 @@ class Comment(CommentBrief):
         comment = await db.fetch_one(query)
         if comment:
             return Comment(**comment)
+
+    @classmethod
+    async def change_list_seen(cls, ids: list[int], seen: bool) -> 'list[Comment]':
+        query = comments.update().where(comments.c.id.in_(ids)).values(seen=seen).returning(comments)
+        print(query)
+        return await db.fetch_all(query)
+
+
+class SeenModel(BaseModel):
+    seen: bool
+    comments: Optional[list[int]] = None
