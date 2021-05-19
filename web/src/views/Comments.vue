@@ -11,10 +11,10 @@
         @row-clicked="infoComment">
       <template #head(check)>
         <b-button-group>
-          <b-button variant="outline-primary">
+          <b-button variant="outline-primary" @click="seenListComment(selected, false)">
             <BIconEnvelope/>
           </b-button>
-          <b-button variant="outline-primary">
+          <b-button variant="outline-primary" @click="seenListComment(selected, true)">
             <BIconEnvelopeOpen/>
           </b-button>
         </b-button-group>
@@ -158,7 +158,20 @@ export default {
       }
       this.$refs.modalComment.hide();
     },
+    async seenListComment(ids, seen) {
+      let listId = Object.keys(ids).filter(k => ids[k]);
+      let response = await this.$store.dispatch("comments/unseenListComment", [listId, seen]);
+
+      switch (response.status) {
+        case 200: // it went ok
+        case 401: // Vuex will logout
+          break;
+        case 404: // Not found
+          await this.$store.dispatch("comments/getComments");
+      }
+    },
   },
+
   computed: {
     comments() {
       return this.$store.state.comments.comments;
