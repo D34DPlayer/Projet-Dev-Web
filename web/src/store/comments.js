@@ -178,6 +178,34 @@ const actions = {
             return e.response;
         }
     },
+    async deleteListComment({state, dispatch, commit, rootState}, ids) {
+        const url = `${state.endpoints.comments}/delete`;
+
+        const data = {ids};
+
+        const AuthStr = "Bearer ".concat(rootState.users.user.token);
+
+        try {
+            let response = await axios(url, {
+                method: "DELETE",
+                headers: {
+                    Accept: "*/*",
+                    Authorization: AuthStr,
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                data: data,
+            });
+            dispatch("getComments");
+            return response;
+        } catch (e) {
+            console.error(e);
+            if (e.response.status === 401) {
+                commit("users/logout", null, {root: true});
+            }
+            return e.response;
+        }
+    },
 };
 
 export default {
