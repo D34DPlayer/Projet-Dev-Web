@@ -18,7 +18,7 @@
             <BIconEnvelopeOpen/>
           </b-button>
         </b-button-group>
-        <b-button class="ml-2" variant="danger">
+        <b-button class="ml-2" variant="danger" @click="deleteListComment(selected)">
           <b-icon-trash-fill/>
         </b-button>
       </template>
@@ -170,7 +170,24 @@ export default {
           await this.$store.dispatch("comments/getComments");
       }
     },
+    async deleteListComment(ids) {
+      let listId = Object.keys(ids).filter(k => ids[k]).map(k => +k);
+      let response = await this.$store.dispatch("comments/deleteListComment", listId);
+
+      for (let comment of this.comments) {
+        document.getElementById(`check${comment.id}`).checked = false;
+      }
+
+      switch (response.status) {
+        case 200: // it went ok
+        case 401: // Vuex will logout
+          break;
+        case 404: // Not found
+          await this.$store.dispatch("comments/getComments");
+      }
+    },
   },
+
 
   computed: {
     comments() {
