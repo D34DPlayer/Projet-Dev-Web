@@ -259,7 +259,16 @@ class Comment(CommentBrief):
         print(query)
         return await db.fetch_all(query)
 
+    @classmethod
+    async def delete_list(cls, ids: list[int]) -> 'list[Comment]':
+        query = comments.delete().where(comments.c.id.in_(ids)).returning(comments)
+        return await db.fetch_all(query)
+
 
 class SeenModel(BaseModel):
     seen: bool
     comments: Optional[list[int]] = None
+
+
+class DeleteListModel(BaseModel):
+    ids: list[int]
