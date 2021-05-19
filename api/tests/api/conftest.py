@@ -14,9 +14,7 @@ def client():
 
 @pytest.fixture(scope="session")
 def token():
-    return 'Bearer ' + create_access_token(
-        data={"sub": "admin"}, expires_delta=timedelta(minutes=5)
-    )
+    return "Bearer " + create_access_token(data={"sub": "admin"}, expires_delta=timedelta(minutes=5))
 
 
 @pytest.fixture(scope="session")

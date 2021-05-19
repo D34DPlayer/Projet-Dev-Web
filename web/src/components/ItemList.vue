@@ -1,12 +1,14 @@
 <template>
   <b-col xl="3" md="4" sm="6" cols="12" class="my-3">
-    <router-link :to="`/products/${product.id}`">
-      <b-card tag="article" no-body>
+    <router-link :to="`/products/${product.id}`" class="link">
+      <b-card tag="article" no-body class="h-100">
         <b-card-body>
           <b-card-title>{{ product.name }}</b-card-title>
           <b-card-sub-title>{{ product.categorie }}</b-card-sub-title>
-          <b-card-text :class="product.promo_price ? 'promo' : ''"
-            >{{ (product.promo_price || product.price).toFixed(2) }}€
+          <b-card-text
+            :class="product.promo_price && product.stock ? 'promo' : ''"
+          >
+            {{ (product.promo_price || product.price).toFixed(2) }}€
           </b-card-text>
         </b-card-body>
         <b-aspect
@@ -70,9 +72,34 @@ export default {
   content: "Hors Stock";
   font-size: 2em;
   width: 100%;
-  padding-top: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  transition: font-size 0.1s;
+
+  .link:hover & {
+    font-size: 2.2em;
+  }
+}
+
+.link {
+  &:visited,
+  &:hover,
+  &:active {
+    text-decoration: none;
+    color: var(--primary);
+
+    & .card {
+      border: 1px solid rgba(0, 0, 0, 0.375);
+    }
+  }
+
+  & .card {
+    transition: border 0.5s;
+  }
 }
 
 .card-text {
@@ -91,6 +118,7 @@ export default {
 
 .promo {
   color: var(--danger);
+  transition: all 0.2s;
 
   &::before {
     content: "PROMO";
@@ -99,6 +127,10 @@ export default {
     color: rgba(255, 255, 255, 0.75);
     margin-right: 0.3rem;
     padding: 0.15rem;
+  }
+
+  a:hover & {
+    font-size: 1.2em;
   }
 }
 </style>

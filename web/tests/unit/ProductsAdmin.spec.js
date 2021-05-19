@@ -7,47 +7,42 @@ const localVue = createLocalVue();
 
 localVue.use(BootstrapVue);
 
-const elem = document.createElement("div");
-if (document.body) {
-  document.body.appendChild(elem);
-}
-
-if (document.body) {
-  document.body.appendChild(elem);
-}
-
-const products = [
-  {
-    id: 4,
-    name: "Bananne",
-    categorie: "Fruit",
-    description: "c'est un fruit",
-    photos: [
-      "https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/11.jpg",
-    ],
-    price: 50.0,
-    promo_price: 25.0,
-    price_type: "/kilo",
-    visibility: true,
-  },
-  {
-    id: 5,
-    name: "Tomate",
-    categorie: "Légume",
-    description: "c'est pas un fruit",
-    photos: [
-      "https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/12.jpg",
-    ],
-    price: 45.0,
-    promo_price: null,
-    price_type: "/unité",
-    visibility: false,
-  },
-];
+const p = {
+  products: [
+    {
+      id: 4,
+      name: "Bananne",
+      categorie: "Fruit",
+      description: "c'est un fruit",
+      photos: [
+        "https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/11.jpg",
+      ],
+      price: 50.0,
+      promo_price: 25.0,
+      price_type: "/kilo",
+      visibility: true,
+    },
+    {
+      id: 5,
+      name: "Tomate",
+      categorie: "Légume",
+      description: "c'est pas un fruit",
+      photos: [
+        "https://www.boucherie-vangeebergen.be/media/images/gallery/10/big/12.jpg",
+      ],
+      price: 45.0,
+      promo_price: null,
+      price_type: "/unité",
+      visibility: false,
+    },
+  ],
+  page: 1,
+  size: 20,
+  total_products: 2,
+};
 const wrapper = mount(ProductsAdmin, {
   localVue,
-  attachTo: elem,
-  propsData: { products },
+  propsData: { products: p },
 });
 
 describe("ProductsAdmin.vue", () => {
@@ -61,18 +56,18 @@ describe("ProductsAdmin.vue", () => {
 
   it("renders the name correctly", () => {
     expect(firstRow.find('td[aria-colindex="1"]').text()).toMatch(
-      products[0].name
+      p.products[0].name
     );
   });
 
   it("renders the category correctly", () => {
     expect(firstRow.find('td[aria-colindex="2"]').text()).toMatch(
-      products[0].categorie
+      p.products[0].categorie
     );
   });
 
   it("hides the description by default", () => {
-    expect(firstRow.text()).not.toMatch(products[0].description);
+    expect(firstRow.text()).not.toMatch(p.products[0].description);
   });
 
   it("shows details on button click", async () => {
@@ -83,7 +78,7 @@ describe("ProductsAdmin.vue", () => {
 
   it("shows the description on detail", () => {
     expect(wrapper.find(".b-table-details").text()).toMatch(
-      products[0].description
+      p.products[0].description
     );
   });
 
@@ -93,7 +88,7 @@ describe("ProductsAdmin.vue", () => {
       wrapper
         .findAll(".b-table-details .images-item img")
         .wrappers[0].attributes().src
-    ).toMatch(products[0].photos[0]);
+    ).toMatch(p.products[0].photos[0]);
   });
 
   it("renders the price correctly", () => {

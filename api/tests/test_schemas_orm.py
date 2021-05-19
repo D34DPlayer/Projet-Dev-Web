@@ -91,7 +91,7 @@ class TestProduct:
         price=1.32,
         price_type="/kilo",
         visibility=True,
-        stock=True
+        stock=True,
     )
     photos = ["/images/viande.png", "/images/poulet.png"]
 
@@ -114,8 +114,17 @@ class TestProduct:
     @pytest.mark.asyncio
     async def test_get_all(self, db):
         """Test get_all method"""
-        all_product = await Product.get_all()
-        assert [Product(**x) for x in all_product] == [self.product]
+        all_product = await Product.get_all(size=24)
+        assert all_product.page == 1
+        assert all_product.size == 24
+        assert all_product.total == 1
+        assert all_product.items == [self.product]
+
+        all_product = await Product.get_all(page=2, size=24)
+        assert all_product.page == 2
+        assert all_product.size == 24
+        assert all_product.total == 1
+        assert all_product.items == []
 
     @pytest.mark.asyncio
     async def test_edit_photos(self, db):

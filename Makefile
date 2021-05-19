@@ -11,6 +11,7 @@ DC = docker-compose -p $(project) -f $(compose_file)
 DC_test = docker-compose -p testdevweb -f docker-compose.test.yml
 
 test_exit ?= 0
+user ?= `id -u`
 
 password ?= superpassword
 hashed_password ?= `$(DC) exec -T api python -c "from passlib.context import CryptContext;print(CryptContext(schemes=['bcrypt'], deprecated='auto').hash('$(password)'), end='')"`
@@ -72,6 +73,7 @@ downgrade: start
 revision rev: start
 	@read -p "Revision name: " rev; \
 	$(DC) exec --workdir /api api alembic revision --autogenerate -m "$$rev"
+	$(DC) exec --workdir /api/alembic/versions api chown -R $(user) .
 
 setup_db: upgrade
 	@$(DC) exec -T db psql $(DB_NAME) $(DB_USER) -c "  \
@@ -111,6 +113,21 @@ _test-setup:
 			'\$$2b\$$12\$$uqs4lIt2y4etQje8zJeKBuV32nyXflM7vxovtlm2dXuLba8f8ySua'   \
 		);"
 
+lint:
+	@echo Linting backend...
+ifeq ($(test_exit),1)
+	$(DC_test) run --rm -w /api api flake8
+else
+	$(DC_test) build api
+	-$(DC_test) run --rm -w /api api flake8
+endif
+
+format:
+	@echo Formatting backend...
+	docker run --rm -v $(shell pwd)/api:/data cytopia/black .
+	@echo Formatting frontend...
+	$(DC) run --rm web npm run lint
+
 _test-cleanup:
 	@echo Deleting the test database...
 	@$(DC_test) down
@@ -121,6 +138,7 @@ _test-back:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm api
 else
+	$(DC_test) build api
 	-$(DC_test) run --rm api
 endif
 
@@ -129,6 +147,7 @@ test-front-unit:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm web-unit
 else
+	$(DC_test) build web-unit
 	-$(DC_test) run --rm web-unit
 endif
 
@@ -137,11 +156,12 @@ _test-front-e2e:
 ifeq ($(test_exit),1)
 	$(DC_test) run --rm web-e2e
 else
+	$(DC_test) build web-e2e
 	-$(DC_test) run --rm web-e2e
 endif
 
-test-all: _test-setup _test-back test-front-unit _test-cleanup
+test-all: _test-setup lint _test-back test-front-unit _test-cleanup
 
-test-back: _test-setup _test-back _test-cleanup
+test-back: _test-setup lint _test-back _test-cleanup
 
 test-front-e2e: _test-setup _test-front-e2e _test-cleanup

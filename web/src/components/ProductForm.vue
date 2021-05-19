@@ -3,7 +3,8 @@
     hide-footer
     size="lg"
     :static="_static"
-    :id="`modal-${edit ? 'edit-' + product.id : 'add'}`"
+    :id="modal"
+    ref="productModal"
     :title="`${edit ? 'Modifier le' : 'Ajouter un'} produit`"
   >
     <b-alert
@@ -139,7 +140,7 @@
         </b-form-checkbox>
       </b-form-group>
       <!-- Input Images -->
-      <b-form-group label="Images :" label-for="input-images">
+      <b-form-group label="Images :" label-for="input-images" v-if="!edit">
         <b-form-file
           id="input-images"
           v-model="photos"
@@ -151,9 +152,9 @@
         ></b-form-file>
       </b-form-group>
       <!-- Bouton submit -->
-      <b-button type="submit" variant="primary" block>{{
-        edit ? "Modifier" : "Ajouter"
-      }}</b-button>
+      <b-button type="submit" variant="primary" block :disabled="inProgress">
+        {{edit ? "Modifier" : "Ajouter" }}
+      </b-button>
     </b-form>
   </b-modal>
 </template>
@@ -203,67 +204,87 @@ export default {
       photos: [],
       edit: false,
       alert: "",
+      inProgress: false,
     };
   },
+  computed: {
+    modal() {
+      return `modal-${this.edit ? "edit-" + this.product.id : "add"}`;
+    },
+  },
+  watch: {
+    product(val) {
+      this.update(val);
+    },
+  },
   mounted() {
-    if (this.product) {
-      this.$set(this.form, "name", this.product.name);
-      this.$set(this.form, "categorie", this.product.categorie);
-      this.$set(this.form, "description", this.product.description);
-      this.$set(this.form, "price", this.product.price);
-      this.$set(this.form, "promo_price", this.product.promo_price);
-      this.$set(this.form, "price_type", this.product.price_type);
-      this.$set(this.form, "visibility", this.product.visibility);
-      this.edit = true;
-    }
+    this.update(this.product);
   },
   methods: {
+    update(val) {
+      if (val) {
+        this.$set(this.form, "name", val.name);
+        this.$set(this.form, "categorie", val.categorie);
+        this.$set(this.form, "description", val.description);
+        this.$set(this.form, "price", val.price);
+        this.$set(this.form, "promo_price", val.promo_price);
+        this.$set(this.form, "price_type", val.price_type);
+        this.$set(this.form, "visibility", val.visibility);
+        this.edit = true;
+      }
+    },
     async onSubmit() {
+      this.inProgress = true;
+      let response;
       if (this.edit) {
-        this.$bvModal.hide(`modal-edit-${this.product.id}`);
+        response = await this.$store.dispatch("products/editProduct", [
+          this.product.id,
+          this.form,
+        ]);
+      } else {
+        response = await this.$store.dispatch("products/addProduct", this.form);
       }
-      let response = await this.$store.dispatch(
-        "products/addProduct",
-        this.form
-      );
 
       switch (response.status) {
         case 200: // It went OK
+          break;
+        case 404: // Product not found
+          await this.$store.dispatch("products/getProducts", [
+            this.$store.state.products.page,
+          ]);
           break;
         case 401: // Invalid token, Vuex will logout
           return;
         default:
           // Unknown error
-          this.alert = response.data.detail;
-          this.showAlert = true;
+          this.inProgress = false;
+          this.alert = response.data.detail || "Unknown error";
           return;
       }
 
-      if (!this.photos.length) {
-        await this.$store.dispatch("products/getProducts");
-        this.$bvModal.hide("modal-add");
-        return;
-      }
+      if (this.photos.length) {
+        let data = new FormData();
+        for (let file of this.photos) {
+          data.append("files", file);
+        }
 
-      let data = new FormData();
-      for (let file of this.photos) {
-        data.append("files", file);
+        response = await this.$store.dispatch("products/addImages", [
+          response.data.id,
+          data,
+        ]);
+        switch (response.status) {
+          case 200: // It went OK
+          case 401: // Invalid token, Vuex will logout
+            break;
+          default:
+            // Unknown error
+            this.inProgress = false;
+            this.alert = response.data.detail || "Unknown error";
+            return;
+        }
       }
-
-      response = await this.$store.dispatch("products/addImages", [
-        response.data.id,
-        data,
-      ]);
-      switch (response.status) {
-        case 200: // It went OK
-        case 401: // Invalid token, Vuex will logout
-          this.$bvModal.hide("modal-add");
-          break;
-        default:
-          // Unknown error
-          this.alert = response.data.detail;
-          this.showAlert = true;
-      }
+      this.inProgress = false;
+      this.$refs.productModal.hide();
     },
   },
 };

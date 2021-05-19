@@ -6,10 +6,11 @@ import users from "./users";
 import horaire from "./horaire";
 import products from "./products";
 import comments from "./comments";
+import contact from "./contact";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   plugins: [createPersistedState()],
-  modules: { users, horaire, products, comments },
+  modules: { users, horaire, products, comments, contact },
 });

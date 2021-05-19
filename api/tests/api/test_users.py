@@ -5,11 +5,8 @@ from fastapi.testclient import TestClient
 
 
 class TestUsers:
-    user = User(
-        username='test',
-        email='test@example.com'
-    )
-    token = 'Bearer ' + create_access_token({'sub': user.username})
+    user = User(username="test", email="test@example.com")
+    token = "Bearer " + create_access_token({"sub": user.username})
     headers = dict(Authorization=token)
 
     def test_list_users(self, client: TestClient, headers: dict):
@@ -22,11 +19,11 @@ class TestUsers:
         response = client.get("/users", headers=headers)
         assert response.status_code == status.HTTP_200_OK
         assert isinstance(response.json(), list) and len(response.json())
-        assert response.json()[0].get('username') == 'admin'
+        assert response.json()[0].get("username") == "admin"
 
     def test_add_user(self, client: TestClient, headers: dict):
         user = self.user.dict()
-        user['password'] = 'password'
+        user["password"] = "password"
 
         # Check for authorizations
         response = client.post("/users", json=user)
@@ -67,7 +64,7 @@ class TestUsers:
 
     def test_update_user(self, client: TestClient):
         user = self.user.dict()
-        user['password'] = 'anotherpassword'
+        user["password"] = "anotherpassword"
 
         # Check for authorizations
         response = client.put(f"/users/{self.user.username}", json=user)

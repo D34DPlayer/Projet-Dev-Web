@@ -11,7 +11,11 @@
     <b-button v-b-modal.modal-user-add>Ajouter un nouvel utilisateur</b-button>
     <UserForm :user="null" />
     <hr />
+    <h2>Horaires</h2>
     <HoraireForm />
+    <hr />
+    <h2>Informations de contact</h2>
+    <ContactAdmin />
   </b-container>
 </template>
 
@@ -21,6 +25,7 @@ import ProductForm from "@/components/ProductForm.vue";
 import UsersAdmin from "@/components/UsersAdmin.vue";
 import UserForm from "@/components/UserForm.vue";
 import HoraireForm from "@/components/HoraireForm.vue";
+import ContactAdmin from "@/components/ContactAdmin.vue";
 import { VBModal } from "bootstrap-vue";
 
 export default {
@@ -35,7 +40,14 @@ export default {
       },
     ],
   },
-  components: { ProductsAdmin, ProductForm, UsersAdmin, UserForm, HoraireForm },
+  components: {
+    ProductsAdmin,
+    ProductForm,
+    UsersAdmin,
+    UserForm,
+    HoraireForm,
+    ContactAdmin,
+  },
   directives: { "b-modal": VBModal },
   computed: {
     isConnected() {
@@ -45,7 +57,7 @@ export default {
       return this.$store.state.users.users;
     },
     products() {
-      return this.$store.state.products.products;
+      return this.$store.state.products;
     },
   },
   watch: {
@@ -57,7 +69,9 @@ export default {
     if (!this.isConnected) {
       this.$router.push("/login");
     } else {
-      this.$store.dispatch("products/getProducts");
+      this.$store.dispatch("products/getProducts", [
+        this.$store.state.products.page,
+      ]);
       this.$store.dispatch("users/getUsers");
     }
   },
