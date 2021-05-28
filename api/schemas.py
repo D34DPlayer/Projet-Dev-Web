@@ -11,10 +11,9 @@ from .db import db
 from .models import PriceType, comments, contact, horaire, products, users
 
 
-class PaginationModel(BaseModel):
-    page: int = 1
-    size: int = 50
-    total: int
+class PageModel(BaseModel):
+    page: conint(ge=1) = 1
+    size: conint(ge=1, le=100) = 50
 
 
 class TokenModel(BaseModel):
@@ -148,15 +147,15 @@ class Product(BaseModel):
             return Product(**product)
 
     @classmethod
-    async def get_all(cls, page: int = 1, size: int = 50) -> 'ListProduct':
-        query = products.select().order_by(products.c.id).offset((page - 1) * size).limit(size)
+    async def get_all(cls, page: PageModel) -> 'ListProduct':
+        query = products.select().order_by(products.c.id).offset((page.page - 1) * page.size).limit(page.size)
         total = await db.execute(select([func.count()]).select_from(products))
 
         return ListProduct(
             items=await db.fetch_all(query),
             total=total,
-            page=page,
-            size=size
+            page=page.page,
+            size=page.size
         )
 
     @classmethod
@@ -288,7 +287,9 @@ class SeenModel(BaseModel):
 class DeleteListModel(BaseModel):
     ids: list[int]
 
-class ListProduct(PaginationModel):
+
+class ListProduct(PageModel):
+    total: int
     items: list[Product]
 
 

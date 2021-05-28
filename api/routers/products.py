@@ -5,7 +5,7 @@ from typing import List, Tuple
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
 
 from ..app import is_connected
-from ..schemas import ListProduct, Product, StockModel, VisibilityModel
+from ..schemas import ListProduct, PageModel, Product, StockModel, VisibilityModel
 
 router = APIRouter(
     prefix="/products",
@@ -14,15 +14,20 @@ router = APIRouter(
 
 
 def upload_files(path: str, files: List[Tuple[str, File]]):
+    """Upload files to disk."""
+    # Make sure the folder exists
     os.makedirs(path, exist_ok=True)
     for filename, file in files:
         with open(filename, "wb") as f:
+            # copy the file to the disk
             shutil.copyfileobj(file, f)
 
 
 def delete_files(files: List[str]):
+    """Delete files on the disk."""
     for filename in files:
         try:
+            # Try to remove it
             os.remove(filename)
         except FileNotFoundError:
             pass
@@ -89,13 +94,10 @@ async def delete_images(id: int, files: List[str], tasks: BackgroundTasks):
 
 
 @router.get("", response_model=ListProduct)
-async def get_products(page: int = 1, size: int = 50):
+async def get_products(page: PageModel = Depends(PageModel)):
     """get a list of product."""
-    if page < 1:
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Page index must be at least 1.")
+    return await Product.get_all(page)
 
-    if size > 100:
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Page size cannot exceed 100 items.")
 
     return await Product.get_all(page, size)
 
