@@ -1,12 +1,14 @@
+from datetime import datetime
 from typing import Optional
 
+import sqlalchemy
 from pydantic import BaseModel, Field
-from sqlalchemy import select, func
+from pydantic.types import conint, constr
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, horaire, products, users, comments, contact
-from datetime import datetime
+from .models import PriceType, comments, contact, horaire, products, users
 
 
 class PaginationModel(BaseModel):
@@ -21,8 +23,8 @@ class TokenModel(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    email: Optional[str]
+    username: constr(max_length=15)
+    email: Optional[constr(max_length=30)]
 
 
 class CreateUser(User):
@@ -80,8 +82,8 @@ class DBUser(User):
 
 class DayHoraire(BaseModel):
     is_open: bool = False
-    open: Optional[str] = None
-    close: Optional[str] = None
+    open: Optional[constr(regex=r"\d{1,2}:\d{2}")] = None
+    close: Optional[constr(regex=r"\d{1,2}:\d{2}")] = None
 
 
 class Horaire(BaseModel):
@@ -113,9 +115,9 @@ class Horaire(BaseModel):
 
 class Product(BaseModel):
     id: Optional[int]
-    name: str
-    categorie: str
-    description: str
+    name: constr(max_length=50)
+    categorie: constr(max_length=50)
+    description: constr(max_length=5000)
     photos: list[str] = []
     price: float
     promo_price: float = None
@@ -214,16 +216,16 @@ class Product(BaseModel):
 
 class CommentBrief(BaseModel):
     id: Optional[int]
-    name: str
+    name: constr(max_length=30)
     seen: Optional[bool] = False
     timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 
 class Comment(CommentBrief):
-    email: str
-    comment: str
-    address: Optional[str]
-    telephone: Optional[str]
+    email: constr(max_length=30)
+    comment: constr(max_length=5000)
+    address: Optional[constr(max_length=100)]
+    telephone: Optional[constr(max_length=20)]
 
     @classmethod
     async def get_all(cls):
