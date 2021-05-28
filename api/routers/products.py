@@ -24,7 +24,7 @@ def filter(model: BaseModel):
             if value is not None:
                 # Check the length to be at least 3 characters.
                 if isinstance(value, str) and len(value) < 3:
-                    raise ValueError(f'The field {key!r} must have at least 3 characters.')
+                    raise ValueError(f"The field {key!r} must have at least 3 characters.")
 
                 fields[key] = value
 
@@ -33,7 +33,7 @@ def filter(model: BaseModel):
     # Extract the fields from the model
     fields = [(name, field.type_, dc.field(default=None)) for name, field in model.__fields__.items()]
     # and create a dataclass from these fields.
-    return dc.make_dataclass(f'Filter[{model.__name__}]', fields, namespace=dict(dict=get_fields))
+    return dc.make_dataclass(f"Filter[{model.__name__}]", fields, namespace=dict(dict=get_fields))
 
 
 def upload_files(path: str, files: List[Tuple[str, File]]):

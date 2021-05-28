@@ -136,10 +136,10 @@ class Product(BaseModel):
         return product
 
     @classmethod
-    async def find(cls, page: PageModel, **kwargs) -> 'ListProduct':
+    async def find(cls, page: PageModel, **kwargs) -> "ListProduct":
         def escape(value: str) -> str:
             """Escape a value and add % to match any text before and after."""
-            return '%' + value.replace("/", "//").replace("%", "/%") + "%"
+            return "%" + value.replace("/", "//").replace("%", "/%") + "%"
 
         # Create a list of condition from the kwargs
         conditions = [getattr(products.c, field).like(escape(value), escape="/") for field, value in kwargs.items()]
@@ -155,12 +155,7 @@ class Product(BaseModel):
 
         # Add limit and offset to the query
         query = query.offset((page.page - 1) * page.size).limit(page.size)
-        return ListProduct(
-            items=await db.fetch_all(query),
-            total=total,
-            page=page.page,
-            size=page.size
-        )
+        return ListProduct(items=await db.fetch_all(query), total=total, page=page.page, size=page.size)
 
     @classmethod
     async def get(cls, id: int) -> Optional["Product"]:
@@ -170,16 +165,11 @@ class Product(BaseModel):
             return Product(**product)
 
     @classmethod
-    async def get_all(cls, page: PageModel) -> 'ListProduct':
+    async def get_all(cls, page: PageModel) -> "ListProduct":
         query = products.select().order_by(products.c.id).offset((page.page - 1) * page.size).limit(page.size)
         total = await db.execute(select([func.count()]).select_from(products))
 
-        return ListProduct(
-            items=await db.fetch_all(query),
-            total=total,
-            page=page.page,
-            size=page.size
-        )
+        return ListProduct(items=await db.fetch_all(query), total=total, page=page.page, size=page.size)
 
     @classmethod
     async def get_photos(cls, id: int) -> list[str]:
