@@ -1,0 +1,42 @@
+### FIREWALL CONFIG
+## BASIC SETUP
+*filter
+# DON'T ACCEPT OR FORWARD BY DEFAULT
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+# NO NEED TO FILTER OUTBOUND TRAFFIC
+:OUTPUT ACCEPT [0:0]
+# CHAINS TO HANDLE THE PROTOCOLS SEPARETELY
+:TCP - [0:0]
+:UDP - [0:0]
+# KEEP CONNECTIONS IF ALREADY ESTABLISHED
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# DON'T FILTER loopback TRAFFIC
+-A INPUT -i lo -j ACCEPT
+# DROP "INVALID" TRAFFIC
+-A INPUT -m conntrack --ctstate INVALID -j DROP
+# ACCEPT "PINGS"
+-A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+# ATTACH CHAINS TO LET THEM HANDLE NEW CONNECTIONS
+-A INPUT -p udp -m conntrack --ctstate NEW -j UDP
+-A INPUT -p tcp --syn -m conntrack --ctstate NEW -j TCP
+-A INPUT -m conntrack --ctstate NEW -j OTHER
+# REJECT PROPERLY IF PORT IS CLOSED
+-A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+-A INPUT -j REJECT --reject-with icmp-proto-unreachable
+
+## TCP CHAIN
+# SSH
+-A TCP -p tcp --dport 22 -j ACCEPT
+# HTTPS
+-A TCP -p tcp --dport 443 -j ACCEPT
+# HTTP
+-A TCP -p tcp --dport 80 -j ACCEPT
+
+# DOCKER
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i docker0 -o eth0 -j ACCEPT
+-A FORWARD -i eth0 -o docker0 -j ACCEPT
+
+COMMIT
