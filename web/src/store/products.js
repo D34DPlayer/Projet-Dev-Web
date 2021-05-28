@@ -114,6 +114,28 @@ const actions = {
       return e.response;
     }
   },
+  async search({ state, commit }, [name, page = 1]) {
+    const url = state.endpoints.products + "/search";
+
+    try {
+      let response = await axios(url, {
+        method: "GET",
+        params: {
+          page: page,
+          name: name,
+          size: state.size,
+        },
+        headers: {
+          Accept: "*/*",
+        },
+      });
+      commit("updateProduct", response.data);
+      return response;
+    } catch (e) {
+      console.error(e);
+      return e.response;
+    }
+  },
   async getProductId({ state, commit }, id) {
     const url = `${state.endpoints.products}/${id}`;
 

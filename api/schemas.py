@@ -1,18 +1,19 @@
+from datetime import datetime
 from typing import Optional
 
+import sqlalchemy
 from pydantic import BaseModel, Field
-from sqlalchemy import select, func
+from pydantic.types import conint, constr
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 
 from .db import db
-from .models import PriceType, horaire, products, users, comments, contact
-from datetime import datetime
+from .models import PriceType, comments, contact, horaire, products, users
 
 
-class PaginationModel(BaseModel):
-    page: int = 1
-    size: int = 50
-    total: int
+class PageModel(BaseModel):
+    page: conint(ge=1) = 1
+    size: conint(ge=1, le=100) = 50
 
 
 class TokenModel(BaseModel):
@@ -21,8 +22,8 @@ class TokenModel(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    email: Optional[str]
+    username: constr(max_length=15)
+    email: Optional[constr(max_length=30)]
 
 
 class CreateUser(User):
@@ -80,8 +81,8 @@ class DBUser(User):
 
 class DayHoraire(BaseModel):
     is_open: bool = False
-    open: Optional[str] = None
-    close: Optional[str] = None
+    open: Optional[constr(regex=r"\d{1,2}:\d{2}")] = None
+    close: Optional[constr(regex=r"\d{1,2}:\d{2}")] = None
 
 
 class Horaire(BaseModel):
@@ -113,9 +114,9 @@ class Horaire(BaseModel):
 
 class Product(BaseModel):
     id: Optional[int]
-    name: str
-    categorie: str
-    description: str
+    name: constr(max_length=50)
+    categorie: constr(max_length=50)
+    description: constr(max_length=5000)
     photos: list[str] = []
     price: float
     promo_price: float = None
@@ -134,9 +135,27 @@ class Product(BaseModel):
 
         return product
 
-    # @classmethod
-    # async def find(cls, id: Filter['Product']) -> list['Product']:
-    #     pass
+    @classmethod
+    async def find(cls, page: PageModel, **kwargs) -> "ListProduct":
+        def escape(value: str) -> str:
+            """Escape a value and add % to match any text before and after."""
+            return "%" + value.replace("/", "//").replace("%", "/%") + "%"
+
+        # Create a list of condition from the kwargs
+        conditions = [getattr(products.c, field).like(escape(value), escape="/") for field, value in kwargs.items()]
+
+        # Verify that the conditions are not empty
+        if len(conditions) == 0:
+            raise ValueError("You need to filter at least one field.")
+
+        # Aggregate the conditions into a where clause
+        condition = sqlalchemy.and_(*conditions)
+        query = products.select().where(condition)
+        total = await db.execute(select([func.count()]).select_from(products).where(condition))
+
+        # Add limit and offset to the query
+        query = query.offset((page.page - 1) * page.size).limit(page.size)
+        return ListProduct(items=await db.fetch_all(query), total=total, page=page.page, size=page.size)
 
     @classmethod
     async def get(cls, id: int) -> Optional["Product"]:
@@ -146,11 +165,11 @@ class Product(BaseModel):
             return Product(**product)
 
     @classmethod
-    async def get_all(cls, page: int = 1, size: int = 50) -> "ListProduct":
-        query = products.select().order_by(products.c.id).offset((page - 1) * size).limit(size)
+    async def get_all(cls, page: PageModel) -> "ListProduct":
+        query = products.select().order_by(products.c.id).offset((page.page - 1) * page.size).limit(page.size)
         total = await db.execute(select([func.count()]).select_from(products))
 
-        return ListProduct(items=await db.fetch_all(query), total=total, page=page, size=size)
+        return ListProduct(items=await db.fetch_all(query), total=total, page=page.page, size=page.size)
 
     @classmethod
     async def get_photos(cls, id: int) -> list[str]:
@@ -209,16 +228,16 @@ class Product(BaseModel):
 
 class CommentBrief(BaseModel):
     id: Optional[int]
-    name: str
+    name: constr(max_length=30)
     seen: Optional[bool] = False
     timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 
 class Comment(CommentBrief):
-    email: str
-    comment: str
-    address: Optional[str]
-    telephone: Optional[str]
+    email: constr(max_length=30)
+    comment: constr(max_length=5000)
+    address: Optional[constr(max_length=100)]
+    telephone: Optional[constr(max_length=20)]
 
     @classmethod
     async def get_all(cls):
@@ -282,7 +301,8 @@ class DeleteListModel(BaseModel):
     ids: list[int]
 
 
-class ListProduct(PaginationModel):
+class ListProduct(PageModel):
+    total: int
     items: list[Product]
 
 

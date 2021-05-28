@@ -1,6 +1,5 @@
 from api.app import app
-from api.routers import contact, horaire, products, users, comments
-
+from api.routers import comments, contact, horaire, products, users
 
 app.include_router(users.router)
 app.include_router(horaire.router)

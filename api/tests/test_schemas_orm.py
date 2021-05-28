@@ -1,7 +1,7 @@
 import pytest
 
 from api.db import db as database
-from api.schemas import DBUser, Horaire, Product
+from api.schemas import DBUser, Horaire, PageModel, Product
 
 
 @pytest.fixture
@@ -114,13 +114,13 @@ class TestProduct:
     @pytest.mark.asyncio
     async def test_get_all(self, db):
         """Test get_all method"""
-        all_product = await Product.get_all(size=24)
+        all_product = await Product.get_all(PageModel(size=24))
         assert all_product.page == 1
         assert all_product.size == 24
         assert all_product.total == 1
         assert all_product.items == [self.product]
 
-        all_product = await Product.get_all(page=2, size=24)
+        all_product = await Product.get_all(PageModel(page=2, size=24))
         assert all_product.page == 2
         assert all_product.size == 24
         assert all_product.total == 1
