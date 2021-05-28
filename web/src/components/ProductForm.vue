@@ -153,7 +153,7 @@
       </b-form-group>
       <!-- Bouton submit -->
       <b-button type="submit" variant="primary" block :disabled="inProgress">
-        {{edit ? "Modifier" : "Ajouter" }}
+        {{ edit ? "Modifier" : "Ajouter" }}
       </b-button>
     </b-form>
   </b-modal>
