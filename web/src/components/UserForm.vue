@@ -135,7 +135,7 @@ export default {
             "Après avoir modifié l'utilisateur en cours, vous devrez vous reconnecter.";
         }
       }
-    }
+    },
   },
   watch: {
     user(val) {
@@ -144,7 +144,7 @@ export default {
   },
   mounted() {
     this.update(this.user);
-  }
+  },
 };
 </script>
 

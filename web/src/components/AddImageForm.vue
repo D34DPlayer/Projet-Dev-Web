@@ -35,13 +35,7 @@
 </template>
 
 <script>
-import {
-  BModal,
-  BAlert,
-  BForm,
-  BFormGroup,
-  BFormFile,
-} from "bootstrap-vue";
+import { BModal, BAlert, BForm, BFormGroup, BFormFile } from "bootstrap-vue";
 export default {
   name: "AddImageForm",
   components: {
@@ -91,5 +85,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

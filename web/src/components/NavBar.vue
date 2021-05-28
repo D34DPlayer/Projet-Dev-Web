@@ -34,7 +34,8 @@
             Panneau d'administration
           </b-dropdown-item>
           <b-dropdown-item to="/comments">
-            Commentaires <b-badge variant="danger" v-if="unseen">{{ unseen }}</b-badge>
+            Commentaires
+            <b-badge variant="danger" v-if="unseen">{{ unseen }}</b-badge>
           </b-dropdown-item>
           <b-dropdown-item href="/api/docs">
             Documentation API
@@ -69,7 +70,7 @@ export default {
     },
     comments() {
       return this.$store.state.comments.comments.length;
-    }
+    },
   },
   methods: {
     updateScroll() {
@@ -98,6 +99,6 @@ export default {
   width: 6rem;
 }
 .badge {
-  transform: translateY(-.15rem);
+  transform: translateY(-0.15rem);
 }
 </style>

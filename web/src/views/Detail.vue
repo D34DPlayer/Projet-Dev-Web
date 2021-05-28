@@ -3,7 +3,7 @@
     <b-row>
       <b-col sm="12" md="5">
         <div>
-          <CarrouselDetail :images="product.photos" :name="product.name"/>
+          <CarrouselDetail :images="product.photos" :name="product.name" />
         </div>
       </b-col>
       <b-col>
@@ -15,22 +15,20 @@
             {{ product.categorie }}
           </figcaption>
         </figure>
-        <h5 :class="product.promo_price ? 'promo' : ''">{{ (product.promo_price || product.price) }}€ {{
-            product.price_type
-          }}</h5>
+        <h5 :class="product.promo_price ? 'promo' : ''">
+          {{ product.promo_price || product.price }}€ {{ product.price_type }}
+        </h5>
       </b-col>
     </b-row>
     <p class="descri">{{ product.description }}</p>
-
   </b-container>
-
 </template>
 
 <script>
 import CarrouselDetail from "@/components/CarrouselDetail";
 
 export default {
-  components: {CarrouselDetail},
+  components: { CarrouselDetail },
   name: "Detail",
   mounted() {
     this.$store.dispatch("products/getProductId", this.$route.params.id);
@@ -42,7 +40,7 @@ export default {
       return prod;
     },
   },
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -52,7 +50,7 @@ export default {
 }
 .blockquote-footer {
   color: var(--primary);
-  font-size: 20px
+  font-size: 20px;
 }
 
 .promo {
@@ -68,4 +66,3 @@ export default {
   }
 }
 </style>
-
