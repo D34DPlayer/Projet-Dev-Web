@@ -1,8 +1,10 @@
+import dataclasses as dc
 import os
 import shutil
 from typing import List, Tuple
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
+from pydantic import BaseModel
 
 from ..app import is_connected
 from ..schemas import ListProduct, PageModel, Product, StockModel, VisibilityModel
@@ -11,6 +13,27 @@ router = APIRouter(
     prefix="/products",
     tags=["products"],
 )
+
+
+def filter(model: BaseModel):
+    def get_fields(self) -> dict:
+        """Validate then return the fields."""
+        fields = {}
+
+        for key, value in dc.asdict(self).items():
+            if value is not None:
+                # Check the length to be at least 3 characters.
+                if isinstance(value, str) and len(value) < 3:
+                    raise ValueError(f'The field {key!r} must have at least 3 characters.')
+
+                fields[key] = value
+
+        return fields
+
+    # Extract the fields from the model
+    fields = [(name, field.type_, dc.field(default=None)) for name, field in model.__fields__.items()]
+    # and create a dataclass from these fields.
+    return dc.make_dataclass(f'Filter[{model.__name__}]', fields, namespace=dict(dict=get_fields))
 
 
 def upload_files(path: str, files: List[Tuple[str, File]]):
@@ -99,7 +122,13 @@ async def get_products(page: PageModel = Depends(PageModel)):
     return await Product.get_all(page)
 
 
-    return await Product.get_all(page, size)
+@router.get("/search", response_model=ListProduct)
+async def search_products(fields=Depends(filter(Product)), page: PageModel = Depends(PageModel)):
+    """search a list of matching products."""
+    try:
+        return await Product.find(page, **fields.dict())
+    except ValueError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @router.get("/{product_id}", response_model=Product)
