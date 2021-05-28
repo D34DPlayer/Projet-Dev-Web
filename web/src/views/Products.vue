@@ -73,7 +73,6 @@ export default {
   },
   methods: {
     search() {
-      console.log("ALO");
       const element = document.getElementById("search");
       let data = element.value;
 
