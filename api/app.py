@@ -18,8 +18,8 @@ from .schemas import DBUser, TokenModel
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-DB_RETRIES = int(os.getenv('DB_RETRIES', 3))
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE'))
+DB_RETRIES = int(os.getenv("DB_RETRIES", 3))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE"))
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 app = FastAPI(title="Boucherie", root_path="/api")
@@ -41,7 +41,7 @@ async def startup():
             break
         except ConnectionRefusedError as e:
             exception = e
-            backoff = 2**retries / 10
+            backoff = 2 ** retries / 10
             print(f"Couldn't connect to the database. Retrying in {backoff}s.")
             await asyncio.sleep(backoff)
     else:

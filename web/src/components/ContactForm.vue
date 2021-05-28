@@ -169,7 +169,7 @@ export default {
         comment: "",
         email: "",
         telephone: null,
-      }
+      };
     },
     async onSubmit() {
       let response = await this.$store.dispatch(

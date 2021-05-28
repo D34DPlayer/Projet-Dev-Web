@@ -258,7 +258,7 @@ class Comment(CommentBrief):
     async def get(cls, id: int):
         query = comments.select().where(comments.c.id == id)
         comment = await db.fetch_one(query)
-        if comment and not comment['seen']:
+        if comment and not comment["seen"]:
             return await cls.change_seen(id, True)
         return comment or None
 
@@ -266,7 +266,7 @@ class Comment(CommentBrief):
     async def add(cls, comment):
         values = comment.dict()
         if comment.id is None:
-            values.pop('id')
+            values.pop("id")
 
         query = comments.insert().values(**values)
         comment.id = await db.execute(query)
@@ -291,13 +291,13 @@ class Comment(CommentBrief):
             return Comment(**comment)
 
     @classmethod
-    async def change_list_seen(cls, ids: list[int], seen: bool) -> 'list[Comment]':
+    async def change_list_seen(cls, ids: list[int], seen: bool) -> "list[Comment]":
         query = comments.update().where(comments.c.id.in_(ids)).values(seen=seen).returning(comments)
         print(query)
         return await db.fetch_all(query)
 
     @classmethod
-    async def delete_list(cls, ids: list[int]) -> 'list[Comment]':
+    async def delete_list(cls, ids: list[int]) -> "list[Comment]":
         query = comments.delete().where(comments.c.id.in_(ids)).returning(comments)
         return await db.fetch_all(query)
 

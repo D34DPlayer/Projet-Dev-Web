@@ -30,18 +30,18 @@ class TestProduct:
         # We run the tests against a fresh database every time, so it should contain only our product.
         response = client.get("/products", params=dict(size=24))
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()['page'] == 1
-        assert response.json()['size'] == 24
-        assert response.json()['total'] == 1
-        assert response.json()['items'] == [self.product]
+        assert response.json()["page"] == 1
+        assert response.json()["size"] == 24
+        assert response.json()["total"] == 1
+        assert response.json()["items"] == [self.product]
 
         # Check the second page. We should get an empty list
         response = client.get("/products", params=dict(size=24, page=2))
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()['page'] == 2
-        assert response.json()['size'] == 24
-        assert response.json()['total'] == 1
-        assert response.json()['items'] == []
+        assert response.json()["page"] == 2
+        assert response.json()["size"] == 24
+        assert response.json()["total"] == 1
+        assert response.json()["items"] == []
 
         # Check an invalid page.
         response = client.get("/products", params=dict(page=0))
@@ -212,5 +212,5 @@ class TestProduct:
         # Check that the product does not exists anymore.
         response = client.get("/products")
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()['total'] == 0
-        assert response.json()['items'] == []
+        assert response.json()["total"] == 0
+        assert response.json()["items"] == []

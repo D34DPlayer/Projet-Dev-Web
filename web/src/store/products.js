@@ -8,7 +8,7 @@ const state = () => ({
   detailProduct: {},
   page: 1,
   size: 20,
-  total_products: 0
+  total_products: 0,
 });
 
 const mutations = {
@@ -21,7 +21,7 @@ const mutations = {
   },
   updateDetail(state, payload) {
     state.detailProduct = payload;
-  }
+  },
 };
 
 const actions = {
